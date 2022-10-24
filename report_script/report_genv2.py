@@ -8,7 +8,7 @@ with open('Halls.json', 'r') as JSON:
 with open('Subjects.json', 'r') as JSON:
     Subjects = json.load(JSON)
 
-MetaInfo = Subjects.pop("meta")
+MetaInfo = Subjects.pop("meta") # Meta info global for each generation
 print(MetaInfo)
 
 # setting up sqlite DB for processed or sorted data storage ( allocated seats )
@@ -119,3 +119,17 @@ for i in range(len(Halls_sorted_list)):
         print(Halls_sorted_list[i][j])
     print()
 """
+
+# Report Generation
+
+# use meta data
+# use query
+# print report 1
+
+# use meta data
+# use query
+# print report 2
+
+# use meta data
+# use query
+# print report 3
