@@ -8,6 +8,8 @@ with open('Halls.json', 'r') as JSON:
 with open('Subjects.json', 'r') as JSON:
     Subjects = json.load(JSON)
 
+MetaInfo = Subjects.pop("meta")
+print(MetaInfo)
 
 # setting up sqlite DB for processed or sorted data storage ( allocated seats )
 conn = sq.connect("report.db")
