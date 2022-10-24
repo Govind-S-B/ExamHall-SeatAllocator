@@ -36,20 +36,20 @@ elif list_to_generate == 2:
     elif mode == 2:
         no_of_classes = int(input("Enter the number of classes: "))
         for class_ in range(0, no_of_classes):
-            class_name = input("Enter class name")
+            class_name = input("Enter class name: ")
             no_of_subjects = int(input("Enter the number of subjects: "))
 
-            for subject_ in range(no_of_subjects):
+            for subject_ in range(no_of_subjects+1):
                 subject = input("Enter Subject: ")
 
                 if subject in Subjects.keys():
-                    for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])):
+                    for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
                         Subjects[subject].append(class_name + '-' + str(roll_))
                 else:
                     Subjects[subject] = []
                     roll_no_range = input("Enter roll number range: ")
 
-                    for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])):
+                    for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
                         Subjects[subject].append(class_name + '-' + str(roll_))
 
     with open('Subjects.json', 'w') as fp:
