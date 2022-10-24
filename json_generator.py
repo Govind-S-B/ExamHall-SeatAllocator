@@ -42,7 +42,7 @@ elif list_to_generate == 2:
             for subject_ in range(no_of_subjects):
                 subject = input("Enter Subject: ")
 
-                if subject in Subjects():
+                if subject in Subjects:
                     roll_no_range = input("Enter roll number range: ")
                     for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
                         Subjects[subject].append(class_name + '-' + str(roll_))
