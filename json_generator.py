@@ -1,7 +1,9 @@
 import json
 
+output_mode = int(input("Display Mode: (1)Text (2)JSON: "))
+
 list_to_generate = int(
-    input("Generate: \nHall List(1) \nSubject List(2)\n"))
+    input("Generate: Hall List(1) Subject List(2): "))
 
 if list_to_generate == 1:
     halls = int(input("Enter number of halls: "))
@@ -14,9 +16,11 @@ if list_to_generate == 1:
         columns = int(input("Enter the number of columns: "))
 
         Halls[hall_name] = [capacity, columns]
-
-    with open('Halls.json', 'w') as fp:
-        json.dump(Halls, fp)
+    if output_mode == 1:
+        with open('Halls.json', 'w') as fp:
+            json.dump(Halls, fp)
+    elif output_mode == 2:
+        print(Halls)
 
 elif list_to_generate == 2:
     mode = int(input("Value mode(1) or Continuous Range mode(2): "))
@@ -28,7 +32,6 @@ elif list_to_generate == 2:
         Subjects[subject_name] = []
         roll = input("Enter the roll number list: ")
         roll_list = roll.split(',')
-        print(roll_list)
 
         for roll_ in roll_list:
             Subjects[subject_name].append(roll_)
@@ -53,5 +56,9 @@ elif list_to_generate == 2:
                     for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
                         Subjects[subject].append(class_name + '-' + str(roll_))
 
-    with open('Subjects.json', 'w') as fp:
-        json.dump(Subjects, fp, indent=4)
+    if output_mode == 1:
+        print(json.dumps(Subjects, indent=4, sort_keys=True))
+
+    elif output_mode == 2:
+        with open('Subjects.json', 'w') as fp:
+            json.dump(Subjects, fp, indent=4)
