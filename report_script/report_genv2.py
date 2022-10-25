@@ -92,7 +92,8 @@ for i in Halls_list:
                                 pass
                             else:
                                 Hall_structure[i][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
-                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}',{},{},'{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                temp_expression = Hall_structure[i][j][1].split("-")
+                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
                                 conn.commit()
                                 even_row_subject_list[0][0]-=1
                                 if even_row_subject_list[0][0]==0:
@@ -103,7 +104,8 @@ for i in Halls_list:
                                 pass
                             else:
                                 Hall_structure[i][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
-                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}',{},{},'{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                temp_expression = Hall_structure[i][j][1].split("-")
+                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
                                 conn.commit()
                                 odd_row_subject_list[0][0]-=1
                                 if odd_row_subject_list[0][0]==0:
