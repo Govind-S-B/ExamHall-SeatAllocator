@@ -39,3 +39,6 @@ cursor = conn.execute(cmd)
 x = cursor.fetchall()
 for i in x:
     print(i)
+
+# Report 3
+# Hall , class , subject , roll no range , total no of students
