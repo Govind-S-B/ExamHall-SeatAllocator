@@ -23,12 +23,17 @@ if list_to_generate == 1:
         print(Halls)
 
 elif list_to_generate == 2:
+
+    session_name = input("Enter Session name: ") # 12-04-2022 FN
+    MetaInfo = {"Session_Name":session_name}
+
     mode = int(input("Value mode(1) or Continuous Range mode(2): "))
     Subjects = {}
 
+    Subjects["meta"]=MetaInfo
+
     if mode == 1:
         subject_name = input("Enter the subject name: ")
-        subject_code = input("Enter the subject code: ")
         Subjects[subject_name] = []
         roll = input("Enter the roll number list: ")
         roll_list = roll.split(',')
