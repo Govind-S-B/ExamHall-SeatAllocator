@@ -16,6 +16,8 @@ conn = sq.connect("report.db")
 conn.execute("DROP TABLE IF EXISTS REPORT;")
 conn.execute('''CREATE TABLE REPORT
          (ID         CHAR(15)         PRIMARY KEY     NOT NULL,
+         CLASS       CHAR(10)                         NOT NULL,
+         ROLL        INT                              NOT NULL,
          HALL        TEXT                             NOT NULL,
          SEAT_NO     INT                              NOT NULL,
          SUBJECT     CHAR(50)                         NOT NULL);''')
@@ -90,7 +92,7 @@ for i in Halls_list:
                                 pass
                             else:
                                 Hall_structure[i][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
-                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}',{},{},'{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
                                 conn.commit()
                                 even_row_subject_list[0][0]-=1
                                 if even_row_subject_list[0][0]==0:
@@ -101,7 +103,7 @@ for i in Halls_list:
                                 pass
                             else:
                                 Hall_structure[i][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
-                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}',{},{},'{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
                                 conn.commit()
                                 odd_row_subject_list[0][0]-=1
                                 if odd_row_subject_list[0][0]==0:
