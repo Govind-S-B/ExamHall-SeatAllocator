@@ -9,7 +9,7 @@ with open('Subjects.json', 'r') as JSON:
     Subjects = json.load(JSON)
 
 MetaInfo = Subjects.pop("meta") # Meta info global for each generation
-print(MetaInfo)
+print(MetaInfo["Session_Name"])
 
 # setting up sqlite DB for processed or sorted data storage ( allocated seats )
 conn = sq.connect("report.db")

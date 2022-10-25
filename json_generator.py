@@ -16,10 +16,10 @@ if list_to_generate == 1:
         columns = int(input("Enter the number of columns: "))
 
         Halls[hall_name] = [capacity, columns]
-    if output_mode == 1:
+    if output_mode == 2:
         with open('Halls.json', 'w') as fp:
             json.dump(Halls, fp)
-    elif output_mode == 2:
+    elif output_mode == 1:
         print(Halls)
 
 elif list_to_generate == 2:
