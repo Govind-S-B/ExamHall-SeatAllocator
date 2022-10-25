@@ -24,13 +24,13 @@ if list_to_generate == 1:
 
 elif list_to_generate == 2:
 
-    session_name = input("Enter Session name: ") # 12-04-2022 FN
-    MetaInfo = {"Session_Name":session_name}
+    session_name = input("Enter Session name: ")  # 12-04-2022 FN
+    MetaInfo = {"Session_Name": session_name}
 
     mode = int(input("Value mode(1) or Continuous Range mode(2): "))
     Subjects = {}
 
-    Subjects["meta"]=MetaInfo
+    Subjects["meta"] = MetaInfo
 
     if mode == 1:
         subject_name = input("Enter the subject name: ")
