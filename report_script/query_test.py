@@ -32,9 +32,8 @@ x = cursor.fetchall()
 for i in x:
     print(i)
 
-cmd = """SELECT HALL , CLASS
+cmd = """SELECT DISTINCT HALL , CLASS
          FROM REPORT
-         GROUP BY CLASS
          ORDER BY HALL"""
 cursor = conn.execute(cmd)
 x = cursor.fetchall()
