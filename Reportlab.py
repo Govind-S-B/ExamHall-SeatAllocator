@@ -296,10 +296,7 @@ def createpdf2(data1, data, name):
     pdf.build(elems)
 
 
-
-
 # seating list
-
 cmd = """SELECT DISTINCT HALL , CLASS
          FROM REPORT
          ORDER BY HALL"""
@@ -314,18 +311,36 @@ cmd = """SELECT HALL,SEAT_NO,ID
          ORDER BY HALL,SEAT_NO"""
 cursor = conn.execute(cmd)
 x = cursor.fetchall()
-seat_list = []
+query_list = []
 for i in x:
-    seat_list.append(list(i))
+    query_list.append(list(i))
 
-hall = seat_list[0][0]
-seat_List = [["Seat","RollNo"]]
-for i in seat_list:
+hall_distinct_list = [[distinct_class[0][0]]]
+hall = query_list[0][0]
+# print(query_list)
+seat_List = [["Seat", "RollNo"]]
+
+hall_check_for_distinct = distinct_class[0][0]
+for i in distinct_class:
+    if hall_check_for_distinct == i[0]:
+        hall_distinct_list[-1].append(i[1])
+    else:
+        hall_distinct_list[-1].append(i[1])
+        hall_check_for_distinct = i[0]
+        hall_distinct_list.append(i)
+
+# print distinct
+for i in hall_distinct_list:
+    print(i)
+
+
+for i in query_list:
     if hall == i[0]:
         seat_List.append([i[1], i[2]])
-    else:
-        createpdf2(seat_List, distinct_class, "seat")
-        seat_List = []
-    createpdf2(distinct_class, seat_List, "seat")
 
-# distinct class
+    else:
+        hall_distinct_list.append(i[1])
+        # createpdf2(hall_distinct_list, seat_List, hall)
+        hall = i[0]
+        hall_distinct_list = []
+        seat_List = [["Seat", "RollNo"]]
