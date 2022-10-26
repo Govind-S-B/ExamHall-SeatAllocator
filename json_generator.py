@@ -68,4 +68,4 @@ elif list_to_generate == 2:
         with open('Subjects.json', 'w') as fp:
             json.dump(Subjects, fp, indent=4)
 
-input() # dummy input function to wait for user input to exit script
+input()  # dummy input function to wait for user input to exit script
