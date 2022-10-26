@@ -7,6 +7,69 @@ from reportlab.platypus import Table
 from reportlab.pdfgen import canvas
 import itertools
 
+#pinneyum pdf
+
+def createpdf1(data, session, name): #session =list[hall name, session]
+    session1 = [[session,name]]
+    fileName = name+'.pdf'
+    pdf = SimpleDocTemplate(
+        fileName,
+        pagesize=letter)
+    
+
+    table = Table(data)
+    table1 = Table(session1)
+    # add style
+
+
+    style = TableStyle([
+        ('BACKGROUND', (0,0), (3,0), colors.green),
+        ('TEXTCOLOR',(0,0),(-1,0),colors.whitesmoke),
+
+        ('ALIGN',(0,0),(-1,-1),'CENTER'),
+
+        ('FONTNAME', (0,0), (-1,0), 'Courier-Bold'),
+        ('FONTSIZE', (0,0), (-1,0), 14),
+
+        ('BOTTOMPADDING', (0,0), (-1,0), 12),
+
+        ('BACKGROUND',(0,1),(-1,-1),colors.beige),
+    ])
+    table.setStyle(style)
+
+   
+    # 2) Alternate backgroud color. Make changes here if needed alt colours 
+    rowNumb = len(data)
+    for i in range(1, rowNumb):
+        if i % 2 == 0:
+            bc = colors.white
+        else:
+            bc = colors.white
+        
+        ts = TableStyle(
+            [('BACKGROUND', (0,i),(-1,i), bc)]
+        )
+        table.setStyle(ts)
+
+    # 3) Add borders
+    ts = TableStyle(
+        [
+        ('BOX',(0,0),(-1,-1),2,colors.black),
+
+        ('LINEBEFORE',(2,1),(2,-1),2,colors.red),
+        ('LINEABOVE',(0,2),(-1,2),2,colors.green),
+
+        ('GRID',(0,1),(-1,-1),2,colors.black),
+        ]
+    )
+    table.setStyle(ts)
+    table1.setStyle(ts)
+
+    elems = []
+    elems.append(table1)
+    elems.append(table)
+    pdf.build(elems)
+
 def createpdf(data, name):
 
     fileName = name+'.pdf'
@@ -107,8 +170,11 @@ for i in Q_list:
     if Q_list[-1] == i:
         PDF_list.append([class_name,hall_name,str(roll_list)[1:-1]])
 
-createpdf(PDF_list, "PDF1")
+#createpdf(PDF_list, "PDF1")
 
+
+
+sessioninfo = "12-04-2023 FN"
 # For Each Hall Packaging
 def ranges(i):
     for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
@@ -138,7 +204,7 @@ for i in Q_list:
 
             else:
                 roll_ = ranges(roll_list)
-                PDF_list.append([hall_name, class_name, subject_name, str(list(roll_))[1:-1]])
+                PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
                 subject_name = i[2]
                 roll_list = []
                 roll_list.append(i[3])
@@ -146,7 +212,7 @@ for i in Q_list:
         else:
             # maybe class name also needs to be rest
             roll_ = ranges(roll_list)
-            PDF_list.append([hall_name, class_name, subject_name, str(list(roll_))[1:-1]])
+            PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
             class_name = i[1]
             subject_name = i[2]
             roll_list = []
@@ -155,8 +221,8 @@ for i in Q_list:
     else:
         # append , PDF Generate and empty pdf list
         roll_ = ranges(roll_list)
-        PDF_list.append([hall_name, class_name, subject_name,str(list(roll_))[1:-1]])
-        createpdf(PDF_list, hall_name)
+        PDF_list.append([class_name, subject_name,str(list(roll_))[1:-1]])
+        createpdf1(PDF_list,sessioninfo,  hall_name)
         PDF_list = []
         hall_name = i[0]
         class_name = i[1]
@@ -167,6 +233,11 @@ for i in Q_list:
         #PDF Generate
 
         roll_ = ranges(roll_list)
-        PDF_list.append([hall_name, class_name, subject_name,str(list(roll_))[1:-1]])
-        createpdf(PDF_list, hall_name)
+        PDF_list.append([class_name, subject_name,str(list(roll_))[1:-1]])
+        createpdf1(PDF_list,sessioninfo,  hall_name)
         PDF_list = []
+
+
+
+
+
