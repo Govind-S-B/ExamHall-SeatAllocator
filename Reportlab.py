@@ -222,7 +222,7 @@ for i in Q_list:
         # append , PDF Generate and empty pdf list
         roll_ = ranges(roll_list)
         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
-        createpdf1(PDF_list, sessioninfo,  hall_name)
+        #createpdf1(PDF_list, sessioninfo,  hall_name)
         PDF_list = []
         hall_name = i[0]
         class_name = i[1]
@@ -234,8 +234,68 @@ for i in Q_list:
 
         roll_ = ranges(roll_list)
         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
-        createpdf1(PDF_list, sessioninfo,  hall_name)
+        #createpdf1(PDF_list, sessioninfo,  hall_name)
         PDF_list = []
+
+
+def createpdf2(data1, data, name):
+    fileName = name+'.pdf'
+    pdf = SimpleDocTemplate(
+        fileName,
+        pagesize=letter)
+
+    table = Table(data)
+    table1 = Table(data1)
+    # add style
+
+    style = TableStyle([
+        ('BACKGROUND', (0, 0), (3, 0), colors.green),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+
+        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+
+        ('FONTNAME', (0, 0), (-1, 0), 'Courier-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 14),
+
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+
+        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+    ])
+    table.setStyle(style)
+
+    # 2) Alternate backgroud color. Make changes here if needed alt colours
+    rowNumb = len(data)
+    for i in range(1, rowNumb):
+        if i % 2 == 0:
+            bc = colors.white
+        else:
+            bc = colors.white
+
+        ts = TableStyle(
+            [('BACKGROUND', (0, i), (-1, i), bc)]
+        )
+        table.setStyle(ts)
+
+    # 3) Add borders
+    ts = TableStyle(
+        [
+            ('BOX', (0, 0), (-1, -1), 2, colors.black),
+
+            ('LINEBEFORE', (2, 1), (2, -1), 2, colors.red),
+            ('LINEABOVE', (0, 2), (-1, 2), 2, colors.green),
+
+            ('GRID', (0, 1), (-1, -1), 2, colors.black),
+        ]
+    )
+    table.setStyle(ts)
+    table1.setStyle(ts)
+
+    elems = []
+    elems.append(table1)
+    elems.append(table)
+    pdf.build(elems)
+
+
 
 
 # seating list
@@ -259,13 +319,13 @@ for i in x:
     seat_list.append(list(i))
 
 hall = seat_list[0][0]
-seat_List = []
+seat_List = [["Seat","RollNo"]]
 for i in seat_list:
     if hall == i[0]:
         seat_List.append([i[1], i[2]])
     else:
-        createpdf1(seat_List, sessioninfo, distinct_class)
+        createpdf2(seat_List, distinct_class, "seat")
         seat_List = []
-
+    createpdf2(distinct_class, seat_List, "seat")
 
 # distinct class
