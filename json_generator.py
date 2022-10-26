@@ -12,8 +12,8 @@ if list_to_generate == 1:
     for i in range(halls):
         hall_name = input(
             "Enter Hall Name: ")
-        capacity = int(input("Enter the capacity: "))
-        columns = int(input("Enter the number of columns: "))
+        capacity = int(input("Enter capacity: "))
+        columns = int(input("Enter number of columns: "))
 
         Halls[hall_name] = [capacity, columns]
     if output_mode == 2:
@@ -33,19 +33,19 @@ elif list_to_generate == 2:
     Subjects["meta"] = MetaInfo
 
     if mode == 1:
-        subject_name = input("Enter the subject name: ")
+        subject_name = input("Enter subject name: ")
         Subjects[subject_name] = []
-        roll = input("Enter the roll number list: ")
+        roll = input("Enter roll number list: ")
         roll_list = roll.split(',')
 
         for roll_ in roll_list:
             Subjects[subject_name].append(roll_)
 
     elif mode == 2:
-        no_of_classes = int(input("Enter the number of classes: "))
+        no_of_classes = int(input("Enter number of classes: "))
         for class_ in range(0, no_of_classes):
             class_name = input("Enter class name: ")
-            no_of_subjects = int(input("Enter the number of subjects: "))
+            no_of_subjects = int(input("Enter number of subjects: "))
 
             for subject_ in range(no_of_subjects):
                 subject = input("Enter Subject: ")
