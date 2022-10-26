@@ -109,7 +109,7 @@ for i in Q_list:
 
 createpdf(PDF_list, "PDF1")
 
-# vera oru sathanam
+# For Each Hall Packaging
 def ranges(i):
     for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
         b = list(b)
@@ -129,6 +129,7 @@ subject_name = Q_list[0][2]
 
 for i in Q_list:
     if hall_name == i[0]:
+        # update list
 
         if class_name == i[1]:
 
@@ -152,16 +153,20 @@ for i in Q_list:
             roll_list.append(i[3])
 
     else:
+        # append , PDF Generate and empty pdf list
         roll_ = ranges(roll_list)
         PDF_list.append([hall_name, class_name, subject_name,str(list(roll_))[1:-1]])
+        createpdf(PDF_list, hall_name)
+        PDF_list = []
         hall_name = i[0]
         class_name = i[1]
         roll_list = []
         roll_list.append(i[3])
 
     if Q_list[-1] == i:
+        #PDF Generate
+
         roll_ = ranges(roll_list)
         PDF_list.append([hall_name, class_name, subject_name,str(list(roll_))[1:-1]])
-
-
-createpdf(PDF_list, "PDF2")
+        createpdf(PDF_list, hall_name)
+        PDF_list = []
