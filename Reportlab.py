@@ -5,10 +5,11 @@ from reportlab.platypus import TableStyle
 from reportlab.lib import colors
 from reportlab.platypus import Table
 from reportlab.pdfgen import canvas
+import itertools
 
-def createpdf(data):
+def createpdf(data, name):
 
-    fileName = 'pdfTable.pdf'
+    fileName = name+'.pdf'
     pdf = SimpleDocTemplate(
         fileName,
         pagesize=letter)
@@ -106,5 +107,61 @@ for i in Q_list:
     if Q_list[-1] == i:
         PDF_list.append([class_name,hall_name,str(roll_list)[1:-1]])
 
-createpdf(PDF_list)
+createpdf(PDF_list, "PDF1")
 
+# vera oru sathanam
+def ranges(i):
+    for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+        b = list(b)
+        yield b[0][1], b[-1][1]
+
+conn = sq.connect("report.db")
+cmd = """SELECT HALL,CLASS,SUBJECT,ROLL
+         FROM REPORT
+         ORDER BY HALL,CLASS, SUBJECT"""
+cursor = conn.execute(cmd)
+Q_list = cursor.fetchall()
+PDF_list = [["Class", "Subject", "RollNo"]]
+roll_list = []
+hall_name = Q_list[0][0]
+class_name = Q_list[0][1]
+subject_name = Q_list[0][2]
+
+for i in Q_list:
+    if hall_name == i[0]:
+
+        if class_name == i[1]:
+
+            if subject_name == i[2]:
+                roll_list.append(i[3])
+
+            else:
+                roll_ = ranges(roll_list)
+                PDF_list.append([hall_name, class_name, subject_name, str(list(roll_))[1:-1]])
+                subject_name = i[2]
+                roll_list = []
+                roll_list.append(i[3])
+
+        else:
+            # maybe class name also needs to be rest
+            roll_ = ranges(roll_list)
+            PDF_list.append([hall_name, class_name, subject_name, str(list(roll_))[1:-1]])
+            class_name = i[1]
+            subject_name = i[2]
+            roll_list = []
+            roll_list.append(i[3])
+
+    else:
+        roll_ = ranges(roll_list)
+        PDF_list.append([hall_name, class_name, subject_name,str(list(roll_))[1:-1]])
+        hall_name = i[0]
+        class_name = i[1]
+        roll_list = []
+        roll_list.append(i[3])
+
+    if Q_list[-1] == i:
+        roll_ = ranges(roll_list)
+        PDF_list.append([hall_name, class_name, subject_name,str(list(roll_))[1:-1]])
+
+
+createpdf(PDF_list, "PDF2")
