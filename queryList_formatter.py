@@ -79,8 +79,7 @@ for i in Q_list:
 
             else:
                 roll_ = ranges(roll_list)
-                PDF_list.append(
-                    [hall_name, class_name, subject_name, list(roll_)])
+                PDF_list.append([hall_name, class_name, subject_name, list(roll_)])
                 subject_name = i[2]
                 roll_list = []
                 roll_list.append(i[3])
@@ -88,8 +87,7 @@ for i in Q_list:
         else:
             # maybe class name also needs to be rest
             roll_ = ranges(roll_list)
-            PDF_list.append(
-                [hall_name, class_name, subject_name, list(roll_)])
+            PDF_list.append([hall_name, class_name, subject_name, list(roll_)])
             class_name = i[1]
             subject_name = i[2]
             roll_list = []
@@ -97,8 +95,7 @@ for i in Q_list:
 
     else:
         roll_ = ranges(roll_list)
-        PDF_list.append([hall_name, class_name, subject_name,
-                        list(roll_)])
+        PDF_list.append([hall_name, class_name, subject_name,list(roll_)])
         hall_name = i[0]
         class_name = i[1]
         roll_list = []
@@ -106,8 +103,7 @@ for i in Q_list:
 
     if Q_list[-1] == i:
         roll_ = ranges(roll_list)
-        PDF_list.append([hall_name, class_name, subject_name,
-                        list(roll_)])
+        PDF_list.append([hall_name, class_name, subject_name,list(roll_)])
 
 
 print(PDF_list)

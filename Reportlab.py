@@ -5,38 +5,6 @@ from reportlab.platypus import TableStyle
 from reportlab.lib import colors
 from reportlab.platypus import Table
 from reportlab.pdfgen import canvas
-conn = sq.connect("report.db")
-
-cmd = """SELECT CLASS,HALL,ROLL
-         FROM REPORT
-         ORDER BY CLASS,HALL"""
-cursor = conn.execute(cmd)
-Q_list = cursor.fetchall()
-PDF_list = [["Class", "Hall", "RollNo"]]
-roll_list = []
-class_name = Q_list[0][0]
-hall_name = Q_list[0][1]
-
-for i in Q_list:
-    if class_name == i[0]:
-        
-        if hall_name == i[1]:
-            roll_list.append(i[2])
-        else:
-            PDF_list.append([class_name,hall_name,str(roll_list)[1:-1]]) #maybe class name also needs to be rest
-            hall_name = i[1]
-            roll_list = []
-            roll_list.append(i[2])
-
-    else:
-        PDF_list.append([class_name,hall_name,str(roll_list)[1:-1]])
-        class_name = i[0]
-        hall_name = i[1]
-        roll_list = []
-        roll_list.append(i[2])
-
-    if Q_list[-1] == i:
-        PDF_list.append([class_name,hall_name,str(roll_list)[1:-1]])
 
 def createpdf(data):
 
@@ -99,8 +67,44 @@ def createpdf(data):
 
     elems = []
     
-
     elems.append(table)
     pdf.build(elems)
 
+conn = sq.connect("report.db")
+
+
+# Notice board 
+
+cmd = """SELECT CLASS,HALL,ROLL
+         FROM REPORT
+         ORDER BY CLASS,HALL"""
+cursor = conn.execute(cmd)
+Q_list = cursor.fetchall()
+PDF_list = [["Class", "Hall", "RollNo"]]
+roll_list = []
+class_name = Q_list[0][0]
+hall_name = Q_list[0][1]
+
+for i in Q_list:
+    if class_name == i[0]:
+        
+        if hall_name == i[1]:
+            roll_list.append(i[2])
+        else:
+            PDF_list.append([class_name,hall_name,str(roll_list)[1:-1]])
+            hall_name = i[1]
+            roll_list = []
+            roll_list.append(i[2])
+
+    else:
+        PDF_list.append([class_name,hall_name,str(roll_list)[1:-1]])
+        class_name = i[0]
+        hall_name = i[1]
+        roll_list = []
+        roll_list.append(i[2])
+
+    if Q_list[-1] == i:
+        PDF_list.append([class_name,hall_name,str(roll_list)[1:-1]])
+
 createpdf(PDF_list)
+
