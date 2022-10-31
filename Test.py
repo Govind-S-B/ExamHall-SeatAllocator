@@ -1,6 +1,3 @@
-from ctypes import alignment
-from turtle import heading
-from reportlab.platypus import SimpleDocTemplate
 from reportlab.lib.pagesizes import letter
 from reportlab.platypus import TableStyle
 from reportlab.lib import colors
@@ -10,30 +7,6 @@ from reportlab.pdfgen import canvas
 
 
 
-
-
-data= [["heading1","heading2", "heading3" ],["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"],["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"]
-,["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"],["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"],["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"]
-,["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"],["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["ghi","789", "koppu3"],["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"]
-,["abc","123", "koppu"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["ghi","789", "koppu3"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"],["def","456", "koppu1"],["ghi","789", "koppu3"],["def","456", "koppu1"]
-,["def","456", "koppu1"]
-
-
-]
 
 
 def createpdf(fname,data,clg,sub,datesession): #datesession list containing date and session
@@ -54,10 +27,37 @@ def createpdf(fname,data,clg,sub,datesession): #datesession list containing date
             del_list.append(i)
         for i in sorted(del_list, reverse=True):
             del data[i]
+        rdata= []
+        rdata1= []
+        for i in data:
+            if (len(data[2])) <30:
+                i[2]=str(i[2])[1:-1]
+                rdata.append(i)
+            else:
+                leng = len(i[2])
+                l1 = str(i[2][0:int(leng/2)])[1:-1]
+                l2 = str(i[2][int(leng/2):leng])[1:-1]
+                i[2] = l1
+                f1 = ["     ","    ",l2]
+                rdata.append(i)
+                rdata.append(f1)
+        for i in dat:
+            if (len(i[2])) <30:
+                i[2]=str(i[2])[1:-1]
+                rdata1.append(i)
+            else:
+                leng = len(i[2])
+                l1 = str(i[2][0:int(leng/2)])[1:-1]
+                l2 = str(i[2][int(leng/2):leng])[1:-1]
+                i[2] = l1
+                f1 = ["     ","    ",l2]
+                rdata1.append(i)
+                rdata1.append(f1)
+
         obj=[]
         obj1=[]
-        trow = Table(data)
-        trow1= Table(dat)
+        trow = Table(rdata)
+        trow1= Table(rdata1)
         obj.append(trow)
         obj1.append(trow1)  
         ts= TableStyle([("GRID",(0,0),(-1,-1), 2, colors.black)])
@@ -71,8 +71,21 @@ def createpdf(fname,data,clg,sub,datesession): #datesession list containing date
         pdf.save()
 
     else:
+        rdata=[]
+        for i in data:
+            if (len(i[2])) <30:
+                i[2]=str(i[2])[1:-1]
+                rdata.append(i)
+            else:
+                leng = len(i[2])
+                l1 = str(i[2][0:int(leng/2)])[1:-1]
+                l2 = str(i[2][int(leng/2):leng])[1:-1]
+                i[2] = l1
+                f1 = ["     ","    ",l2]
+                rdata.append(i)
+                rdata.append(f1)
         obj=[]
-        trow = Table(data)
+        trow = Table(rdata)
         obj.append(trow)
         ts= TableStyle([("GRID",(0,0),(-1,-1), 2, colors.black)])
         trow.setStyle(ts)
@@ -131,6 +144,8 @@ def createpdf1(fname,data,clg,sub,datesession):#for seating arrangement
     frame = Frame(420,20,183,700,showBoundary=0)
     frame.addFromList(obj3, pdf)
     pdf.save()
+#createpdf1("Hello", data, "Marian Engineering College", "Internal Examination",["20/11/2022","fn"] ) #this is how you need to pass data
 
 
-createpdf1("Hello", data, "Marian Engineering College", "Internal Examination",["20/11/2022","fn"] ) #this is how you need to pass data
+
+
