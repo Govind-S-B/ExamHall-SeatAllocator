@@ -7,134 +7,18 @@ from reportlab.platypus import Table
 from reportlab.pdfgen import canvas
 import itertools
 
-# pinneyum pdf
+# PDF Gen Functions ( add it later from Test.py )
 
+def ranges(i):
+    for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+        b = list(b)
+        yield b[0][1], b[-1][1]
 
-def createpdf1(data, session, name):  # session =list[hall name, session]
-    session1 = [[session, name]]
-    fileName = name+'.pdf'
-    pdf = SimpleDocTemplate(
-        fileName,
-        pagesize=letter)
-
-    table = Table(data)
-    table1 = Table(session1)
-    # add style
-
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (3, 0), colors.green),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-
-        ('FONTNAME', (0, 0), (-1, 0), 'Courier-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 14),
-
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-    ])
-    table.setStyle(style)
-
-    # 2) Alternate backgroud color. Make changes here if needed alt colours
-    rowNumb = len(data)
-    for i in range(1, rowNumb):
-        if i % 2 == 0:
-            bc = colors.white
-        else:
-            bc = colors.white
-
-        ts = TableStyle(
-            [('BACKGROUND', (0, i), (-1, i), bc)]
-        )
-        table.setStyle(ts)
-
-    # 3) Add borders
-    ts = TableStyle(
-        [
-            ('BOX', (0, 0), (-1, -1), 2, colors.black),
-
-            ('LINEBEFORE', (2, 1), (2, -1), 2, colors.red),
-            ('LINEABOVE', (0, 2), (-1, 2), 2, colors.green),
-
-            ('GRID', (0, 1), (-1, -1), 2, colors.black),
-        ]
-    )
-    table.setStyle(ts)
-    table1.setStyle(ts)
-
-    elems = []
-    elems.append(table1)
-    elems.append(table)
-    pdf.build(elems)
-
-
-def createpdf(data, name):
-
-    fileName = name+'.pdf'
-    pdf = SimpleDocTemplate(
-        fileName,
-        pagesize=letter)
-
-    table = Table(data)
-
-    # add style
-
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (3, 0), colors.green),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-
-        ('FONTNAME', (0, 0), (-1, 0), 'Courier-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 14),
-
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-    ])
-    table.setStyle(style)
-    style1 = TableStyle([
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.black),
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-    ])
-
-    # 2) Alternate backgroud color. Make changes here if needed alt colours
-    rowNumb = len(data)
-    for i in range(1, rowNumb):
-        if i % 2 == 0:
-            bc = colors.white
-        else:
-            bc = colors.white
-
-        ts = TableStyle(
-            [('BACKGROUND', (0, i), (-1, i), bc)]
-        )
-        table.setStyle(ts)
-
-    # 3) Add borders
-    ts = TableStyle(
-        [
-            ('BOX', (0, 0), (-1, -1), 2, colors.black),
-
-            ('LINEBEFORE', (2, 1), (2, -1), 2, colors.red),
-            ('LINEABOVE', (0, 2), (-1, 2), 2, colors.green),
-
-            ('GRID', (0, 1), (-1, -1), 2, colors.black),
-        ]
-    )
-    table.setStyle(ts)
-
-    elems = []
-
-    elems.append(table)
-    pdf.build(elems)
-
+sessioninfo = "12-04-2023 FN"
 
 conn = sq.connect("report.db")
 
-
-# Notice board
+# NOTICE BOARD ----------------------------------------------------------
 
 cmd = """SELECT CLASS,HALL,ROLL
          FROM REPORT
@@ -167,18 +51,11 @@ for i in Q_list:
     if Q_list[-1] == i:
         PDF_list.append([class_name, hall_name, str(roll_list)[1:-1]])
 
-#createpdf(PDF_list, "PDF1")
 
 
-sessioninfo = "12-04-2023 FN"
-# For Each Hall Packaging
 
-
-def ranges(i):
-    for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
-        b = list(b)
-        yield b[0][1], b[-1][1]
-
+# PACKAGING --------------------------------------------------------------
+# for each hall
 
 conn = sq.connect("report.db")
 cmd = """SELECT HALL,CLASS,SUBJECT,ROLL
@@ -238,65 +115,9 @@ for i in Q_list:
         PDF_list = []
 
 
-def createpdf2(data1, data, name):
-    fileName = name+'.pdf'
-    pdf = SimpleDocTemplate(
-        fileName,
-        pagesize=letter)
+# SEATING LIST --------------------------------------------------------------
+# for each hall
 
-    table = Table(data)
-    table1 = Table(data1)
-    # add style
-
-    style = TableStyle([
-        ('BACKGROUND', (0, 0), (3, 0), colors.green),
-        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-
-        ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-
-        ('FONTNAME', (0, 0), (-1, 0), 'Courier-Bold'),
-        ('FONTSIZE', (0, 0), (-1, 0), 14),
-
-        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-
-        ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-    ])
-    table.setStyle(style)
-
-    # 2) Alternate backgroud color. Make changes here if needed alt colours
-    rowNumb = len(data)
-    for i in range(1, rowNumb):
-        if i % 2 == 0:
-            bc = colors.white
-        else:
-            bc = colors.white
-
-        ts = TableStyle(
-            [('BACKGROUND', (0, i), (-1, i), bc)]
-        )
-        table.setStyle(ts)
-
-    # 3) Add borders
-    ts = TableStyle(
-        [
-            ('BOX', (0, 0), (-1, -1), 2, colors.black),
-
-            ('LINEBEFORE', (2, 1), (2, -1), 2, colors.red),
-            ('LINEABOVE', (0, 2), (-1, 2), 2, colors.green),
-
-            ('GRID', (0, 1), (-1, -1), 2, colors.black),
-        ]
-    )
-    table.setStyle(ts)
-    table1.setStyle(ts)
-
-    elems = []
-    elems.append(table1)
-    elems.append(table)
-    pdf.build(elems)
-
-
-# seating list
 cmd = """SELECT DISTINCT HALL , CLASS
          FROM REPORT
          ORDER BY HALL"""
