@@ -1,5 +1,9 @@
 import json
 import sqlite3 as sq
+import sys
+  
+  
+
 
 # importing json data files (inputs)
 with open('Halls.json', 'r') as JSON:
@@ -26,16 +30,24 @@ conn.execute('''CREATE TABLE REPORT
 Halls_list = [] # List of halls
 
 for i in Halls:
+    #print(i)
     Halls_list.append([Halls[i][0],i,Halls[i][1]]) # Hall Capacity , Hall name , Hall col size
 
 Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
+#print(Halls_list)
 
 Subjects_list = [] # List of subjects
+Students_total=0
 
 for i in Subjects:
     Subjects_list.append([len(Subjects[i]),i] + Subjects[i]) # No of students , Sub Name , roll nos ...
+    Students_total+=len(Subjects[i])
+# print(Subjects_list)
+print("Total students: ",Students_total)
+
 
 Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+# print(Subjects_list)
 
 
 even_row_subject_list = []
@@ -51,6 +63,12 @@ allocation_done = False
 
 Halls_sorted_list = []
 
+# print(Halls_list)
+# print()
+# print(Subjects_list)
+# print()
+Student_allocated_count=0
+
 for i in Halls_list:
     if allocation_done == True:
             break
@@ -63,6 +81,7 @@ for i in Halls_list:
         b = int(Hall_capacity%Hall_cols)
 
         Hall_structure = [ [] for x in range(Hall_cols)]
+        # print(Hall_structure)
         
         for i in Hall_structure:
             if b>0:
@@ -72,6 +91,7 @@ for i in Halls_list:
 
             i.extend([  [] for x in range(a+k) ])
             b-=1
+        # print(Hall_structure)
 
         counter = 1
         for i in Hall_structure:
@@ -95,6 +115,7 @@ for i in Halls_list:
                                 temp_expression = Hall_structure[i][j][1].split("-")
                                 conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
                                 conn.commit()
+                                Student_allocated_count+=1
                                 even_row_subject_list[0][0]-=1
                                 if even_row_subject_list[0][0]==0:
                                     even_row_subject_list.pop(0)
@@ -107,6 +128,7 @@ for i in Halls_list:
                                 temp_expression = Hall_structure[i][j][1].split("-")
                                 conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
                                 conn.commit()
+                                Student_allocated_count+=1
                                 odd_row_subject_list[0][0]-=1
                                 if odd_row_subject_list[0][0]==0:
                                     odd_row_subject_list.pop(0)
@@ -116,6 +138,17 @@ for i in Halls_list:
     
 
     Halls_sorted_list.append(Hall_structure)
+
+if allocation_done == False:
+    print()
+    print("Hall capacity insufficient.")
+    print("Number of students allocated: ",Student_allocated_count)
+    print("Number of students left to allocate: ",Students_total-Student_allocated_count)
+
+
+
+# print(Halls_sorted_list)
+#print("Students allocated: ",Student_allocated_count)
 
 """ DEBUG
 for i in range(len(Halls_sorted_list)):
