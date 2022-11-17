@@ -50,17 +50,17 @@ for i in Q_list:
         PDF_list.append([class_name, hall_name, str(roll_list)[1:-1]])
 
 #print Notice Board PDF on terminal----
-# print()
-# print()
-# print("Marian Engineering College")
-# print()
-# print("Halls for Internal Examination")
-# print("Date: ",Date,"   Session: ",Session)
-# print()
-# for i in PDF_list:
-#     print(i)
-# print()
-# print()
+print()
+print()
+print("Marian Engineering College")
+print()
+print("Halls for Internal Examination")
+print("Date: ",Date,"   Session: ",Session)
+print()
+for i in PDF_list:
+    print(i)
+print()
+print()
 #-----------------------------------
 
 
@@ -126,17 +126,17 @@ for i in Q_list:
         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
 
         # #print Packaging PDF on terminal---------------------
-        # print()
-        # print()
-        # print("Packing List for Internal Examination")
-        # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
-        # print()
-        # for j in PDF_list:
-        #     print(j)
-        # for j in R_list:
-        #     if j[0]==hall_name:
-        #         print("Total: ",j[1])
-        # print("-------------------------------------------------------------------------")
+        print()
+        print()
+        print("Packing List for Internal Examination")
+        print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
+        print()
+        for j in PDF_list:
+            print(j)
+        for j in R_list:
+            if j[0]==hall_name:
+                print("Total: ",j[1])
+        print("-------------------------------------------------------------------------")
         # #----------------------------------------------------
 
         PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
@@ -152,17 +152,17 @@ for i in Q_list:
         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
 
         # #print Packaging PDF on terminal---------------------
-        # print()
-        # print()
-        # print("Packing List for Internal Examination")
-        # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
-        # print()
-        # for j in PDF_list:
-        #     print(j)
-        # for j in R_list:
-        #     if j[0]==hall_name:
-        #         print("Total: ",j[1])
-        # print("-------------------------------------------------------------------------")
+        print()
+        print()
+        print("Packing List for Internal Examination")
+        print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
+        print()
+        for j in PDF_list:
+            print(j)
+        for j in R_list:
+            if j[0]==hall_name:
+                print("Total: ",j[1])
+        print("-------------------------------------------------------------------------")
         # #----------------------------------------------------
 
         PDF_list = []
@@ -174,50 +174,55 @@ for i in Q_list:
 # SEATING LIST --------------------------------------------------------------
 # for each hall
 
-# cmd = """SELECT DISTINCT HALL , CLASS
-#          FROM REPORT
-#          ORDER BY HALL"""
-# cursor = conn.execute(cmd)
-# x = cursor.fetchall()
-# distinct_class = []
-# for i in x:
-#     distinct_class.append(list(i))
+cmd = """SELECT DISTINCT HALL , CLASS
+         FROM REPORT
+         ORDER BY HALL"""
+cursor = conn.execute(cmd)
+x = cursor.fetchall()
+distinct_class = []
+for i in x:
+    distinct_class.append(list(i))
 
-# cmd = """SELECT HALL,SEAT_NO,ID
-#          FROM REPORT
-#          ORDER BY HALL,SEAT_NO"""
-# cursor = conn.execute(cmd)
-# x = cursor.fetchall()
-# query_list = []
-# for i in x:
-#     query_list.append(list(i))
+cmd = """SELECT HALL,SEAT_NO,ID
+         FROM REPORT
+         ORDER BY HALL,SEAT_NO"""
+cursor = conn.execute(cmd)
+x = cursor.fetchall()
+query_list = []
+for i in x:
+    query_list.append(list(i))
 
-# hall_distinct_list = [[distinct_class[0][0]]]
-# hall = query_list[0][0]
-# # print(query_list)
-# seat_List = [["Seat", "RollNo"]]
-
-# hall_check_for_distinct = distinct_class[0][0]
-# for i in distinct_class:
-#     if hall_check_for_distinct == i[0]:
-#         hall_distinct_list[-1].append(i[1])
-#     else:
-#         hall_distinct_list[-1].append(i[1])
-#         hall_check_for_distinct = i[0]
-#         hall_distinct_list.append(i)
-
-# # print distinct
-# # for i in hall_distinct_list:
-# #     print(i)
+hall_distinct_list = [[distinct_class[0][0]]]
+hall = query_list[0][0]
+print(query_list)
 
 
-# for i in query_list:
-#     if hall == i[0]:
-#         seat_List.append([i[1], i[2]])
+hall_check_for_distinct = distinct_class[0][0]
+for i in distinct_class:
+    if hall_check_for_distinct == i[0]:
+        hall_distinct_list[-1].append(i[1])
+    else:
+        hall_distinct_list[-1].append(i[1])
+        hall_check_for_distinct = i[0]
+        hall_distinct_list.append(i)
 
-#     else:
-#         hall_distinct_list.append(i[1])
-#         hall = i[0]
-#         hall_distinct_list = []
-#         seat_List = [["Seat", "RollNo"]]
-# # print(seat_List)
+# print distinct
+for i in hall_distinct_list:
+    print(i)
+
+
+seat_List = [["Seat", "RollNo"]]
+
+hall = query_list[0][0]
+
+for i in query_list:
+    if hall == i[0]:
+        seat_List.append([i[1], i[2]])
+
+    else:
+        hall_distinct_list.append(i[1])
+        hall = i[0]
+        hall_distinct_list = []
+        seat_List = [["Seat", "RollNo"]]
+
+print(seat_List)
