@@ -50,17 +50,17 @@ for i in Q_list:
         PDF_list.append([class_name, hall_name, str(roll_list)[1:-1]])
 
 #print Notice Board PDF on terminal----
-# print()
-# print()
-# print("Marian Engineering College")
-# print()
-# print("Halls for Internal Examination")
-# print("Date: ",Date,"   Session: ",Session)
-# print()
-# for i in PDF_list:
-#     print(i)
-# print()
-# print()
+print()
+print()
+print("Marian Engineering College")
+print()
+print("Halls for Internal Examination")
+print("Date: ",Date,"   Session: ",Session)
+print()
+for i in PDF_list:
+    print(i)
+print()
+print()
 #-----------------------------------
 
 
@@ -125,19 +125,19 @@ for i in Q_list:
         roll_ = ranges(roll_list)
         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
 
-        # #print Packaging PDF on terminal---------------------
-        # print()
-        # print()
-        # print("Packing List for Internal Examination")
-        # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
-        # print()
-        # for j in PDF_list:
-        #     print(j)
-        # for j in R_list:
-        #     if j[0]==hall_name:
-        #         print("Total: ",j[1])
-        # print("-------------------------------------------------------------------------")
-        # #----------------------------------------------------
+        #print Packaging PDF on terminal---------------------
+        print()
+        print()
+        print("Packing List for Internal Examination")
+        print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
+        print()
+        for j in PDF_list:
+            print(j)
+        for j in R_list:
+            if j[0]==hall_name:
+                print("Total: ",j[1])
+        print("-------------------------------------------------------------------------")
+        #----------------------------------------------------
 
         PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
         
@@ -151,19 +151,19 @@ for i in Q_list:
         roll_ = ranges(roll_list)
         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
 
-        # #print Packaging PDF on terminal---------------------
-        # print()
-        # print()
-        # print("Packing List for Internal Examination")
-        # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
-        # print()
-        # for j in PDF_list:
-        #     print(j)
-        # for j in R_list:
-        #     if j[0]==hall_name:
-        #         print("Total: ",j[1])
-        # print("-------------------------------------------------------------------------")
-        # #----------------------------------------------------
+        #print Packaging PDF on terminal---------------------
+        print()
+        print()
+        print("Packing List for Internal Examination")
+        print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
+        print()
+        for j in PDF_list:
+            print(j)
+        for j in R_list:
+            if j[0]==hall_name:
+                print("Total: ",j[1])
+        print("-------------------------------------------------------------------------")
+        #----------------------------------------------------
 
         PDF_list = []
 
