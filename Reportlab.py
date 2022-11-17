@@ -25,6 +25,9 @@ cmd = """SELECT CLASS,HALL,ROLL
          ORDER BY CLASS,HALL"""
 cursor = conn.execute(cmd)
 Q_list = cursor.fetchall()
+
+print(Q_list)
+
 PDF_list = [["Class", "Hall", "RollNo"]]
 roll_list = []
 class_name = Q_list[0][0]
@@ -50,7 +53,6 @@ for i in Q_list:
 
     if Q_list[-1] == i:
         PDF_list.append([class_name, hall_name, str(roll_list)[1:-1]])
-
 
 
 

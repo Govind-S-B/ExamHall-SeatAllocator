@@ -1,8 +1,5 @@
 import json
 import sqlite3 as sq
-import sys
-  
-  
 
 
 # importing json data files (inputs)
