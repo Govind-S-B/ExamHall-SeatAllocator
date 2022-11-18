@@ -1,2 +1,0 @@
-Copy the files over this folder before running the report_gen script
-(You can back up these json files prepared for later use without needing to input the entire data again)

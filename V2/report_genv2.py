@@ -141,6 +141,7 @@ if allocation_done == False:
     print("Hall capacity insufficient.")
     print("Number of students allocated: ",Student_allocated_count)
     print("Number of students left to allocate: ",Students_total-Student_allocated_count)
+    input("\n Enter any key to exit ")
 
 
 
