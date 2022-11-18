@@ -223,10 +223,10 @@ for i in hall_distinct_list:
     print("Seating Arrangement for Internal Examination")
     print("Hall No: ", hall, "   Date: ", Date, "   Session: ", Session)
     print()
-    print("Classes: ", end='\n')
+    print("Classes: ", end='\t')
     for k in classes_list:
         print(k, end='\t')
-    print()
+    print('\n')
     for l in seat_List:
         print(str(l[0]) + '\t' + l[1])
     print("-------------------------------------------------------------------------")
