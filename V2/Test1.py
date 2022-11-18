@@ -104,8 +104,8 @@ for i in Q_list:
 
             else:
                 roll_ = ranges(roll_list)
-                PDF_list.append(
-                    [class_name, subject_name, str(list(roll_))[1:-1]])
+                no_of_candidates=roll_list[-1]-roll_list[0]+1
+                PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
                 subject_name = i[2]
                 roll_list = []
                 roll_list.append(i[3])
@@ -113,8 +113,8 @@ for i in Q_list:
         else:
             # maybe class name also needs to be rest
             roll_ = ranges(roll_list)
-            # print(roll_)
-            PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
+            no_of_candidates=roll_list[-1]-roll_list[0]+1
+            PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
             class_name = i[1]
             subject_name = i[2]
             roll_list = []
@@ -123,9 +123,10 @@ for i in Q_list:
     else:
         # append , PDF Generate and empty pdf list
         roll_ = ranges(roll_list)
-        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
+        no_of_candidates=roll_list[-1]-roll_list[0]+1
+        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
-        # #print Packaging PDF on terminal---------------------
+        #print Packaging PDF on terminal---------------------
         print()
         print()
         print("Packing List for Internal Examination")
@@ -137,7 +138,7 @@ for i in Q_list:
             if j[0]==hall_name:
                 print("Total: ",j[1])
         print("-------------------------------------------------------------------------")
-        # #----------------------------------------------------
+        #----------------------------------------------------
 
         PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
         
@@ -149,9 +150,10 @@ for i in Q_list:
     if Q_list[-1] == i:
         # PDF Generate
         roll_ = ranges(roll_list)
-        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1]])
+        no_of_candidates=roll_list[-1]-roll_list[0]+1
+        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
-        # #print Packaging PDF on terminal---------------------
+        #print Packaging PDF on terminal---------------------
         print()
         print()
         print("Packing List for Internal Examination")
@@ -163,7 +165,7 @@ for i in Q_list:
             if j[0]==hall_name:
                 print("Total: ",j[1])
         print("-------------------------------------------------------------------------")
-        # #----------------------------------------------------
+        #----------------------------------------------------
 
         PDF_list = []
 
