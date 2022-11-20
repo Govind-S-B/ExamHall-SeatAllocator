@@ -2,7 +2,8 @@ from fpdf import FPDF
 import sqlite3 as sq
 import itertools
 
-sessioninfo = "12-04-2023 FN"
+# print("Enter session info in format 'DD-MM-YYYY<space>Session'")
+sessioninfo = "12-04-2023 FN" #input from user
 sessioninfo = sessioninfo.split()
 Date = sessioninfo[0]
 Session = sessioninfo[1]
