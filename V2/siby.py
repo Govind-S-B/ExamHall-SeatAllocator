@@ -165,11 +165,28 @@ pdf.cell(0, 10, "Roll No.s", align='C', border=True, new_x="LMARGIN", new_y="NEX
 prev_class=""
 PDF_list.pop(0)
 for i in PDF_list:
-    curr_class=i[0]
+    temp=""
+    rows=1
+    temp_count=1
+    
     roll_list=[]
     roll_list.append(i[2])
-    x=list(divide_chunks(roll_list[0], 33))
-    rows=len(x)
+    for j in roll_list[0]:
+        if temp_count==30:  #to split rows
+            temp+="\n"
+            rows+=1
+            temp_count=1
+        if j==roll_list[0][-1]:
+            temp+=str(j)
+        elif j==roll_list[0][-2]:
+            temp+=(str(j)+" ")
+        else:
+            temp+=(str(j)+",")
+        temp_count+=1
+        print(temp)
+
+
+    curr_class=i[0]
     height=rows*12
 
     pdf.set_font(font, 'B', 11)
@@ -181,15 +198,6 @@ for i in PDF_list:
     pdf.set_font(font, '', 11)
     pdf.cell(18.5, height, i[1], align='C', border=True, new_x="RIGHT")
 
-    temp=""
-    for i in roll_list[0]:
-        if i==roll_list[0][-1]:
-            temp+=str(i)
-        elif i==roll_list[0][-2]:
-            temp+=(str(i)+" ")
-        else:
-            temp+=(str(i)+",")
-    # print(temp)
     pdf.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="C")
 
 
