@@ -114,7 +114,7 @@ class PDF(FPDF):
         self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='R')
 
 
-pdf = PDF('P', 'mm', 'A4')
+pdf = PDF('P', 'mm', 'Letter')
 
 pdf.set_auto_page_break(auto = True, margin = 15) # Set auto page break
 pdf.add_page()
@@ -184,7 +184,6 @@ for i in PDF_list:
         else:
             temp+=(str(j)+",")
         temp_count+=1
-        print(temp)
 
 
     curr_class=i[0]
