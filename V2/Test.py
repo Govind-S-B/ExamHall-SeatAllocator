@@ -10,7 +10,6 @@ conn = sq.connect("report.db")
 
 
 # NOTICE BOARD ----------------------------------------------------------
-
 cmd = """SELECT CLASS,HALL,ROLL
          FROM REPORT
          ORDER BY CLASS,HALL"""
@@ -125,22 +124,22 @@ for i in Q_list:
         # append , PDF Generate and empty pdf list
         roll_ = ranges(roll_list)
         no_of_candidates = roll_list[-1]-roll_list[0]+1
-        PDF_list.append([class_name, subject_name, str(
-            list(roll_))[1:-1], no_of_candidates])
+        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
         # print Packaging PDF on terminal---------------------
-        # print()
-        # print()
-        # print("Packing List for Internal Examination")
-        # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
-        # print()
-        # for j in PDF_list:
-        #     print(j)
-        # for j in R_list:
-        #     if j[0]==hall_name:
-        #         print("Total: ",j[1])
-        # print("-------------------------------------------------------------------------")
+        print()
+        print()
+        print("Packing List for Internal Examination")
+        print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
+        print()
+        for j in PDF_list:
+            print(j)
+        for j in R_list:
+            if j[0]==hall_name:
+                print("Total: ",j[1])
+        print("-------------------------------------------------------------------------")
         # ----------------------------------------------------
+        
 
         PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
 
@@ -153,24 +152,33 @@ for i in Q_list:
         # PDF Generate
         roll_ = ranges(roll_list)
         no_of_candidates = roll_list[-1]-roll_list[0]+1
-        PDF_list.append([class_name, subject_name, str(
-            list(roll_))[1:-1], no_of_candidates])
+        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
         # print Packaging PDF on terminal---------------------
-        # print()
-        # print()
-        # print("Packing List for Internal Examination")
-        # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
-        # print()
-        # for j in PDF_list:
-        #     print(j)
-        # for j in R_list:
-        #     if j[0]==hall_name:
-        #         print("Total: ",j[1])
-        # print("-------------------------------------------------------------------------")
+        print()
+        print()
+        print("Packing List for Internal Examination")
+        print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
+        print()
+        for j in PDF_list:
+            print(j)
+        for j in R_list:
+            if j[0]==hall_name:
+                print("Total: ",j[1])
+        print("-------------------------------------------------------------------------")
         # ----------------------------------------------------
 
         PDF_list = []
+
+
+
+
+
+
+
+
+
+
 
 
 # SEATING LIST --------------------------------------------------------------
@@ -217,17 +225,17 @@ for i in hall_distinct_list:
             seat_List.append([j[1], j[2]])
     classes_list = i[1:-1]
 
-    # print Seating Arrangement on terminal---------------------
-    print()
-    print()
-    print("Seating Arrangement for Internal Examination")
-    print("Hall No: ", hall, "   Date: ", Date, "   Session: ", Session)
-    print()
-    print("Classes: ", end='\t')
-    for k in classes_list:
-        print(k, end='\t')
-    print('\n')
-    for l in seat_List:
-        print(str(l[0]) + '\t' + l[1])
-    print("-------------------------------------------------------------------------")
-    # ----------------------------------------------------
+    # # print Seating Arrangement on terminal---------------------
+    # print()
+    # print()
+    # print("Seating Arrangement for Internal Examination")
+    # print("Hall No: ", hall, "   Date: ", Date, "   Session: ", Session)
+    # print()
+    # print("Classes: ", end='\t')
+    # for k in classes_list:
+    #     print(k, end='\t')
+    # print('\n')
+    # for l in seat_List:
+    #     print(str(l[0]) + '\t' + l[1])
+    # print("-------------------------------------------------------------------------")
+    # # ----------------------------------------------------

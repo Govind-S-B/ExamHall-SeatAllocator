@@ -1,4 +1,4 @@
-from fpdf import FPDF
+from fpdf import FPDF, HTMLMixin
 import sqlite3 as sq
 import itertools
 
@@ -7,13 +7,23 @@ sessioninfo = "12-04-2023 FN" #input from user
 sessioninfo = sessioninfo.split()
 Date = sessioninfo[0]
 Session = sessioninfo[1]
-
-############################################################################################################################
 conn = sq.connect("report.db")
 
+#Functions
+def ranges(i):
+    for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+        b = list(b)
+        yield b[0][1], b[-1][1]
+def divide_chunks(l, n):
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
+############################################################################################################################
 
 # NOTICE BOARD ----------------------------------------------------------
 
+#Code
 cmd = """SELECT CLASS,HALL,ROLL
          FROM REPORT
          ORDER BY CLASS,HALL"""
@@ -55,7 +65,7 @@ for i in Q_list:
         # print(roll_list)
         PDF_list.append([class_name, hall_name, roll_list])
 
-# print Notice Board PDF on terminal----
+# # print Notice Board PDF on terminal----
 # print()
 # print()
 # print("Marian Engineering College")
@@ -67,23 +77,11 @@ for i in Q_list:
 #     print(i)
 # print()
 # print()
-# -----------------------------------
+# # -----------------------------------
 
 
-def ranges(i):
-    for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
-        b = list(b)
-        yield b[0][1], b[-1][1]
-##################################################################################################################
-
-
-def divide_chunks(l, n):
-    for i in range(0, len(l), n):
-        yield l[i:i + n]
-
-
-
-class PDF(FPDF):
+#PDF Creation
+class PDF(FPDF, HTMLMixin):
     # def header(self):
     #     # font
     #     self.set_font('helvetica', 'B', 20)
@@ -100,7 +98,7 @@ class PDF(FPDF):
         self.set_y(-15)
 
         text_w=pdf.get_string_width("Created by ProtoRes")+6
-        pdf.set_x(((doc_w - text_w) / 2)+14)
+        self.set_x(((doc_w - text_w) / 2)+8)
 
         self.set_font(font, '', 8)
         self.cell(pdf.get_string_width("Created by "), 10, "Created by ")
@@ -125,7 +123,7 @@ try:
     pdf.add_font('Poppins', 'B', 'Fonts/Poppins-Bold.ttf')
     font="Poppins"
 except:
-    print("Poppins font not found")
+    print("Poppins font not found. Using Times now.")
     font="Times"
 
 
@@ -178,9 +176,9 @@ for i in PDF_list:
             rows+=1
             temp_count=1
         if j==roll_list[0][-1]:
-            temp+=str(j)
+            temp+=(str(j)+"</b>")
         elif j==roll_list[0][-2]:
-            temp+=(str(j)+" ")
+            temp+=(str(j)+" <b>")
         else:
             temp+=(str(j)+",")
         temp_count+=1
@@ -198,8 +196,15 @@ for i in PDF_list:
     pdf.set_font(font, '', 11)
     pdf.cell(18.5, height, i[1], align='C', border=True, new_x="RIGHT")
 
-    pdf.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="C")
+    # pdf.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="C")
+
+    pdf.write_html(temp)
+    
+    pdf.cell(0, height/rows, '', new_x="LMARGIN", new_y="NEXT", border=True, align="C")
 
 
 
 pdf.output('Notice Board.pdf')
+# Notice Board PDF creation completed
+
+##################################################################################################################
