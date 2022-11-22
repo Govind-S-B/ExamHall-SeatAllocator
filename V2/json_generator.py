@@ -10,12 +10,11 @@ if list_to_generate == 1:
 
     Halls = {}
     for i in range(halls):
-        hall_name = input(
-            "Enter Hall Name: ")
-        capacity = int(input("Enter capacity: "))
-        columns = int(input("Enter number of columns: "))
+        hall_name = input("Hall Name: ")
+        capacity = int(input("Table Count : "))
 
-        Halls[hall_name] = [capacity, columns]
+        Halls[hall_name] = [capacity]
+
     if output_mode == 2:
         with open('Halls.json', 'w') as fp:
             json.dump(Halls, fp)
