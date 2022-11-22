@@ -33,7 +33,7 @@ class PDF(FPDF, HTMLMixin):
         self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='R')
 
 
-pdf = PDF('P', 'mm', 'Letter')
+pdf = PDF('P', 'mm', 'A4')
 pdf.set_auto_page_break(auto = True, margin = 15) # Set auto page break
 doc_w=pdf.w
 
@@ -82,9 +82,8 @@ for i in Q_list:
 
             else:
                 roll_ = ranges(roll_list)
-                no_of_candidates = roll_list[-1]-roll_list[0]+1
-                PDF_list.append([class_name, subject_name, str(
-                    list(roll_))[1:-1], no_of_candidates])
+                no_of_candidates = len(roll_list)
+                PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
                 subject_name = i[2]
                 roll_list = []
                 roll_list.append(i[3])
@@ -92,9 +91,8 @@ for i in Q_list:
         else:
             # maybe class name also needs to be rest
             roll_ = ranges(roll_list)
-            no_of_candidates = roll_list[-1]-roll_list[0]+1
-            PDF_list.append([class_name, subject_name, str(
-                list(roll_))[1:-1], no_of_candidates])
+            no_of_candidates = len(roll_list)
+            PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
             class_name = i[1]
             subject_name = i[2]
             roll_list = []
@@ -103,7 +101,7 @@ for i in Q_list:
     else:
         # append , PDF Generate and empty pdf list
         roll_ = ranges(roll_list)
-        no_of_candidates = roll_list[-1]-roll_list[0]+1
+        no_of_candidates = len(roll_list)
         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
         # print Packaging PDF on terminal---------------------
@@ -111,7 +109,7 @@ for i in Q_list:
         # print()
         # print("Packing List for Internal Examination")
         # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
-        # print()
+        print(hall_name)
         for j in PDF_list:
             print(j)
         for j in R_list:
@@ -144,6 +142,63 @@ for i in Q_list:
         pdf.set_font(font, '', 18)
         pdf.set_x(30)
         pdf.write_html(f"<align=\"center\">Hall No: <b>{hall_name}</b>      Date: <b>{Date}</b>      Session: <b>{Session}<b/>")
+        pdf.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
+
+        #Create Table Header
+        pdf.set_font(font, 'B', 10)
+        pdf.set_y(60)
+        class_w=pdf.get_string_width("Class")+8
+        pdf.cell(class_w, 20, "Class", align='C', border=True)
+        pdf.cell(65, 20, "Subject", align='C', border=True)
+        pdf.multi_cell(30, 10, "Roll No.s of\nCandidates", align='C', border=True, new_x="RIGHT")
+        y_pos=60
+        pdf.set_y(y_pos)
+        pdf.set_x(pdf.w-(pdf.w-(18.061+65+30))+10)
+        pdf.multi_cell(30, 10, "No of\nCandidates", align='C', border=True)
+        pdf.set_y(y_pos)
+        pdf.set_x(pdf.w-(pdf.w-(18.061+65+30+30))+10)
+        pdf.multi_cell(0, 10, "Roll Nos of\nAbsentees", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
+
+        #Create Table Body
+        y_pos=80
+        prev_class=""
+        PDF_list.pop(0)
+        for k in PDF_list:
+            rows=1
+            if len(k[1])>30:
+                rows=2
+            height=10*rows
+            pdf.set_font(font, '', 10)
+
+            curr_class=k[0]
+            if prev_class==curr_class:
+                pdf.cell(class_w, height, '"', align='C', border=True)
+            else:
+                pdf.cell(class_w, height, curr_class, align='C', border=True)
+            prev_class=curr_class
+            pdf.multi_cell(65, 10, k[1], align='C', border=True)
+            pdf.set_y(y_pos)
+            pdf.set_x(pdf.w-(pdf.w-(18.061+65))+10)
+            print("^^^",height)
+            pdf.cell(30, height, f"{k[2]}", align='C', border=True)
+            pdf.cell(30, height, str(k[3]), align='C', border=True)
+            pdf.cell(0, height, "", border=True, new_x="LMARGIN", new_y="NEXT")
+            y_pos+=height
+
+        y_pos+=15
+        pdf.set_y(y_pos)
+        pdf.set_font(font, '', 15)
+        pdf.write_html("<U>Invigilators must</U>:")
+        pdf.write_html("<br><br>     1.  Ensure that all candidates have ID-Cards & are in proper uniform.")
+        pdf.write_html("<br><br>     2. Anounce that mobile phones, smartwatches & other electronic")
+        y_pos+=23
+        pdf.set_y(y_pos)
+        pdf.write_html("<br>        gadgets, pouches, bags, calculator-cover, etc. are <B>NOT</B> allowed")
+        y_pos+=8
+        pdf.set_y(y_pos)
+        pdf.write_html("<br>        inside.")
+
+
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         
         
@@ -156,15 +211,18 @@ for i in Q_list:
 
     if Q_list[-1] == i:
         # PDF Generate
+        print(hall_name)
         roll_ = ranges(roll_list)
-        no_of_candidates = roll_list[-1]-roll_list[0]+1
+        print("#",list(roll_list))
+        print("#",list(roll_))
+        no_of_candidates = len(roll_list)
         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
         # print Packaging PDF on terminal---------------------
         # print()
         # print()
-        print("Packing List for Internal Examination")
-        print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
+        # print("Packing List for Internal Examination")
+        # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
         # print()
         for j in PDF_list:
             print(j)
@@ -193,6 +251,7 @@ for i in Q_list:
         pdf.set_font(font, '', 18)
         pdf.set_x(30)
         pdf.write_html("Hall No: <b>SJ201</b>      Date: <b>12-04-2022</b>      Session: <b>FN<b/>")
+
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         PDF_list = []
