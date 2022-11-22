@@ -36,7 +36,6 @@ class PDF(FPDF, HTMLMixin):
 pdf = PDF('P', 'mm', 'Letter')
 pdf.set_auto_page_break(auto = True, margin = 15) # Set auto page break
 doc_w=pdf.w
-pdf.add_page()
 
 # adding fonts
 try:
@@ -47,23 +46,6 @@ except:
     print("Poppins font not found. Using Times now.")
     font="Times"
 
-pdf.set_font(font, '', 27)
-text="Marian Engineering College"
-text_w=pdf.get_string_width(text)+6
-doc_w=pdf.w
-pdf.set_x((doc_w - text_w) / 2)
-pdf.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
-
-pdf.set_font(font, '', 20)
-text="Packing List for Internal Examination"
-text_w=pdf.get_string_width(text)+6
-pdf.set_x((doc_w - text_w) / 2)
-pdf.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')
-
-pdf.set_y(45)
-pdf.set_font(font, '', 18)
-pdf.set_x(30)
-pdf.write_html("Hall No: <b>SJ201</b>      Date: <b>12-04-2022</b>      Session: <b>FN<b/>")
 
 
 # PACKAGING --------------------------------------------------------------
@@ -141,6 +123,29 @@ for i in Q_list:
         # PDF creation----------------------------------------
         # pdf.add_page()
         #-----------------------------------------------------
+
+
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        pdf.add_page()
+        pdf.set_font(font, '', 27)
+        text="Marian Engineering College"
+        text_w=pdf.get_string_width(text)+6
+        doc_w=pdf.w
+        pdf.set_x((doc_w - text_w) / 2)
+        pdf.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+
+        pdf.set_font(font, '', 20)
+        text="Packing List for Internal Examination"
+        text_w=pdf.get_string_width(text)+6
+        pdf.set_x((doc_w - text_w) / 2)
+        pdf.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+
+        pdf.set_y(45)
+        pdf.set_font(font, '', 18)
+        pdf.set_x(30)
+        pdf.write_html(f"<align=\"center\">Hall No: <b>{hall_name}</b>      Date: <b>{Date}</b>      Session: <b>{Session}<b/>")
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        
         
         PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
 
@@ -168,6 +173,27 @@ for i in Q_list:
                 print("Total: ",j[1])
         print("-------------------------------------------------------------------------")
         # ----------------------------------------------------
+
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+        pdf.add_page()
+        pdf.set_font(font, '', 27)
+        text="Marian Engineering College"
+        text_w=pdf.get_string_width(text)+6
+        doc_w=pdf.w
+        pdf.set_x((doc_w - text_w) / 2)
+        pdf.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+
+        pdf.set_font(font, '', 20)
+        text="Packing List for Internal Examination"
+        text_w=pdf.get_string_width(text)+6
+        pdf.set_x((doc_w - text_w) / 2)
+        pdf.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+
+        pdf.set_y(45)
+        pdf.set_font(font, '', 18)
+        pdf.set_x(30)
+        pdf.write_html("Hall No: <b>SJ201</b>      Date: <b>12-04-2022</b>      Session: <b>FN<b/>")
+        # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         PDF_list = []
 pdf.add_page()

@@ -112,7 +112,7 @@ class PDF(FPDF):
         self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='R')
 
 
-pdf = PDF('P', 'mm', 'Letter')
+pdf = PDF('P', 'mm', 'A4')
 
 pdf.set_auto_page_break(auto = True, margin = 15) # Set auto page break
 pdf.add_page()
@@ -164,23 +164,23 @@ pdf.cell(0, 10, "Roll No.s", align='C', border=True, new_x="LMARGIN", new_y="NEX
 prev_class=""
 PDF_list.pop(0)
 for i in PDF_list:
-    temp="   "
+    temp="  "
     rows=1
     temp_count=1
     
     roll_list=[]
     roll_list.append(i[2])
     for j in roll_list[0]:
-        if temp_count==30:  #to split rows
+        if temp_count==20:  #to split rows
             temp+="\n   "
             rows+=1
             temp_count=1
         if j==roll_list[0][-1]:
             temp+=str(j)
         elif j==roll_list[0][-2]:
-            temp+=(str(j)+" ")
+            temp+=(str(j)+"  ")
         else:
-            temp+=(str(j)+",")
+            temp+=(str(j)+", ")
         temp_count+=1
 
 
