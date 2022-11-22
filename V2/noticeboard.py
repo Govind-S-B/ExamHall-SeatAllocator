@@ -1,4 +1,4 @@
-from fpdf import FPDF, HTMLMixin
+from fpdf import FPDF
 import sqlite3 as sq
 import itertools
 
@@ -81,7 +81,7 @@ for i in Q_list:
 
 
 #PDF Creation
-class PDF(FPDF, HTMLMixin):
+class PDF(FPDF):
     # def header(self):
     #     # font
     #     self.set_font('helvetica', 'B', 20)
@@ -164,7 +164,7 @@ pdf.cell(0, 10, "Roll No.s", align='C', border=True, new_x="LMARGIN", new_y="NEX
 prev_class=""
 PDF_list.pop(0)
 for i in PDF_list:
-    temp=""
+    temp="   "
     rows=1
     temp_count=1
     
@@ -172,13 +172,13 @@ for i in PDF_list:
     roll_list.append(i[2])
     for j in roll_list[0]:
         if temp_count==30:  #to split rows
-            temp+="\n"
+            temp+="\n   "
             rows+=1
             temp_count=1
         if j==roll_list[0][-1]:
-            temp+=(str(j)+"</b>")
+            temp+=str(j)
         elif j==roll_list[0][-2]:
-            temp+=(str(j)+" <b>")
+            temp+=(str(j)+" ")
         else:
             temp+=(str(j)+",")
         temp_count+=1
@@ -196,11 +196,7 @@ for i in PDF_list:
     pdf.set_font(font, '', 11)
     pdf.cell(18.5, height, i[1], align='C', border=True, new_x="RIGHT")
 
-    # pdf.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="C")
-
-    pdf.write_html(temp)
-    
-    pdf.cell(0, height/rows, '', new_x="LMARGIN", new_y="NEXT", border=True, align="C")
+    pdf.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="L")
 
 
 

@@ -20,7 +20,7 @@ class PDF(FPDF, HTMLMixin):
         self.set_y(-15)
         
         text_w=pdf.get_string_width("Created by ProtoRes")+6
-        self.set_x(((pdf.w - text_w) / 2)+40)
+        self.set_x(((pdf.w - text_w) / 2)+14)
 
         self.set_font(font, '', 8)
         self.cell(pdf.get_string_width("Created by "), 10, "Created by ")
@@ -53,8 +53,17 @@ text_w=pdf.get_string_width(text)+6
 doc_w=pdf.w
 pdf.set_x((doc_w - text_w) / 2)
 pdf.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
-pdf.set_font(font, '', 14)
-pdf.write_html("Date: <b>12-01-2023</b>")
+
+pdf.set_font(font, '', 20)
+text="Packing List for Internal Examination"
+text_w=pdf.get_string_width(text)+6
+pdf.set_x((doc_w - text_w) / 2)
+pdf.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+
+pdf.set_y(45)
+pdf.set_font(font, '', 18)
+pdf.set_x(30)
+pdf.write_html("Hall No: <b>SJ201</b>      Date: <b>12-04-2022</b>      Session: <b>FN<b/>")
 
 
 # PACKAGING --------------------------------------------------------------
