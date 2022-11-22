@@ -190,10 +190,10 @@ for i in Q_list:
         pdf.set_font(font, '', 15)
         pdf.write_html("<U>Invigilators must</U>:")
         pdf.write_html("<br><br>     1.  Ensure that all candidates have ID-Cards & are in proper uniform.")
-        pdf.write_html("<br><br>     2. Anounce that mobile phones, smartwatches & other electronic")
+        pdf.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic")
         y_pos+=23
         pdf.set_y(y_pos)
-        pdf.write_html("<br>        gadgets, pouches, bags, calculator-cover, etc. are <B>NOT</B> allowed")
+        pdf.write_html("<br>        gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
         y_pos+=8
         pdf.set_y(y_pos)
         pdf.write_html("<br>        inside.")
