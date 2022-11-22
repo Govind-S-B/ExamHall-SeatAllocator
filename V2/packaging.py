@@ -157,7 +157,7 @@ for i in Q_list:
         pdf.multi_cell(30, 10, "No of\nCandidates", align='C', border=True)
         pdf.set_y(y_pos)
         pdf.set_x(pdf.w-(pdf.w-(18.061+65+30+30))+10)
-        pdf.multi_cell(0, 10, "Roll Nos of\nAbsentees", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
+        pdf.multi_cell(0, 10, "Roll No.s of\nAbsentees", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
 
         #Create Table Body
         y_pos=80
