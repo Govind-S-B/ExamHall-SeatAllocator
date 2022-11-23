@@ -73,8 +73,6 @@ subject_name = Q_list[0][2]
 
 for i in Q_list:
     if hall_name == i[0]:
-        # update list
-
         if class_name == i[1]:
 
             if subject_name == i[2]:
@@ -83,16 +81,15 @@ for i in Q_list:
             else:
                 roll_ = ranges(roll_list)
                 no_of_candidates = len(roll_list)
-                PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], str(no_of_candidates)])
+                PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
                 subject_name = i[2]
                 roll_list = []
                 roll_list.append(i[3])
 
         else:
-            # maybe class name also needs to be rest
             roll_ = ranges(roll_list)
             no_of_candidates = len(roll_list)
-            PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], str(no_of_candidates)])
+            PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
             class_name = i[1]
             subject_name = i[2]
             roll_list = []
@@ -102,20 +99,20 @@ for i in Q_list:
         # append , PDF Generate and empty pdf list
         roll_ = ranges(roll_list)
         no_of_candidates = len(roll_list)
-        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], str(no_of_candidates)])
+        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
         # print Packaging PDF on terminal---------------------
         # print()
         # print()
         # print("Packing List for Internal Examination")
         # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
-        print(hall_name)
-        for j in PDF_list:
-            print(j)
-        for j in R_list:
-            if j[0]==hall_name:
-                print("Total: ",j[1])
-        print("-------------------------------------------------------------------------")
+        # print(hall_name)
+        # for j in PDF_list:
+        #     print(j)
+        # for j in R_list:
+        #     if j[0]==hall_name:
+        #         print("Total: ",j[1])
+        # print("-------------------------------------------------------------------------")
         # ----------------------------------------------------
 
 
@@ -179,7 +176,7 @@ for i in Q_list:
                     temp1=""
                 elif m==')':
                     a.append(temp1)
-            roll_rows=len(a)  #########
+            roll_rows=len(a)
             roll_flag=0
             if roll_rows>1:
                 roll_flag=1
@@ -266,7 +263,7 @@ for i in Q_list:
         # print("#",list(roll_list))
         # print("#",list(roll_))
         no_of_candidates = len(roll_list)
-        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], str(no_of_candidates)])
+        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
         # print Packaging PDF on terminal---------------------
         # print()
