@@ -18,11 +18,7 @@ def divide_chunks(l, n):
     for i in range(0, len(l), n):
         yield l[i:i + n]
 
-
-############################################################################################################################
-
-# NOTICE BOARD ----------------------------------------------------------
-
+# NOTICE BOARD ----------------------------------------------------------------------------------------
 #Code
 cmd = """SELECT CLASS,HALL,ROLL
          FROM REPORT
@@ -82,31 +78,15 @@ for i in Q_list:
 
 #PDF Creation
 class PDF(FPDF):
-    # def header(self):
-    #     # font
-    #     self.set_font('helvetica', 'B', 20)
-    #     # Padding
-    #     self.cell(80)
-    #     # Title
-    #     self.cell(30, 10, 'Title', border=True, ln=1, align='C')
-    #     # Line break
-    #     self.ln(20)
-
     # Page footer
     def footer(self):
-        # Set position of the footer
         self.set_y(-15)
-
         text_w=pdf.get_string_width("Created by ProtoRes")+6
         self.set_x(((doc_w - text_w) / 2)+8)
-
         self.set_font(font, '', 8)
         self.cell(pdf.get_string_width("Created by "), 10, "Created by ")
-
         self.set_font(font, 'B', 8)
         self.cell(pdf.get_string_width("ProtoRes"), 10, "ProtoRes")
-
-        # set font
         self.set_font('helvetica', '', 8)
         # Page number
         self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='R')
@@ -201,6 +181,4 @@ for i in PDF_list:
 
 
 pdf.output('Notice Board.pdf')
-# Notice Board PDF creation completed
-
-##################################################################################################################
+#-----------------------------------------------------------------------------------------------------
