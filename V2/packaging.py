@@ -179,13 +179,19 @@ for i in Q_list:
             pdf.multi_cell(65, 10, k[1], align='C', border=True)
             pdf.set_y(y_pos)
             pdf.set_x(pdf.w-(pdf.w-(18.061+65))+10)
-            print("^^^",height)
             pdf.cell(30, height, f"{k[2]}", align='C', border=True)
             pdf.cell(30, height, str(k[3]), align='C', border=True)
             pdf.cell(0, height, "", border=True, new_x="LMARGIN", new_y="NEXT")
             y_pos+=height
+        
+        pdf.set_font(font, 'B', 10)
+        pdf.cell(class_w+65+30, 11, "Total:", border=True, align="C")
+        for l in R_list:
+            if l[0]==hall_name:
+                pdf.cell(30, 11, str(l[1]), border=True, align="C")
+        pdf.cell(0, 11, "", border=True, new_x="LMARGIN", new_y="NEXT")
 
-        y_pos+=15
+        y_pos+=25
         pdf.set_y(y_pos)
         pdf.set_font(font, '', 15)
         pdf.write_html("<U>Invigilators must</U>:")
