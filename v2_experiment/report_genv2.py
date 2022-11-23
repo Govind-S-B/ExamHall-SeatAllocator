@@ -6,6 +6,9 @@ import sqlite3 as sq
 with open('Halls.json', 'r') as JSON:
     Halls = json.load(JSON)
 
+D_Halls = Halls["D"] # drawing halls
+B_Halls = Halls["B"] # bench halls
+
 with open('Subjects.json', 'r') as JSON:
     Subjects = json.load(JSON)
 
@@ -65,30 +68,6 @@ for i in Halls_list:
             if allocation_done == True:
                 break
             else:
-                if seat%2==0: #even
-                    if len(even_row_subject_list) == 0:
-                        pass
-                    else:
-                        x = even_row_subject_list[0].pop(2) #roll
-                        temp_expression = x.split("-")
-                        conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{even_row_subject_list[0][1]}')")
-                        conn.commit()
-                        Student_allocated_count+=1
-                        even_row_subject_list[0][0]-=1
-                        if even_row_subject_list[0][0]==0:
-                             even_row_subject_list.pop(0)
-                else: #odd
-                    if len(odd_row_subject_list) == 0:
-                        pass
-                    else:
-                        x = odd_row_subject_list[0].pop(2) #roll
-                        temp_expression = x.split("-")
-                        conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{odd_row_subject_list[0][1]}')")
-                        conn.commit()
-                        Student_allocated_count+=1
-                        odd_row_subject_list[0][0]-=1
-                        if odd_row_subject_list[0][0]==0:
-                             odd_row_subject_list.pop(0)
 
                 if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
                     Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
@@ -116,6 +95,31 @@ for i in Halls_list:
 
                 if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
                     allocation_done = True
+
+                if seat%2==0: #even
+                    if len(even_row_subject_list) == 0:
+                        pass
+                    else:
+                        x = even_row_subject_list[0].pop(2) #roll
+                        temp_expression = x.split("-")
+                        conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{even_row_subject_list[0][1]}')")
+                        conn.commit()
+                        Student_allocated_count+=1
+                        even_row_subject_list[0][0]-=1
+                        if even_row_subject_list[0][0]==0:
+                             even_row_subject_list.pop(0)
+                else: #odd
+                    if len(odd_row_subject_list) == 0:
+                        pass
+                    else:
+                        x = odd_row_subject_list[0].pop(2) #roll
+                        temp_expression = x.split("-")
+                        conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{odd_row_subject_list[0][1]}')")
+                        conn.commit()
+                        Student_allocated_count+=1
+                        odd_row_subject_list[0][0]-=1
+                        if odd_row_subject_list[0][0]==0:
+                             odd_row_subject_list.pop(0)
 
 if allocation_done == False:
     print()
