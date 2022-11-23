@@ -90,6 +90,30 @@ for i in Halls_list:
                         if odd_row_subject_list[0][0]==0:
                              odd_row_subject_list.pop(0)
 
+                if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
+                    Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                    even_row_subject_list = []
+                    odd_row_subject_list = []
+
+                    for i in range(len(Subjects_list)):
+                        if i%2==0: #even
+                            even_row_subject_list.append(Subjects_list[i])
+                        else: #odd
+                            odd_row_subject_list.append(Subjects_list[i])
+
+                if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
+                    Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                    even_row_subject_list = []
+                    odd_row_subject_list = []
+
+                    for i in range(len(Subjects_list)):
+                        if i%2==0: #even
+                            even_row_subject_list.append(Subjects_list[i])
+                        else: #odd
+                            odd_row_subject_list.append(Subjects_list[i])
+
                 if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
                     allocation_done = True
 
