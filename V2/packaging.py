@@ -183,18 +183,14 @@ for i in Q_list:
             
             temp1=""
             for m in a:
-                # print(i)
                 x=m.split(',')
                 if x[0]==x[1]:
                     temp1+=x[0]+"\n"
                 else:
                     temp1+=x[0]+"-"+x[1]+"\n"
             temp1=temp1[:-1]
-            print(temp1)
             rows=max(sub_rows,roll_rows)
-            print("Rows: ",rows)
             height=10*rows
-            print("height: ",height)
             pdf.set_font(font, '', 10)
 
             curr_class=k[0]
@@ -258,12 +254,10 @@ for i in Q_list:
 
     if Q_list[-1] == i:
         # PDF Generate
-        print(hall_name)
-        roll_ = ranges(roll_list)
-        # print("#",list(roll_list))
-        # print("#",list(roll_))
-        no_of_candidates = len(roll_list)
-        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
+        # print(hall_name)
+        # roll_ = ranges(roll_list)
+        # no_of_candidates = len(roll_list)
+        # PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
         # print Packaging PDF on terminal---------------------
         # print()
@@ -271,12 +265,12 @@ for i in Q_list:
         # print("Packing List for Internal Examination")
         # print("Hall No: ",hall_name,"   Date: ",Date,"   Session: ",Session)
         # print()
-        for j in PDF_list:
-            print(j)
-        for j in R_list:
-            if j[0]==hall_name:
-                print("Total: ",j[1])
-        print("-------------------------------------------------------------------------")
+        # for j in PDF_list:
+        #     print(j)
+        # for j in R_list:
+        #     if j[0]==hall_name:
+        #         print("Total: ",j[1])
+        # print("-------------------------------------------------------------------------")
         # ----------------------------------------------------
 
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -346,18 +340,14 @@ for i in Q_list:
             
             temp1=""
             for m in a:
-                # print(i)
                 x=m.split(',')
                 if x[0]==x[1]:
                     temp1+=x[0]+"\n"
                 else:
                     temp1+=x[0]+"-"+x[1]+"\n"
             temp1=temp1[:-1]
-            print(temp1)
             rows=max(sub_rows,roll_rows)
-            print("Rows: ",rows)
             height=10*rows
-            print("height: ",height)
             pdf.set_font(font, '', 10)
 
             curr_class=k[0]
@@ -412,5 +402,5 @@ for i in Q_list:
         # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
         PDF_list = []
-pdf.output('Packaging List Test.pdf')
+pdf.output('Packaging List.pdf')
 ##################################################################################################################
