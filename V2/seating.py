@@ -52,15 +52,13 @@ for i in distinct_class:
         hall_distinct_list.append(i)
 
 # print distinct
-print(hall_distinct_list)
 for i in hall_distinct_list:
     seat_List = [["Seat", "RollNo"]]
     hall = i[0]
     for j in query_list:
         if hall == j[0]:
             seat_List.append([j[1], j[2]])
-    classes_list = i[1:-1]
-    print(classes_list)
+    classes_list = i[1:]
 
     # print Seating Arrangement on terminal---------------------
     print()
