@@ -323,17 +323,40 @@ for i in Q_list:
         class_w=pdf.get_string_width("Class")+8
         pdf.cell(class_w, 20, "Class", align='C', border=True)
         pdf.cell(65, 20, "Subject", align='C', border=True)
-        pdf.multi_cell(30, 10, "Roll No.s of\nCandidates", align='C', border=True, new_x="RIGHT")
-        y_pos=60
-        pdf.set_y(y_pos)
-        pdf.set_x(pdf.w-(pdf.w-(18.061+65+30))+10)
-        pdf.multi_cell(30, 10, "No of\nCandidates", align='C', border=True)
-        pdf.set_y(y_pos)
-        pdf.set_x(pdf.w-(pdf.w-(18.061+65+30+30))+10)
-        pdf.multi_cell(0, 10, "Roll No.s of\nAbsentees", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
+        pdf.cell(30, 20, "", align='C', border=True)
+        pdf.set_y(66.1)
+        pdf.set_x(class_w+65+14)
+        pdf.write_html("<b>Roll No.s of</b>")
+        pdf.set_y(71.1)
+        pdf.set_x(class_w+65+13.1)
+        pdf.write_html("<b>Candidates</b>")
+
+        pdf.set_y(60)
+        pdf.set_x(class_w+65+30+10)
+        pdf.cell(30, 20, "", align='C', border=True)
+        pdf.set_y(66.1)
+        pdf.set_x(class_w+65+14+35)
+        pdf.write_html("<b>No. of</b>")
+        pdf.set_y(71.1)
+        pdf.set_x(class_w+65+13.1+30)
+        pdf.write_html("<b>Candidates</b>")
+        
+        pdf.set_y(60)
+        pdf.set_x(class_w+65+30+10+30)
+        pdf.cell(0, 20, "", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
+        pdf.set_y(66.1)
+        pdf.set_x(class_w+65+14+35+34)
+        pdf.write_html("<b>Roll No.s of</b>")
+        pdf.set_y(71.1)
+        pdf.set_x(class_w+65+13.1+30+40)
+        pdf.write_html("<b>Absentees</b>")
+
+
 
         #Create Table Body
         y_pos=80
+        pdf.set_y(80)
+        pdf.set_x(10)
         prev_class=""
         PDF_list.pop(0)
         for k in PDF_list:
@@ -356,7 +379,7 @@ for i in Q_list:
                     temp1=""
                 elif m==')':
                     a.append(temp1)
-            roll_rows=len(a)  #########
+            roll_rows=len(a)
             roll_flag=0
             if roll_rows>1:
                 roll_flag=1
