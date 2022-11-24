@@ -21,6 +21,7 @@ def ranges(i):
         b = list(b)
         yield b[0][1],b[-1][1]
 
+# fpdf Class and Object Creation
 class PDF(FPDF, HTMLMixin):
     def footer(self):
         # Set position of the footer

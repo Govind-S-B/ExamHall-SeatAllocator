@@ -83,7 +83,7 @@ for i in Q_list:
 # # -----------------------------------
 
 
-#PDF Creation
+# fpdf Class and Object Creation
 class PDF(FPDF):
     # Page footer
     def footer(self):
