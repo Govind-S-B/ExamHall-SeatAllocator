@@ -8,12 +8,23 @@ list_to_generate = int(
 if list_to_generate == 1:
     halls = int(input("Enter number of halls: "))
 
-    Halls = {}
+    # Bench(B) or Drawing Hall(D)
+    Halls = {
+        "B" : {},
+        "D" : {}
+    }
+    
+
     for i in range(halls):
         hall_name = input("Hall Name: ")
         capacity = int(input("Table Count : "))
 
-        Halls[hall_name] = [capacity]
+        cols = input("Coloumn Count : ") # leave empty if not a drawing hall
+        if cols == "":
+            Halls["B"][hall_name] = [capacity]
+        else:
+            cols = int(cols)
+            Halls["D"][hall_name] = [capacity, cols]
 
     if output_mode == 2:
         with open('Halls.json', 'w') as fp:
@@ -60,7 +71,7 @@ elif list_to_generate == 2:
                         Subjects[subject].append(class_name + '-' + item)
 
     if output_mode == 1:
-        print(json.dumps(Subjects, indent=4, sort_keys=True))
+        print(json.dumps(Subjects, indent=4))
 
     elif output_mode == 2:
         with open('Subjects.json', 'w') as fp:
