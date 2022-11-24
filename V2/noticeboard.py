@@ -3,13 +3,14 @@ import sqlite3 as sq
 import itertools
 import json
 
-# importing subject json for session info
-with open('Subjects.json', 'r') as JSON:
-    Subjects = json.load(JSON)
-MetaInfo = Subjects.pop("meta") # Meta info global for each generation
+# # importing subject json for session info
+# with open('Subjects.json', 'r') as JSON:
+#     Subjects = json.load(JSON)
+# MetaInfo = Subjects.pop("meta") # Meta info global for each generation
 
-# print("Enter session info in format 'DD-MM-YYYY<space>Session'    eg: '12-04-2023 FN'")
-sessioninfo = MetaInfo["Session_Name"]
+# # print("Enter session info in format 'DD-MM-YYYY<space>Session'    eg: '12-04-2023 FN'")
+# sessioninfo = MetaInfo["Session_Name"]
+sessioninfo = "12-04-2023 FN"
 sessioninfo = sessioninfo.split()
 Date = sessioninfo[0]
 Session = sessioninfo[1]
