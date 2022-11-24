@@ -37,7 +37,7 @@ Students_total=0
 for i in Subjects:
     Subjects_list.append([len(Subjects[i]),i] + Subjects[i]) # No of students , Sub Name , roll nos ...
     Students_total+=len(Subjects[i])
-# print("Total students: ",Students_total)
+print("Total students: ",Students_total)
 
 Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
 

@@ -1,9 +1,15 @@
 from fpdf import FPDF, HTMLMixin
 import sqlite3 as sq
 import itertools
+import json
 
-# print("Enter session info in format 'DD-MM-YYYY<space>Session'")
-sessioninfo = "12-04-2023 FN" #input from user
+# importing subject json for session info
+with open('Subjects.json', 'r') as JSON:
+    Subjects = json.load(JSON)
+MetaInfo = Subjects.pop("meta") # Meta info global for each generation
+
+# print("Enter session info in format 'DD-MM-YYYY<space>Session'    eg: '12-04-2023 FN'")
+sessioninfo = MetaInfo["Session_Name"]
 sessioninfo = sessioninfo.split()
 Date = sessioninfo[0]
 Session = sessioninfo[1]
