@@ -97,7 +97,7 @@ if len(D_Halls) != 0 :
                         if i%2 == 0: #even row
                             if len(even_row_subject_list) == 0:
                                 pass
-                            else:
+                            elif len(Hall_structure[i][j])<3:
                                 Hall_structure[i][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
                                 temp_expression = Hall_structure[i][j][1].split("-")
                                 conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
@@ -110,7 +110,7 @@ if len(D_Halls) != 0 :
                         else: #odd row
                             if len(odd_row_subject_list) == 0:
                                 pass
-                            else:
+                            elif len(Hall_structure[i][j])<3:
                                 Hall_structure[i][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
                                 temp_expression = Hall_structure[i][j][1].split("-")
                                 conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
