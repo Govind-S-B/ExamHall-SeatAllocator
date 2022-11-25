@@ -2,6 +2,11 @@ from fpdf import FPDF, HTMLMixin
 import sqlite3 as sq
 import json
 
+# Functions
+def divide_chunks(l, n):            # l-list , n-how much elements to divide
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
 # # importing subject json for session info
 # with open('Subjects.json', 'r') as JSON:
 #     Subjects = json.load(JSON)
@@ -48,8 +53,9 @@ except:
     font="Times"
 
 
-# SEATING LIST ------------------------------------------------------------------------------------------------------
+# SEATING LIST --------------------------------------------------------------
 # for each hall
+
 cmd = """SELECT DISTINCT HALL , CLASS
          FROM REPORT
          ORDER BY HALL"""
@@ -68,7 +74,7 @@ query_list = []
 for i in x:
     query_list.append(list(i))
 
-print(query_list)
+
 hall_distinct_list = [[distinct_class[0][0]]]
 hall = query_list[0][0]
 
@@ -103,7 +109,13 @@ for i in hall_distinct_list:
     print('\n')
     for l in seat_List:
         print(str(l[0]) + '\t' + l[1])
-    print("-------------------------------------------------------------------------")
+    # print("-------------------------------------------------------------------------"
+
+    
+    seat_List.pop(0)
+    seat_List=divide_chunks(seat_List, ((int(len(seat_List)/4))+1))
+    # print(list(seat_List))
+    x=list(seat_List)
 
     # PDF Creation +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Headings
@@ -126,7 +138,33 @@ for i in hall_distinct_list:
     pdf.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
 
     # Class List Table
-    
+    print(classes_list)
+    col1_width=((pdf.w-20)/(len(classes_list)+1))+10
+    col_rest_width=(pdf.w-20-col1_width)/len(classes_list)
+    pdf.set_font(font, '', 12)
+    pdf.cell(col1_width, 10, "Classes:", border=True, align="C")
+    pdf.set_font(font, 'B', 12)
+    for k in classes_list:
+        print(k, end='\t')
+    for k in classes_list:
+        # if k==classes_list[-1]:
+        #     pdf.cell(col_rest_width, 10, k, border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+        # else:
+            pdf.cell(col_rest_width, 10, k, border=True, align="C")
+    # pdf.set_x(0)
+    # pdf.cell(10, 10, "", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+
+
+    # Roll no.s
+    k=1
+    roll_rows=len(x[0])
+    # print(x)
+    # print("Rows: ",roll_rows)
+    # while k<=roll_rows:
+    #     for l in range(4):
+    #         pass
+    #     k+=1
+
     
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 pdf.output('Seating Arrangement Test.pdf')

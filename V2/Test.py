@@ -223,19 +223,19 @@ for i in hall_distinct_list:
     for j in query_list:
         if hall == j[0]:
             seat_List.append([j[1], j[2]])
-    classes_list = i[1:-1]
+    classes_list = i[1:]
 
-    # # print Seating Arrangement on terminal---------------------
-    # print()
-    # print()
-    # print("Seating Arrangement for Internal Examination")
-    # print("Hall No: ", hall, "   Date: ", Date, "   Session: ", Session)
-    # print()
-    # print("Classes: ", end='\t')
-    # for k in classes_list:
-    #     print(k, end='\t')
-    # print('\n')
-    # for l in seat_List:
-    #     print(str(l[0]) + '\t' + l[1])
-    # print("-------------------------------------------------------------------------")
-    # # ----------------------------------------------------
+    # print Seating Arrangement on terminal---------------------
+    print()
+    print()
+    print("Seating Arrangement for Internal Examination")
+    print("Hall No: ", hall, "   Date: ", Date, "   Session: ", Session)
+    print()
+    print("Classes: ", end='\t')
+    for k in classes_list:
+        print(k, end='\t')
+    print('\n')
+    for l in seat_List:
+        print(str(l[0]) + '\t' + l[1])
+    print("-------------------------------------------------------------------------")
+    # ----------------------------------------------------
