@@ -139,25 +139,26 @@ for i in hall_distinct_list:
 
     # Class List Table
     print(classes_list)
-    col1_width=((pdf.w-20)/(len(classes_list)+1))+10
+    col1_width=((pdf.w-20)/(len(classes_list)+1))+15
     col_rest_width=(pdf.w-20-col1_width)/len(classes_list)
-    pdf.set_font(font, '', 12)
-    pdf.cell(col1_width, 10, "Classes:", border=True, align="C")
-    pdf.set_font(font, 'B', 12)
+    pdf.set_font(font, '', 13)
+    pdf.cell(col1_width, 11, "Classes:", border=True, align="C")
+    pdf.set_font(font, 'B', 13)
     for k in classes_list:
         print(k, end='\t')
     for k in classes_list:
-        # if k==classes_list[-1]:
-        #     pdf.cell(col_rest_width, 10, k, border=True, align="C", new_x="LMARGIN", new_y="NEXT")
-        # else:
-            pdf.cell(col_rest_width, 10, k, border=True, align="C")
-    # pdf.set_x(0)
+        pdf.cell(col_rest_width, 11, k, border=True, align="C")
+    pdf.set_y(76)
+
+
+    # # Roll no.s
+    # # Header
+    # pdf.set_font(font, 'B', 13)
     # pdf.cell(10, 10, "", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
 
-
-    # Roll no.s
-    k=1
-    roll_rows=len(x[0])
+    # # Body
+    # k=1
+    # roll_rows=len(x[0])
     # print(x)
     # print("Rows: ",roll_rows)
     # while k<=roll_rows:
