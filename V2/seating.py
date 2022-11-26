@@ -82,9 +82,11 @@ hall = query_list[0][0]
 hall_check_for_distinct = distinct_class[0][0]
 for i in distinct_class:
     if hall_check_for_distinct == i[0]:
-        hall_distinct_list[-1].append(i[1])
+        if i[1] not in hall_distinct_list:
+            hall_distinct_list[-1].append(i[1])
     else:
-        hall_distinct_list[-1].append(i[1])
+        if i[1] not in hall_distinct_list[-1]:
+            hall_distinct_list[-1].append(i[1])
         hall_check_for_distinct = i[0]
         hall_distinct_list.append(i)
 
