@@ -283,10 +283,10 @@ for i in Q_list:
 
     if Q_list[-1] == i:
         # PDF Generate
-        # print(hall_name)
-        # roll_ = ranges(roll_list)
-        # no_of_candidates = len(roll_list)
-        # PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
+        print(hall_name)
+        roll_ = ranges(roll_list)
+        no_of_candidates = len(roll_list)
+        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
         # print Packaging PDF on terminal---------------------
         # print()

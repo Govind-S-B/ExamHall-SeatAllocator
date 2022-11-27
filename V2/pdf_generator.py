@@ -381,6 +381,10 @@ for i in Q_list:
         roll_list.append(i[3])
 
     if Q_list[-1] == i:
+        roll_ = ranges(roll_list)
+        no_of_candidates = len(roll_list)
+        PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
+        
         pdf2.add_page()
         pdf2.set_font(font, '', 27)
         text="Marian Engineering College"
