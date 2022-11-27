@@ -26,27 +26,26 @@ class PDF(FPDF, HTMLMixin):
         # Set position of the footer
         self.set_y(-15)
         
-        text_w=pdf.get_string_width("Created by ProtoRes")+6
-        self.set_x(((pdf.w - text_w) / 2)+14)
+        text_w=pdf3.get_string_width("Created by ProtoRes")+6
+        self.set_x(((pdf3.w - text_w) / 2)+9)
 
         self.set_font(font, '', 8)
-        self.cell(pdf.get_string_width("Created by "), 10, "Created by ")
+        self.cell(pdf3.get_string_width("Created by "), 10, "Created by ")
 
         self.set_font(font, 'B', 8)
-        self.cell(pdf.get_string_width("ProtoRes"), 10, "ProtoRes")
+        self.cell(pdf3.get_string_width("ProtoRes"), 10, "ProtoRes")
 
         # Page number
         self.set_font('helvetica', '', 8)
         self.cell(0, 10, f'{self.page_no()}/{{nb}}', align='R')
 
-pdf = PDF('P', 'mm', 'A4')
-pdf.set_auto_page_break(auto = True, margin = 15) # Set auto page break
-doc_w=pdf.w
+pdf3 = PDF('P', 'mm', 'A4')
+pdf3.set_auto_page_break(auto = True, margin = 15) # Set auto page break
 
 # adding fonts
 try:
-    pdf.add_font('Poppins', '', 'Fonts/Poppins-Regular.ttf')
-    pdf.add_font('Poppins', 'B', 'Fonts/Poppins-Bold.ttf')
+    pdf3.add_font('Poppins', '', 'Fonts/Poppins-Regular.ttf')
+    pdf3.add_font('Poppins', 'B', 'Fonts/Poppins-Bold.ttf')
     font="Poppins"
 except:
     print("Poppins font not found. Using Times now.")
@@ -103,99 +102,81 @@ for i in hall_distinct_list:
         if seat_List[k][0]!=k:
             seat_List.insert(k, [k, "-"])
     classes_list = i[1:]
-
-    # # print Seating Arrangement on terminal---------------------
-    # print()
-    # print()
-    # print("Seating Arrangement for Internal Examination")
-    # print("Hall No: ", hall, "   Date: ", Date, "   Session: ", Session)
-    # print()
-    # print("Classes: ", end='\t')
-    # for k in classes_list:
-    #     print(k, end='\t')
-    # print('\n')
-    # for l in seat_List:
-    #     print(str(l[0]) + '\t' + l[1])
-    # print("-------------------------------------------------------------------------")
-
     
     seat_List.pop(0)
     seat_List=divide_chunks(seat_List, ((int(len(seat_List)/4))+1))
     x=list(seat_List)
-    print()
-    for p in x:
-        print(p)
 
     # PDF Creation +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Headings
-    pdf.add_page()
-    pdf.set_font(font, '', 27)
+    pdf3.add_page()
+    pdf3.set_font(font, '', 27)
     text="Marian Engineering College"
-    text_w=pdf.get_string_width(text)+6
-    doc_w=pdf.w
-    pdf.set_x((doc_w - text_w) / 2)
-    pdf.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
-    pdf.set_font(font, '', 20)
+    text_w=pdf3.get_string_width(text)+6
+    pdf3.w=pdf3.w
+    pdf3.set_x((pdf3.w - text_w) / 2)
+    pdf3.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+    pdf3.set_font(font, '', 20)
     text="Seating Arrangement for Internal Examination"
-    text_w=pdf.get_string_width(text)+6
-    pdf.set_x((doc_w - text_w) / 2)
-    pdf.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')
-    pdf.set_y(45)
-    pdf.set_font(font, '', 18)
-    pdf.set_x(30)
-    pdf.write_html(f"<align=\"center\">Hall No: <b>{hall}</b>      Date: <b>{Date}</b>      Session: <b>{Session}<b/>")
-    pdf.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
+    text_w=pdf3.get_string_width(text)+6
+    pdf3.set_x((pdf3.w - text_w) / 2)
+    pdf3.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+    pdf3.set_y(45)
+    pdf3.set_font(font, '', 18)
+    pdf3.set_x(30)
+    pdf3.write_html(f"<align=\"center\">Hall No: <b>{hall}</b>      Date: <b>{Date}</b>      Session: <b>{Session}<b/>")
+    pdf3.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
 
     # Class List Table
     # print(classes_list)
-    col1_width=((pdf.w-20)/(len(classes_list)+1))+15
-    col_rest_width=(pdf.w-20-col1_width)/len(classes_list)
-    pdf.set_font(font, '', 14)
-    pdf.cell(col1_width, 11, "Classes:", border=True, align="C")
-    pdf.set_font(font, 'B', 14)
+    col1_width=((pdf3.w-20)/(len(classes_list)+1))+15
+    col_rest_width=(pdf3.w-20-col1_width)/len(classes_list)
+    pdf3.set_font(font, '', 14)
+    pdf3.cell(col1_width, 11, "Classes:", border=True, align="C")
+    pdf3.set_font(font, 'B', 14)
     # for k in classes_list:
     #     print(k, end='\t')
     for k in classes_list:
-        pdf.cell(col_rest_width, 11, k, border=True, align="C")
-    pdf.set_y(76)
+        pdf3.cell(col_rest_width, 11, k, border=True, align="C")
+    pdf3.set_y(76)
 
 
     # Seating Table
     # Header
-    seat_w=((pdf.w-20-15)/4)*0.4
-    id_w=((pdf.w-20-15)/4)*0.6
+    seat_w=((pdf3.w-20-15)/4)*0.4
+    id_w=((pdf3.w-20-15)/4)*0.6
 
     # Body
-    pdf.set_font(font, '', 12)
+    pdf3.set_font(font, '', 12)
     roll_rows=len(x[0])
     counter=x[-1][-1][0]
     for k in range(roll_rows):
         if k%19==0:
             if k!=0:
-                pdf.add_page()
-            pdf.set_font(font, 'B', 12)
+                pdf3.add_page()
+            pdf3.set_font(font, 'B', 12)
             for n in range(4):
-                pdf.cell(seat_w, 10, "Seat", border=True, align="C")
+                pdf3.cell(seat_w, 10, "Seat", border=True, align="C")
                 if n!=3:
-                    pdf.cell(id_w, 10, "Roll No.", border=True, align="C")
-                    pdf.cell(5, 10, "", border=False, align="C")
+                    pdf3.cell(id_w, 10, "Roll No.", border=True, align="C")
+                    pdf3.cell(5, 10, "", border=False, align="C")
                 else:
-                    pdf.cell(id_w, 10, "Roll No.", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
-        pdf.set_font(font, '', 12)
+                    pdf3.cell(id_w, 10, "Roll No.", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+        pdf3.set_font(font, '', 12)
         for l in range(4):
             try:
-                pdf.cell(seat_w, 10, str(x[l][k][0]), border=True, align="C")
+                pdf3.cell(seat_w, 10, str(x[l][k][0]), border=True, align="C")
                 if l!=3:
-                    pdf.cell(id_w, 10, str(x[l][k][1]), border=True, align="C")
-                    pdf.cell(5, 10, "", border=False, align="C")
+                    pdf3.cell(id_w, 10, str(x[l][k][1]), border=True, align="C")
+                    pdf3.cell(5, 10, "", border=False, align="C")
                 else:
-                    pdf.cell(id_w, 10, str(x[l][k][1]), border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+                    pdf3.cell(id_w, 10, str(x[l][k][1]), border=True, align="C", new_x="LMARGIN", new_y="NEXT")
             except:
                 counter+=1
-                pdf.cell(seat_w, 10, str(counter), border=True, align="C")
-                pdf.cell(id_w, 10, "-", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+                pdf3.cell(seat_w, 10, str(counter), border=True, align="C")
+                pdf3.cell(id_w, 10, "-", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
                 # print("Counter: ",counter)
                 # print("Error: ",k," ",l)
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 file_name="Seating Arrangement "+Date+" "+Session+".pdf"
-pdf.output(file_name)
+pdf3.output(file_name)
