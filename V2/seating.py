@@ -97,27 +97,34 @@ for i in hall_distinct_list:
     for j in query_list:
         if hall == j[0]:
             seat_List.append([j[1], j[2]])
+    last_seat_no=seat_List[-1][0]
+    # print("Last seat no: ",last_seat_no)
+    for k in range(1, last_seat_no+1):
+        if seat_List[k][0]!=k:
+            seat_List.insert(k, [k, "-"])
     classes_list = i[1:]
 
-    # print Seating Arrangement on terminal---------------------
-    print()
-    print()
-    print("Seating Arrangement for Internal Examination")
-    print("Hall No: ", hall, "   Date: ", Date, "   Session: ", Session)
-    print()
-    print("Classes: ", end='\t')
-    for k in classes_list:
-        print(k, end='\t')
-    print('\n')
-    for l in seat_List:
-        print(str(l[0]) + '\t' + l[1])
-    # print("-------------------------------------------------------------------------"
+    # # print Seating Arrangement on terminal---------------------
+    # print()
+    # print()
+    # print("Seating Arrangement for Internal Examination")
+    # print("Hall No: ", hall, "   Date: ", Date, "   Session: ", Session)
+    # print()
+    # print("Classes: ", end='\t')
+    # for k in classes_list:
+    #     print(k, end='\t')
+    # print('\n')
+    # for l in seat_List:
+    #     print(str(l[0]) + '\t' + l[1])
+    # print("-------------------------------------------------------------------------")
 
     
     seat_List.pop(0)
     seat_List=divide_chunks(seat_List, ((int(len(seat_List)/4))+1))
-    # print(list(seat_List))
     x=list(seat_List)
+    print()
+    for p in x:
+        print(p)
 
     # PDF Creation +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # Headings
@@ -140,34 +147,55 @@ for i in hall_distinct_list:
     pdf.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
 
     # Class List Table
-    print(classes_list)
+    # print(classes_list)
     col1_width=((pdf.w-20)/(len(classes_list)+1))+15
     col_rest_width=(pdf.w-20-col1_width)/len(classes_list)
-    pdf.set_font(font, '', 13)
+    pdf.set_font(font, '', 14)
     pdf.cell(col1_width, 11, "Classes:", border=True, align="C")
-    pdf.set_font(font, 'B', 13)
-    for k in classes_list:
-        print(k, end='\t')
+    pdf.set_font(font, 'B', 14)
+    # for k in classes_list:
+    #     print(k, end='\t')
     for k in classes_list:
         pdf.cell(col_rest_width, 11, k, border=True, align="C")
     pdf.set_y(76)
 
 
-    # # Roll no.s
-    # # Header
-    # pdf.set_font(font, 'B', 13)
-    # pdf.cell(10, 10, "", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+    # Seating Table
+    # Header
+    seat_w=((pdf.w-20-15)/4)*0.4
+    id_w=((pdf.w-20-15)/4)*0.6
 
-    # # Body
-    # k=1
-    # roll_rows=len(x[0])
-    # print(x)
-    # print("Rows: ",roll_rows)
-    # while k<=roll_rows:
-    #     for l in range(4):
-    #         pass
-    #     k+=1
-
-    
+    # Body
+    pdf.set_font(font, '', 12)
+    roll_rows=len(x[0])
+    counter=x[-1][-1][0]
+    for k in range(roll_rows):
+        if k%19==0:
+            if k!=0:
+                pdf.add_page()
+            pdf.set_font(font, 'B', 12)
+            for n in range(4):
+                pdf.cell(seat_w, 10, "Seat", border=True, align="C")
+                if n!=3:
+                    pdf.cell(id_w, 10, "Roll No.", border=True, align="C")
+                    pdf.cell(5, 10, "", border=False, align="C")
+                else:
+                    pdf.cell(id_w, 10, "Roll No.", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+        pdf.set_font(font, '', 12)
+        for l in range(4):
+            try:
+                pdf.cell(seat_w, 10, str(x[l][k][0]), border=True, align="C")
+                if l!=3:
+                    pdf.cell(id_w, 10, str(x[l][k][1]), border=True, align="C")
+                    pdf.cell(5, 10, "", border=False, align="C")
+                else:
+                    pdf.cell(id_w, 10, str(x[l][k][1]), border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+            except:
+                counter+=1
+                pdf.cell(seat_w, 10, str(counter), border=True, align="C")
+                pdf.cell(id_w, 10, "-", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
+                # print("Counter: ",counter)
+                # print("Error: ",k," ",l)
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-pdf.output('Seating Arrangement Test.pdf')
+file_name="Seating Arrangement "+Date+" "+Session+".pdf"
+pdf.output(file_name)

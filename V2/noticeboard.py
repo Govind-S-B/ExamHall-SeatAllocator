@@ -151,7 +151,7 @@ pdf.cell(0, 10, "Roll No.s", align='C', border=True, new_x="LMARGIN", new_y="NEX
 prev_class=""
 PDF_list.pop(0)
 for i in PDF_list:
-    temp="  "
+    temp="   "
     rows=1
     temp_count=1
     
@@ -185,7 +185,6 @@ for i in PDF_list:
 
     pdf.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="L")
 
-
-
-pdf.output('Notice Board.pdf')
+file_name="Notice Board "+Date+" "+Session+".pdf"
+pdf.output(file_name)
 #-----------------------------------------------------------------------------------------------------
