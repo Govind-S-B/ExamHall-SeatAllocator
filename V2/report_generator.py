@@ -1,5 +1,7 @@
 import json
+from fpdf import FPDF, HTMLMixin
 import sqlite3 as sq
+import itertools
 
 print("Starting Generation")
 
@@ -247,16 +249,7 @@ if allocation_done == False:
 
 print("Generating PDF")
 
-from fpdf import FPDF, HTMLMixin
-import sqlite3 as sq
-import itertools
-import json
 
-# # importing subject json for session info
-# with open('Subjects.json', 'r') as JSON:
-#     Subjects = json.load(JSON)
-# MetaInfo = Subjects.pop("meta") # Meta info global for each generation
-# sessioninfo = MetaInfo["Session_Name"]
 sessioninfo = MetaInfo["Session_Name"]
 sessioninfo = sessioninfo.split()
 Date = sessioninfo[0]
