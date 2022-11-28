@@ -175,8 +175,6 @@ for i in hall_distinct_list:
                 counter+=1
                 pdf3.cell(seat_w, 10, str(counter), border=True, align="C")
                 pdf3.cell(id_w, 10, "-", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
-                # print("Counter: ",counter)
-                # print("Error: ",k," ",l)
     # ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-file_name="Seating Arrangement "+Date+" "+Session+".pdf"
+file_name="Seating "+Date+" "+Session+".pdf"
 pdf3.output(file_name)

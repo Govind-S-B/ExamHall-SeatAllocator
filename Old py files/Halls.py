@@ -165,6 +165,6 @@ for i in PDF_list:
 
     pdf1.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="L")
 
-file_name="Notice Board "+Date+" "+Session+".pdf"
+file_name="Halls "+Date+" "+Session+".pdf"
 pdf1.output(file_name)
 #-----------------------------------------------------------------------------------------------------

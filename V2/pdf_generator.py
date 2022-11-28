@@ -173,7 +173,7 @@ for i in PDF_list:
 
     pdf1.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="L")
 
-file_name="Notice Board "+Date+" "+Session+".pdf"
+file_name="Halls "+Date+" "+Session+".pdf"
 pdf1.output(file_name)
 
 
@@ -531,7 +531,7 @@ for i in Q_list:
 
         PDF_list = []
 
-file_name="Packaging List "+Date+" "+Session+".pdf"
+file_name="Packaging "+Date+" "+Session+".pdf"
 pdf2.output(file_name)
 
 
@@ -650,5 +650,5 @@ for i in hall_distinct_list:
                 counter+=1
                 pdf3.cell(seat_w, 10, str(counter), border=True, align="C")
                 pdf3.cell(id_w, 10, "-", border=True, align="C", new_x="LMARGIN", new_y="NEXT")
-file_name="Seating Arrangement "+Date+" "+Session+".pdf"
+file_name="Seating "+Date+" "+Session+".pdf"
 pdf3.output(file_name)
