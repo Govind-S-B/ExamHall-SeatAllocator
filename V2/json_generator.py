@@ -5,7 +5,7 @@ output_mode = int(input("Display Mode: (1)Text (2)JSON: "))
 list_to_generate = int(
     input("Generate: Hall List(1) Subject List(2): "))
 
-append_mode = bool(input("Append Mode (True/False): "))
+append_mode = False # bool(input("Append Mode (True/False): ")) 
 
 if list_to_generate == 1:
     halls = int(input("Enter number of halls: "))
@@ -44,7 +44,7 @@ if list_to_generate == 1:
                     Halls = hallsJ
             else:
                 cols = int(cols)
-                Halls["B"][hall_name] = [capacity, cols]
+                Halls["D"][hall_name] = [capacity, cols]
 
     if output_mode == 2:
         with open('Halls.json', 'w') as fp:
