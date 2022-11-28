@@ -5,6 +5,8 @@ output_mode = int(input("Display Mode: (1)Text (2)JSON: "))
 list_to_generate = int(
     input("Generate: Hall List(1) Subject List(2): "))
 
+append_mode = int(input("Append Mode (1/0): "))     #don't append if the file does not exist or json file is empty
+
 if list_to_generate == 1:
     halls = int(input("Enter number of halls: "))
 
@@ -13,6 +15,10 @@ if list_to_generate == 1:
         "B" : {},
         "D" : {}
     }
+
+    if append_mode == 1:
+        with open("Halls.json", "r") as HallsJSON:
+            hallsJ = json.load(HallsJSON)
     
 
     for i in range(halls):
@@ -21,10 +27,24 @@ if list_to_generate == 1:
 
         cols = input("Coloumn Count : ") # leave empty if not a drawing hall
         if cols == "":
-            Halls["B"][hall_name] = [capacity]
+            if append_mode == 1:
+                try:
+                    test = hallsJ["B"][hall_name]
+                except KeyError:
+                    hallsJ["B"][hall_name] = [capacity]
+                    Halls = hallsJ
+            else:
+                Halls["B"][hall_name] = [capacity]
         else:
-            cols = int(cols)
-            Halls["D"][hall_name] = [capacity, cols]
+            if append_mode == 1:
+                try:
+                    test = hallsJ["D"][hall_name]
+                except KeyError:
+                    hallsJ["D"][hall_name] = [capacity, cols]
+                    Halls = hallsJ
+            else:
+                cols = int(cols)
+                Halls["D"][hall_name] = [capacity, cols]
 
     if output_mode == 2:
         with open('Halls.json', 'w') as fp:
@@ -33,11 +53,16 @@ if list_to_generate == 1:
         print(Halls)
 
 elif list_to_generate == 2:
-
-    session_name = input("Enter Session name: ")  # 12-04-2022 FN
-    MetaInfo = {"Session_Name": session_name}
-    Subjects = {}
-    Subjects["meta"] = MetaInfo
+    
+    if append_mode == 0:
+        session_name = input("Enter Session name: ")  # 12-04-2022 FN
+        MetaInfo = {"Session_Name": session_name}
+        Subjects = {}
+        Subjects["meta"] = MetaInfo
+    
+    else:
+        with open("Subjects.json") as SubJson:
+            SubjectsJ = json.load(SubJson)
 
     no_of_classes = int(input("Enter number of classes: "))
     for class_ in range(0, no_of_classes):
