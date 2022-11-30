@@ -358,19 +358,8 @@ text="Halls for Internal Examination"
 text_w=pdf1.get_string_width(text)+6
 pdf1.set_x((doc_w - text_w) / 2)
 pdf1.cell(text_w, 7, text,  new_x="LMARGIN", new_y="NEXT", align='C')
-
-# text_w=pdf1.get_string_width("Date: 12-04-2022         Session: FN")
-# pdf1.set_x(((doc_w - text_w) / 2)+10.5)
-
 pdf1.set_font(font, '', 17)
 pdf1.set_y(45)
-# pdf1.cell(pdf1.get_string_width("Date:"), 14, 'Date:', align='C')
-# pdf1.set_font(font, 'B', 17)
-# pdf1.cell(pdf1.get_string_width(Date), 14, Date)
-# pdf1.set_font(font, '', 17)
-# pdf1.cell(pdf1.get_string_width("         Session: "), 14, '         Session: ')
-# pdf1.set_font(font, 'B', 17)
-# pdf1.cell(pdf1.get_string_width(Session), 14, Session,  new_x="LMARGIN", new_y="NEXT")
 pdf1.set_x(57)
 pdf1.write_html(f"Date: <b>{Date}</b>      Session: <b>{Session}<b/>")
 pdf1.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
