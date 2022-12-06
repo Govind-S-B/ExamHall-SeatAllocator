@@ -270,14 +270,14 @@ class PDF(FPDF, HTMLMixin):
         # Set position of the footer
         self.set_y(-15)
         
-        text_w=self.get_string_width("Created by ProtoRes")+6
+        text_w=self.get_string_width("Created by protoRes")+6
         self.set_x(((self.w - text_w) / 2)+14)
 
         self.set_font(font, '', 8)
         self.cell(self.get_string_width("Created by "), 10, "Created by ")
 
         self.set_font(font, 'B', 8)
-        self.cell(self.get_string_width("ProtoRes"), 10, "ProtoRes")
+        self.cell(self.get_string_width("protoRes"), 10, "protoRes")
 
         # Page number
         self.set_font('helvetica', '', 8)
