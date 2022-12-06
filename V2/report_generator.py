@@ -610,6 +610,7 @@ for i in Q_list:
 
         hall_name = i[0]
         class_name = i[1]
+        subject_name = i [2]
         roll_list = []
         roll_list.append(i[3])
 
