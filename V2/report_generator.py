@@ -2,6 +2,7 @@ import json
 from fpdf import FPDF, HTMLMixin
 import sqlite3 as sq
 import itertools
+import math
 
 print("Starting Generation")
 
@@ -818,7 +819,8 @@ for i in hall_distinct_list:
     classes_list = i[1:]
     
     seat_List.pop(0)
-    seat_List=divide_chunks(seat_List, ((int(len(seat_List)/4))+1))
+    row_number = int(math.ceil(len(seat_List)/4))
+    seat_List=divide_chunks(seat_List, row_number)
     x=list(seat_List)
 
     # Headings
