@@ -324,7 +324,6 @@ for i in Q_list:
             temp = "("+str(len(roll_list))+")"
             roll_list.append(temp)
             PDF_list.append([class_name, hall_name, roll_list])
-            # print(roll_list)
             hall_name = i[1]
             roll_list = []
             roll_list.append(i[2])
@@ -333,7 +332,6 @@ for i in Q_list:
         temp = "("+str(len(roll_list))+")"
         roll_list.append(temp)
         PDF_list.append([class_name, hall_name, roll_list])
-        # print(roll_list)
         class_name = i[0]
         hall_name = i[1]
         roll_list = []
