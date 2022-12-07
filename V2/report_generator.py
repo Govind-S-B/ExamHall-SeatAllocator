@@ -798,10 +798,10 @@ for i in distinct_class:
         if i[1] not in hall_distinct_list:
             hall_distinct_list[-1].append(i[1])
     else:
-        if i[1] not in hall_distinct_list[-1]:
-            hall_distinct_list[-1].append(i[1])
         hall_check_for_distinct = i[0]
         hall_distinct_list.append(i)
+        if i[1] not in hall_distinct_list[-1]:
+            hall_distinct_list[-1].append(i[1])
 
 # print distinct
 for i in hall_distinct_list:
