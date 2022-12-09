@@ -39,26 +39,53 @@ elif list_to_generate == 2:
     Subjects = {}
     Subjects["meta"] = MetaInfo
 
-    no_of_classes = int(input("Enter number of classes: "))
-    for class_ in range(0, no_of_classes):
+    option = 1
+    subject_list = {}
+
+    print('Press "done" to exit')
+
+    while True:
+        subjects = str(input("Enter Subject name: "))
+        if subjects.lower() == "done":
+            break
+        
+        subject_list[option] = subjects
+        option +=1
+
+    print('Press "done" to exit')
+
+    while True:
         class_name = input("Enter class name: ")
-        no_of_subjects = int(input("Enter number of subjects: "))
+        if class_name.lower() == "done":
+            break
 
-        for subject_ in range(no_of_subjects):
-            subject = input("Enter Subject: ")
+        # count = classname.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
+        # if len(count) == 1 , reperat below loop only once
+        # else count = count[1]
+        # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
+        
+        while True:
+            for i in subject_list:
+                print(f'{i} - {subject_list[i]}')
+                
+            subject = input("Enter Subject ID: ")
+            if subject.lower() == "done":
+                break
+                
+            subject_ID = int(subject)
 
-            if subject in Subjects:
+            if subject_list[subject_ID] in Subjects:
                 roll = input("Enter roll number list: ")
                 roll_list = roll.split(',')
                 for item in roll_list:
                     if "-" in item:
                         roll_no_range = item
                         for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
-                            Subjects[subject].append(class_name + '-' + str(roll_))
+                            Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
                     else:
-                        Subjects[subject].append(class_name + '-' + item)
+                        Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
             else:
-                Subjects[subject] = []
+                Subjects[subject_list[subject_ID]] = []
 
                 roll = input("Enter roll number list: ")
                 roll_list = roll.split(',')
@@ -66,9 +93,9 @@ elif list_to_generate == 2:
                     if "-" in item:
                         roll_no_range = item
                         for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
-                            Subjects[subject].append(class_name + '-' + str(roll_))
+                            Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
                     else:
-                        Subjects[subject].append(class_name + '-' + item)
+                        Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
 
     if output_mode == 1:
         print(json.dumps(Subjects, indent=4))
