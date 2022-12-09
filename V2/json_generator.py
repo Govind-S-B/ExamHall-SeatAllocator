@@ -6,7 +6,6 @@ list_to_generate = int(
     input("Generate: Hall List(1) Subject List(2): "))
 
 if list_to_generate == 1:
-    halls = int(input("Enter number of halls: "))
 
     # Bench(B) or Drawing Hall(D)
     Halls = {
@@ -14,9 +13,14 @@ if list_to_generate == 1:
         "D" : {}
     }
     
+    print('\nPress "done" to exit')
 
-    for i in range(halls):
+    while True:
         hall_name = input("Hall Name: ")
+
+        if hall_name.lower() == "done":
+            break
+
         capacity = int(input("Table Count : "))
 
         cols = input("Coloumn Count : ") # leave empty if not a drawing hall
@@ -42,7 +46,7 @@ elif list_to_generate == 2:
     option = 1
     subject_list = {}
 
-    print('Press "done" to exit')
+    print('\nPress "done" to exit')
 
     while True:
         subjects = str(input("Enter Subject name: "))
@@ -52,19 +56,21 @@ elif list_to_generate == 2:
         subject_list[option] = subjects
         option +=1
 
-    print('Press "done" to exit')
+    print('\nPress "done" to exit')
 
     while True:
         class_name = input("Enter class name: ")
         if class_name.lower() == "done":
             break
 
-        # count = classname.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
-        # if len(count) == 1 , reperat below loop only once
-        # else count = count[1]
+        count = class_name.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
+        if len(count) == 1:
+            count = 1 #, reperat below loop only once
+        else:
+            count = int(count[1])
         # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
         
-        while True:
+        for i in range(count):
             for i in subject_list:
                 print(f'{i} - {subject_list[i]}')
                 
