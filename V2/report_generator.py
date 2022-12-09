@@ -524,7 +524,7 @@ for i in Q_list:
         for k in PDF_list:
             sub_rows=1
             sub_flag=0
-            if len(k[1])>30:
+            if len(k[1])>33:
                 sub_rows=2
                 sub_flag=1
 
@@ -681,7 +681,7 @@ for i in Q_list:
         for k in PDF_list:
             sub_rows=1
             sub_flag=0
-            if len(k[1])>30:
+            if len(k[1])>33:
                 sub_rows=2
                 sub_flag=1
 
