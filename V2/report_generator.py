@@ -111,6 +111,9 @@ if len(D_Halls) != 0 : # DRAWING HALL LGOIC
                         break
                     else:
                         for j in range(len(Hall_structure[i])):
+
+                            # if logic ==1 , logic ==2 should be here
+
                             if i%2 == 0: #even row
                                 if len(even_row_subject_list) == 0:
                                     pass
@@ -253,6 +256,11 @@ if ( (len(B_Halls) != 0) and (allocation_done==False) ): # BENCH HALL LOGIC
                                 odd_row_subject_list.append(Subjects_list[i])
 
                     # check for exception case ( odd = 0 & even =1 , even = 0 & odd=1)
+                    if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)==1):
+                        pass
+
+                    if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)==1):
+                        pass
 
                     if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
                         allocation_done = True
