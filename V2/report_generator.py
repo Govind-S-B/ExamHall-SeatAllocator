@@ -167,6 +167,10 @@ if len(D_Halls) != 0 : # DRAWING HALL LGOIC
 
             Halls_sorted_list.append(Hall_structure)
 
+    if logic == 2:
+        pass
+        # logic for exception case
+
 if ( (len(B_Halls) != 0) and (allocation_done==False) ): # BENCH HALL LOGIC
 
     if logic == 1:
@@ -248,9 +252,15 @@ if ( (len(B_Halls) != 0) and (allocation_done==False) ): # BENCH HALL LOGIC
                             else: #odd
                                 odd_row_subject_list.append(Subjects_list[i])
 
+                    # check for exception case ( odd = 0 & even =1 , even = 0 & odd=1)
+
                     if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
                         allocation_done = True
                         break
+
+    if logic == 2:
+        pass
+        # logic for exception case
 
 if allocation_done == False:
     print()
