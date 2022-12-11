@@ -1,4 +1,4 @@
-# ExamHall-SeatAllocator
+# ExamHall-SeatAllocator | EHSA
 Seat Allocating script for college exams ( swapna miss paranjond mathram )
 
 Sorting Algo
