@@ -50,225 +50,196 @@ Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorti
 even_row_subject_list = []
 odd_row_subject_list = []
 
-# edge exception case fix , variables initialisation
-logic = 1
-threshold_value = 80
-exception_subname = ""
-exception_even_class_list = []
-exception_odd_class_list = []
+if len(D_Halls) != 0 :
 
-if len(D_Halls) != 0 : # DRAWING HALL LGOIC
+    for i in range(len(Subjects_list)):
+        if i%2==0: #even
+            even_row_subject_list.append(Subjects_list[i])
+        else: #odd
+            odd_row_subject_list.append(Subjects_list[i])
 
-    if logic == 1:
+    Halls_list = [] # List of halls
 
-        for i in range(len(Subjects_list)):
-            if i%2==0: #even
-                even_row_subject_list.append(Subjects_list[i])
-            else: #odd
-                odd_row_subject_list.append(Subjects_list[i])
+    for i in D_Halls:
+        #print(i)
+        Halls_list.append([D_Halls[i][0],i,D_Halls[i][1]]) # Hall Capacity , Hall name , Hall col size
 
-        Halls_list = [] # List of halls
+    Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
 
-        for i in D_Halls:
-            #print(i)
-            Halls_list.append([D_Halls[i][0],i,D_Halls[i][1]]) # Hall Capacity , Hall name , Hall col size
+    Halls_sorted_list = []
 
-        Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
+    for i in Halls_list:
+        if allocation_done == True:
+                break
+        else:
+            Hall_name = i[1]
+            Hall_capacity = i[0]
+            Hall_cols = i[2]
 
-        Halls_sorted_list = []
+            a = int(Hall_capacity/Hall_cols)
+            b = int(Hall_capacity%Hall_cols)
 
-        for i in Halls_list:
-            if allocation_done == True:
+            Hall_structure = [ [] for x in range(Hall_cols)]
+
+            
+            for i in Hall_structure:
+                if b>0:
+                    k=1
+                else:
+                    k=0
+
+                i.extend([  [] for x in range(a+k) ])
+                b-=1
+
+            counter = 1
+            for i in Hall_structure:
+                for j in i:
+                    j.append(counter)
+                    counter+=1
+
+            for i in range(len(Hall_structure)):
+                if allocation_done == True:
                     break
-            else:
-                Hall_name = i[1]
-                Hall_capacity = i[0]
-                Hall_cols = i[2]
+                else:
+                    for j in range(len(Hall_structure[i])):
+                        if i%2 == 0: #even row
+                            if len(even_row_subject_list) == 0:
+                                pass
+                            elif len(Hall_structure[i][j])<3:
+                                Hall_structure[i][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
+                                temp_expression = Hall_structure[i][j][1].split("-")
+                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                conn.commit()
+                                Student_allocated_count+=1
+                                even_row_subject_list[0][0]-=1
+                                if even_row_subject_list[0][0]==0:
+                                    even_row_subject_list.pop(0)
 
-                a = int(Hall_capacity/Hall_cols)
-                b = int(Hall_capacity%Hall_cols)
+                        else: #odd row
+                            if len(odd_row_subject_list) == 0:
+                                pass
+                            elif len(Hall_structure[i][j])<3:
+                                Hall_structure[i][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
+                                temp_expression = Hall_structure[i][j][1].split("-")
+                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                conn.commit()
+                                Student_allocated_count+=1
+                                odd_row_subject_list[0][0]-=1
+                                if odd_row_subject_list[0][0]==0:
+                                    odd_row_subject_list.pop(0)
 
-                Hall_structure = [ [] for x in range(Hall_cols)]
+                        if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
+                            Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
 
-                
-                for i in Hall_structure:
-                    if b>0:
-                        k=1
+                            even_row_subject_list = []
+                            odd_row_subject_list = []
+
+                            for i in range(len(Subjects_list)):
+                                if i%2==0: #even
+                                    even_row_subject_list.append(Subjects_list[i])
+                                else: #odd
+                                    odd_row_subject_list.append(Subjects_list[i])
+
+                        if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
+                            Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                            even_row_subject_list = []
+                            odd_row_subject_list = []
+
+                            for i in range(len(Subjects_list)):
+                                if i%2==0: #even
+                                    even_row_subject_list.append(Subjects_list[i])
+                                else: #odd
+                                    odd_row_subject_list.append(Subjects_list[i])
+
+                        if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
+                            allocation_done = True
+                            break
+
+        Halls_sorted_list.append(Hall_structure)
+
+if ( (len(B_Halls) != 0) and (allocation_done==False) ):
+
+    if (even_row_subject_list != [] and odd_row_subject_list != []):
+        Subjects_list = even_row_subject_list + odd_row_subject_list
+        Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+    even_row_subject_list = []
+    odd_row_subject_list = []
+
+    for i in range(len(Subjects_list)):
+        if i%2==0: #even
+            even_row_subject_list.append(Subjects_list[i])
+        else: #odd
+            odd_row_subject_list.append(Subjects_list[i])
+
+    Halls_list = [] # List of halls 
+
+    for i in B_Halls:
+        Halls_list.append([B_Halls[i][0],i]) # Hall Capacity , Hall name
+
+    Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
+
+    for i in Halls_list:
+        if allocation_done == True:
+                break
+        else:
+            Hall_name = i[1]
+            Hall_capacity = i[0]*2
+
+            for seat in range(1,Hall_capacity+1):
+                if seat%2==0: #even
+                    if len(even_row_subject_list) == 0:
+                        pass
                     else:
-                        k=0
-
-                    i.extend([  [] for x in range(a+k) ])
-                    b-=1
-
-                counter = 1
-                for i in Hall_structure:
-                    for j in i:
-                        j.append(counter)
-                        counter+=1
-
-                for i in range(len(Hall_structure)):
-                    if allocation_done == True:
-                        break
+                        x = even_row_subject_list[0].pop(2) #roll
+                        temp_expression = x.split("-")
+                        conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{even_row_subject_list[0][1]}')")
+                        conn.commit()
+                        Student_allocated_count+=1
+                        even_row_subject_list[0][0]-=1
+                        if even_row_subject_list[0][0]==0:
+                            even_row_subject_list.pop(0)
+                else: #odd
+                    if len(odd_row_subject_list) == 0:
+                        pass
                     else:
-                        for j in range(len(Hall_structure[i])):
+                        x = odd_row_subject_list[0].pop(2) #roll
+                        temp_expression = x.split("-")
+                        conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{odd_row_subject_list[0][1]}')")
+                        conn.commit()
+                        Student_allocated_count+=1
+                        odd_row_subject_list[0][0]-=1
+                        if odd_row_subject_list[0][0]==0:
+                            odd_row_subject_list.pop(0)
 
-                            # if logic ==1 , logic ==2 should be here
+                if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
+                    Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
 
-                            if i%2 == 0: #even row
-                                if len(even_row_subject_list) == 0:
-                                    pass
-                                elif len(Hall_structure[i][j])<3:
-                                    Hall_structure[i][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
-                                    temp_expression = Hall_structure[i][j][1].split("-")
-                                    conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
-                                    conn.commit()
-                                    Student_allocated_count+=1
-                                    even_row_subject_list[0][0]-=1
-                                    if even_row_subject_list[0][0]==0:
-                                        even_row_subject_list.pop(0)
+                    even_row_subject_list = []
+                    odd_row_subject_list = []
 
-                            else: #odd row
-                                if len(odd_row_subject_list) == 0:
-                                    pass
-                                elif len(Hall_structure[i][j])<3:
-                                    Hall_structure[i][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
-                                    temp_expression = Hall_structure[i][j][1].split("-")
-                                    conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
-                                    conn.commit()
-                                    Student_allocated_count+=1
-                                    odd_row_subject_list[0][0]-=1
-                                    if odd_row_subject_list[0][0]==0:
-                                        odd_row_subject_list.pop(0)
+                    for i in range(len(Subjects_list)):
+                        if i%2==0: #even
+                            even_row_subject_list.append(Subjects_list[i])
+                        else: #odd
+                            odd_row_subject_list.append(Subjects_list[i])
 
-                            if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
-                                Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+                if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
+                    Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
 
-                                even_row_subject_list = []
-                                odd_row_subject_list = []
+                    even_row_subject_list = []
+                    odd_row_subject_list = []
 
-                                for i in range(len(Subjects_list)):
-                                    if i%2==0: #even
-                                        even_row_subject_list.append(Subjects_list[i])
-                                    else: #odd
-                                        odd_row_subject_list.append(Subjects_list[i])
+                    for i in range(len(Subjects_list)):
+                        if i%2==0: #even
+                            even_row_subject_list.append(Subjects_list[i])
+                        else: #odd
+                            odd_row_subject_list.append(Subjects_list[i])
 
-                            if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
-                                Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
-                                even_row_subject_list = []
-                                odd_row_subject_list = []
-
-                                for i in range(len(Subjects_list)):
-                                    if i%2==0: #even
-                                        even_row_subject_list.append(Subjects_list[i])
-                                    else: #odd
-                                        odd_row_subject_list.append(Subjects_list[i])
-
-                            if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
-                                allocation_done = True
-                                break
-
-            Halls_sorted_list.append(Hall_structure)
-
-    if logic == 2:
-        pass
-        # logic for exception case
-
-if ( (len(B_Halls) != 0) and (allocation_done==False) ): # BENCH HALL LOGIC
-
-    if logic == 1:
-
-        if (even_row_subject_list != [] and odd_row_subject_list != []):
-            Subjects_list = even_row_subject_list + odd_row_subject_list
-            Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
-        even_row_subject_list = []
-        odd_row_subject_list = []
-
-        for i in range(len(Subjects_list)):
-            if i%2==0: #even
-                even_row_subject_list.append(Subjects_list[i])
-            else: #odd
-                odd_row_subject_list.append(Subjects_list[i])
-
-        Halls_list = [] # List of halls 
-
-        for i in B_Halls:
-            Halls_list.append([B_Halls[i][0],i]) # Hall Capacity , Hall name
-
-        Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
-
-        for i in Halls_list:
-            if allocation_done == True:
+                if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
+                    allocation_done = True
                     break
-            else:
-                Hall_name = i[1]
-                Hall_capacity = i[0]*2
-
-                for seat in range(1,Hall_capacity+1):
-                    if seat%2==0: #even
-                        if len(even_row_subject_list) == 0:
-                            pass
-                        else:
-                            x = even_row_subject_list[0].pop(2) #roll
-                            temp_expression = x.split("-")
-                            conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{even_row_subject_list[0][1]}')")
-                            conn.commit()
-                            Student_allocated_count+=1
-                            even_row_subject_list[0][0]-=1
-                            if even_row_subject_list[0][0]==0:
-                                even_row_subject_list.pop(0)
-                    else: #odd
-                        if len(odd_row_subject_list) == 0:
-                            pass
-                        else:
-                            x = odd_row_subject_list[0].pop(2) #roll
-                            temp_expression = x.split("-")
-                            conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{odd_row_subject_list[0][1]}')")
-                            conn.commit()
-                            Student_allocated_count+=1
-                            odd_row_subject_list[0][0]-=1
-                            if odd_row_subject_list[0][0]==0:
-                                odd_row_subject_list.pop(0)
-
-                    if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
-                        Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
-                        even_row_subject_list = []
-                        odd_row_subject_list = []
-
-                        for i in range(len(Subjects_list)):
-                            if i%2==0: #even
-                                even_row_subject_list.append(Subjects_list[i])
-                            else: #odd
-                                odd_row_subject_list.append(Subjects_list[i])
-
-                    if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
-                        Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
-                        even_row_subject_list = []
-                        odd_row_subject_list = []
-
-                        for i in range(len(Subjects_list)):
-                            if i%2==0: #even
-                                even_row_subject_list.append(Subjects_list[i])
-                            else: #odd
-                                odd_row_subject_list.append(Subjects_list[i])
-
-                    # check for exception case ( odd = 0 & even =1 , even = 0 & odd=1)
-                    if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)==1):
-                        pass
-
-                    if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)==1):
-                        pass
-
-                    if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
-                        allocation_done = True
-                        break
-
-    if logic == 2:
-        pass
-        # logic for exception case
 
 if allocation_done == False:
     print()
