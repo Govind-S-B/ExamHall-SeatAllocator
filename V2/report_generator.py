@@ -50,6 +50,14 @@ Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorti
 even_row_subject_list = []
 odd_row_subject_list = []
 
+# exception case logic
+logic = 1
+threshold_value = 80
+exception_subname = ""
+exception_class_list = []
+exception_even_class_list = []
+exception_odd_class_list = []
+
 if len(D_Halls) != 0 :
 
     for i in range(len(Subjects_list)):
@@ -102,59 +110,155 @@ if len(D_Halls) != 0 :
                     break
                 else:
                     for j in range(len(Hall_structure[i])):
+
                         if i%2 == 0: #even row
-                            if len(even_row_subject_list) == 0:
-                                pass
-                            elif len(Hall_structure[i][j])<3:
-                                Hall_structure[i][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
-                                temp_expression = Hall_structure[i][j][1].split("-")
-                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
-                                conn.commit()
-                                Student_allocated_count+=1
-                                even_row_subject_list[0][0]-=1
-                                if even_row_subject_list[0][0]==0:
-                                    even_row_subject_list.pop(0)
+
+                            if logic == 1:
+
+                                if len(even_row_subject_list) == 0:
+                                    pass
+                                elif len(Hall_structure[i][j])<3:
+                                    Hall_structure[i][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
+                                    temp_expression = Hall_structure[i][j][1].split("-")
+                                    conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                    conn.commit()
+                                    Student_allocated_count+=1
+                                    even_row_subject_list[0][0]-=1
+                                    if even_row_subject_list[0][0]==0:
+                                        even_row_subject_list.pop(0)
+
+
+                            if logic == 2:
+
+                                if len(exception_even_class_list) == 0:
+                                    pass
+                                elif len(Hall_structure[i][j])<3:
+                                    Hall_structure[i][j].extend([exception_even_class_list[0].pop(2),exception_subname])
+                                    temp_expression = Hall_structure[i][j][1].split("-")
+                                    conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                    conn.commit()
+                                    Student_allocated_count+=1
+                                    exception_even_class_list[0][0]-=1
+                                    if exception_even_class_list[0][0]==0:
+                                        exception_even_class_list.pop(0)
 
                         else: #odd row
-                            if len(odd_row_subject_list) == 0:
-                                pass
-                            elif len(Hall_structure[i][j])<3:
-                                Hall_structure[i][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
-                                temp_expression = Hall_structure[i][j][1].split("-")
-                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
-                                conn.commit()
-                                Student_allocated_count+=1
-                                odd_row_subject_list[0][0]-=1
-                                if odd_row_subject_list[0][0]==0:
-                                    odd_row_subject_list.pop(0)
 
-                        if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
-                            Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+                            if logic == 1:
 
-                            even_row_subject_list = []
-                            odd_row_subject_list = []
+                                if len(odd_row_subject_list) == 0:
+                                    pass
+                                elif len(Hall_structure[i][j])<3:
+                                    Hall_structure[i][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
+                                    temp_expression = Hall_structure[i][j][1].split("-")
+                                    conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                    conn.commit()
+                                    Student_allocated_count+=1
+                                    odd_row_subject_list[0][0]-=1
+                                    if odd_row_subject_list[0][0]==0:
+                                        odd_row_subject_list.pop(0)
 
-                            for i in range(len(Subjects_list)):
-                                if i%2==0: #even
-                                    even_row_subject_list.append(Subjects_list[i])
-                                else: #odd
-                                    odd_row_subject_list.append(Subjects_list[i])
 
-                        if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
-                            Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+                            if logic == 2:
 
-                            even_row_subject_list = []
-                            odd_row_subject_list = []
+                                if len(exception_odd_class_list) == 0:
+                                    pass
+                                elif len(Hall_structure[i][j])<3:
+                                    Hall_structure[i][j].extend([exception_odd_class_list[0].pop(2),exception_subname])
+                                    temp_expression = Hall_structure[i][j][1].split("-")
+                                    conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                    conn.commit()
+                                    Student_allocated_count+=1
+                                    exception_odd_class_list[0][0]-=1
+                                    if exception_odd_class_list[0][0]==0:
+                                        exception_odd_class_list.pop(0)
+                            
 
-                            for i in range(len(Subjects_list)):
-                                if i%2==0: #even
-                                    even_row_subject_list.append(Subjects_list[i])
-                                else: #odd
-                                    odd_row_subject_list.append(Subjects_list[i])
+                        # Condition checks
 
-                        if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
-                            allocation_done = True
-                            break
+                        if logic == 1:
+
+                            if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
+                                Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                                even_row_subject_list = []
+                                odd_row_subject_list = []
+
+                                for i in range(len(Subjects_list)):
+                                    if i%2==0: #even
+                                        even_row_subject_list.append(Subjects_list[i])
+                                    else: #odd
+                                        odd_row_subject_list.append(Subjects_list[i])
+
+                            if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
+                                Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                                even_row_subject_list = []
+                                odd_row_subject_list = []
+
+                                for i in range(len(Subjects_list)):
+                                    if i%2==0: #even
+                                        even_row_subject_list.append(Subjects_list[i])
+                                    else: #odd
+                                        odd_row_subject_list.append(Subjects_list[i])
+
+                            temp = even_row_subject_list + odd_row_subject_list
+                            if ( (len(temp)==1) and (temp[0][0]>threshold_value) ):
+                                logic = 2
+
+                                exception_subname = temp[0][1]
+                                temp = temp[0][2:] # roll no list [S3r1-20,s3r2-30,s3r2-31,...]
+                                temp_list = []
+
+                                for i in temp:
+                                    s = i.split("-")
+                                    
+                                    if s[0] in temp_list:
+                                        exception_class_list[temp_list.index(s[0])][0] +=1
+                                        exception_class_list[temp_list.index(s[0])].append(i)
+                                    else:
+                                        temp_list.append(s[0])
+                                        exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+                                
+                                for i in range(len(exception_class_list)):
+                                    if i%2==0: #even
+                                        exception_even_class_list.append(exception_class_list[i])
+                                    else: #odd
+                                        exception_odd_class_list.append(exception_class_list[i])
+
+                            if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
+                                allocation_done = True
+                                break
+
+                        if logic == 2:
+
+                            if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)>1):
+                                exception_class_list = sorted(exception_odd_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                                exception_even_class_list = []
+                                exception_odd_class_list = []
+
+                                for i in range(len(exception_class_list)):
+                                    if i%2==0: #even
+                                        exception_even_class_list.append(exception_class_list[i])
+                                    else: #odd
+                                        exception_odd_class_list.append(exception_class_list[i])
+
+                            if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
+                                exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                                exception_even_class_list = []
+                                exception_odd_class_list = []
+
+                                for i in range(len(exception_class_list)):
+                                    if i%2==0: #even
+                                        exception_even_class_list.append(exception_class_list[i])
+                                    else: #odd
+                                        exception_odd_class_list.append(exception_class_list[i])
+
+                            if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)==0):
+                                allocation_done = True
+                                break
 
         Halls_sorted_list.append(Hall_structure)
 
@@ -189,57 +293,151 @@ if ( (len(B_Halls) != 0) and (allocation_done==False) ):
 
             for seat in range(1,Hall_capacity+1):
                 if seat%2==0: #even
-                    if len(even_row_subject_list) == 0:
-                        pass
-                    else:
-                        x = even_row_subject_list[0].pop(2) #roll
-                        temp_expression = x.split("-")
-                        conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{even_row_subject_list[0][1]}')")
-                        conn.commit()
-                        Student_allocated_count+=1
-                        even_row_subject_list[0][0]-=1
-                        if even_row_subject_list[0][0]==0:
-                            even_row_subject_list.pop(0)
+
+                    if logic==1:
+
+                        if len(even_row_subject_list) == 0:
+                            pass
+                        else:
+                            x = even_row_subject_list[0].pop(2) #roll
+                            temp_expression = x.split("-")
+                            conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{even_row_subject_list[0][1]}')")
+                            conn.commit()
+                            Student_allocated_count+=1
+                            even_row_subject_list[0][0]-=1
+                            if even_row_subject_list[0][0]==0:
+                                even_row_subject_list.pop(0)
+
+                    if logic==2:
+
+                        if len(exception_even_class_list) == 0:
+                            pass
+                        else:
+                            x = exception_even_class_list[0].pop(2) #roll
+                            temp_expression = x.split("-")
+                            conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{exception_subname}')")
+                            conn.commit()
+                            Student_allocated_count+=1
+                            exception_even_class_list[0][0]-=1
+                            if exception_even_class_list[0][0]==0:
+                                exception_even_class_list.pop(0)
+
                 else: #odd
-                    if len(odd_row_subject_list) == 0:
-                        pass
-                    else:
-                        x = odd_row_subject_list[0].pop(2) #roll
-                        temp_expression = x.split("-")
-                        conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{odd_row_subject_list[0][1]}')")
-                        conn.commit()
-                        Student_allocated_count+=1
-                        odd_row_subject_list[0][0]-=1
-                        if odd_row_subject_list[0][0]==0:
-                            odd_row_subject_list.pop(0)
 
-                if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
-                    Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+                    if logic==1:
 
-                    even_row_subject_list = []
-                    odd_row_subject_list = []
+                        if len(odd_row_subject_list) == 0:
+                            pass
+                        else:
+                            x = odd_row_subject_list[0].pop(2) #roll
+                            temp_expression = x.split("-")
+                            conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{odd_row_subject_list[0][1]}')")
+                            conn.commit()
+                            Student_allocated_count+=1
+                            odd_row_subject_list[0][0]-=1
+                            if odd_row_subject_list[0][0]==0:
+                                odd_row_subject_list.pop(0)
 
-                    for i in range(len(Subjects_list)):
-                        if i%2==0: #even
-                            even_row_subject_list.append(Subjects_list[i])
-                        else: #odd
-                            odd_row_subject_list.append(Subjects_list[i])
+                    if logic==2:
 
-                if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
-                    Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+                        if len(exception_odd_class_list) == 0:
+                            pass
+                        else:
+                            x = exception_odd_class_list[0].pop(2) #roll
+                            temp_expression = x.split("-")
+                            conn.execute(f"INSERT INTO REPORT VALUES('{x}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{seat}','{exception_subname}')")
+                            conn.commit()
+                            Student_allocated_count+=1
+                            exception_odd_class_list[0][0]-=1
+                            if exception_odd_class_list[0][0]==0:
+                                exception_odd_class_list.pop(0)
 
-                    even_row_subject_list = []
-                    odd_row_subject_list = []
 
-                    for i in range(len(Subjects_list)):
-                        if i%2==0: #even
-                            even_row_subject_list.append(Subjects_list[i])
-                        else: #odd
-                            odd_row_subject_list.append(Subjects_list[i])
+                # Condition checks
 
-                if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
-                    allocation_done = True
-                    break
+                if logic == 1:
+
+                    if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
+                        Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                        even_row_subject_list = []
+                        odd_row_subject_list = []
+
+                        for i in range(len(Subjects_list)):
+                            if i%2==0: #even
+                                even_row_subject_list.append(Subjects_list[i])
+                            else: #odd
+                                odd_row_subject_list.append(Subjects_list[i])
+
+                    if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
+                        Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                        even_row_subject_list = []
+                        odd_row_subject_list = []
+
+                        for i in range(len(Subjects_list)):
+                            if i%2==0: #even
+                                even_row_subject_list.append(Subjects_list[i])
+                            else: #odd
+                                odd_row_subject_list.append(Subjects_list[i])
+
+                    temp = even_row_subject_list + odd_row_subject_list
+                    if ( (len(temp)==1) and (temp[0][0]>threshold_value) ):
+                        logic = 2
+
+                        exception_subname = temp[0][1]
+                        temp = temp[0][2:] # roll no list [S3r1-20,s3r2-30,s3r2-31,...]
+                        temp_list = []
+
+                        for i in temp:
+                            s = i.split("-")
+                            
+                            if s[0] in temp_list:
+                                exception_class_list[temp_list.index(s[0])][0] +=1
+                                exception_class_list[temp_list.index(s[0])].append(i)
+                            else:
+                                temp_list.append(s[0])
+                                exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+                        
+                        for i in range(len(exception_class_list)):
+                            if i%2==0: #even
+                                exception_even_class_list.append(exception_class_list[i])
+                            else: #odd
+                                exception_odd_class_list.append(exception_class_list[i])
+
+                    if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
+                        allocation_done = True
+                        break
+
+                if logic == 2:
+
+                    if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)>1):
+                        exception_class_list = sorted(exception_odd_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                        exception_even_class_list = []
+                        exception_odd_class_list = []
+
+                        for i in range(len(exception_class_list)):
+                            if i%2==0: #even
+                                exception_even_class_list.append(exception_class_list[i])
+                            else: #odd
+                                exception_odd_class_list.append(exception_class_list[i])
+
+                    if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
+                        exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+                        exception_even_class_list = []
+                        exception_odd_class_list = []
+
+                        for i in range(len(exception_class_list)):
+                            if i%2==0: #even
+                                exception_even_class_list.append(exception_class_list[i])
+                            else: #odd
+                                exception_odd_class_list.append(exception_class_list[i])
+
+                    if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)==0):
+                        allocation_done = True
+                        break
 
 if allocation_done == False:
     print()
