@@ -53,6 +53,8 @@ while seed_value!=-1:
         Students_total+=len(Subjects[i])
 
     Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+    if seed_value!=0:
+        random.shuffle(Subjects_list)
 
     even_row_subject_list = []
     odd_row_subject_list = []
@@ -187,7 +189,8 @@ while seed_value!=-1:
 
                                 if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
                                     Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
+                                    if seed_value!=0:
+                                        random.shuffle(Subjects_list)
                                     even_row_subject_list = []
                                     odd_row_subject_list = []
 
@@ -199,7 +202,8 @@ while seed_value!=-1:
 
                                 if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
                                     Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
+                                    if seed_value!=0:
+                                            random.shuffle(Subjects_list)
                                     even_row_subject_list = []
                                     odd_row_subject_list = []
 
@@ -227,6 +231,8 @@ while seed_value!=-1:
                                             temp_list.append(s[0])
                                             exception_class_list.append([1,s[0],i]) # number , class name , roll nums
                                     
+                                    if seed_value!=0:
+                                            random.shuffle(exception_class_list)
                                     for i in range(len(exception_class_list)):
                                         if i%2==0: #even
                                             exception_even_class_list.append(exception_class_list[i])
@@ -241,7 +247,8 @@ while seed_value!=-1:
 
                                 if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)>1):
                                     exception_class_list = sorted(exception_odd_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
+                                    if seed_value!=0:
+                                            random.shuffle(exception_class_list)
                                     exception_even_class_list = []
                                     exception_odd_class_list = []
 
@@ -253,7 +260,8 @@ while seed_value!=-1:
 
                                 if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
                                     exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
+                                    if seed_value!=0:
+                                            random.shuffle(exception_class_list)
                                     exception_even_class_list = []
                                     exception_odd_class_list = []
 
@@ -274,6 +282,9 @@ while seed_value!=-1:
         if (even_row_subject_list != [] and odd_row_subject_list != []):
             Subjects_list = even_row_subject_list + odd_row_subject_list
             Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
+
+            if seed_value!=0:
+                    random.shuffle(Subjects_list)
 
         even_row_subject_list = []
         odd_row_subject_list = []
@@ -366,7 +377,8 @@ while seed_value!=-1:
 
                         if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
                             Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
+                            if seed_value!=0:
+                                    random.shuffle(Subjects_list)
                             even_row_subject_list = []
                             odd_row_subject_list = []
 
@@ -378,7 +390,8 @@ while seed_value!=-1:
 
                         if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
                             Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
+                            if seed_value!=0:
+                                    random.shuffle(Subjects_list)
                             even_row_subject_list = []
                             odd_row_subject_list = []
 
@@ -405,6 +418,9 @@ while seed_value!=-1:
                                 else:
                                     temp_list.append(s[0])
                                     exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+
+                            if seed_value!=0:
+                                    random.shuffle(exception_class_list)
                             
                             for i in range(len(exception_class_list)):
                                 if i%2==0: #even
@@ -420,7 +436,8 @@ while seed_value!=-1:
 
                         if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)>1):
                             exception_class_list = sorted(exception_odd_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
+                            if seed_value!=0:
+                                    random.shuffle(exception_class_list)
                             exception_even_class_list = []
                             exception_odd_class_list = []
 
@@ -432,7 +449,8 @@ while seed_value!=-1:
 
                         if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
                             exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
-
+                            if seed_value!=0:
+                                    random.shuffle(exception_class_list)
                             exception_even_class_list = []
                             exception_odd_class_list = []
 
