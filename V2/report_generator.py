@@ -754,6 +754,7 @@ while seed_value!=-1:
                 roll_range_raw=k[2]
                 temp1=""
                 a=[]
+                # print("Roll rage raw: ",roll_range_raw)
                 for m in roll_range_raw:
                     if m.isdigit():
                         temp1+=m
@@ -763,20 +764,28 @@ while seed_value!=-1:
                         temp1=""
                     elif m==')':
                         a.append(temp1)
-                roll_rows=len(a)
-                roll_flag=0
-                if roll_rows>1:
-                    roll_flag=1
-                
+                # print("a: ",a)
+                # roll_rows=len(a)
                 temp1=""
                 for m in a:
                     x=m.split(',')
                     if x[0]==x[1]:
-                        temp1+=x[0]+"\n"
+                        temp1+=x[0]+", "
                     else:
-                        temp1+=x[0]+"-"+x[1]+"\n"
-                temp1=temp1[:-1]
+                        temp1+=x[0]+"-"+x[1]+", "
+                temp1=temp1[:-2]
+                # print("temp1: ",temp1)
+                roll_rows=int(math.ceil(len(temp1)/17))
+                roll_flag=0
+                if roll_rows>1:
+                    roll_flag=1
+                
+                print(hall_name, " ", curr_class," ",k[1])
+                print("Sub r: ", sub_rows)
+                print("Roll r: ", roll_rows)
                 rows=max(sub_rows,roll_rows)
+                print("Rows: ", rows)
+                print()
                 height=10*rows
                 pdf2.set_font(font, '', 10)
 
@@ -821,11 +830,12 @@ while seed_value!=-1:
             pdf2.write_html("<U>Invigilators must</U>:")
             pdf2.write_html("<br><br>     1.  Ensure that all candidates have ID-Cards & are in proper uniform.")
             pdf2.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic")
-            y_pos+=23
-            pdf2.set_y(y_pos)
+            # pdf2.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic<br>         gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed<br>         inside.")
+            # y_pos+=23
+            # pdf2.set_y(y_pos)
             pdf2.write_html("<br>         gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
-            y_pos+=8
-            pdf2.set_y(y_pos)
+            # y_pos+=8
+            # pdf2.set_y(y_pos)
             pdf2.write_html("<br>         inside.")
             
             PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
