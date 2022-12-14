@@ -64,6 +64,8 @@ elif list_to_generate == 2:
             break
 
         count = class_name.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
+        class_name = count[0]
+        
         if len(count) == 1:
             count = 1 #, reperat below loop only once
         else:

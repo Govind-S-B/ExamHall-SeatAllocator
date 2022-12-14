@@ -1111,4 +1111,4 @@ while seed_value!=-1:
     pdf3.output(file_name)
 
     print("Done")
-    seed_value = int(input("Enter seed value : ")) # enter -1 to exit
+    seed_value = int(input("Enter seed value (-1 to quit): ")) # enter -1 to exit
