@@ -766,26 +766,52 @@ while seed_value!=-1:
                         a.append(temp1)
                 # print("a: ",a)
                 # roll_rows=len(a)
+                roll_rows=1
                 temp1=""
+                # char_count=1
                 for m in a:
                     x=m.split(',')
                     if x[0]==x[1]:
                         temp1+=x[0]+", "
+                        # char_count+=len(x[0])+2
                     else:
                         temp1+=x[0]+"-"+x[1]+", "
+                        # char_count+=len(x[0])+len(x[1])+2
+                    # if char_count>16:
+                    #     # temp1+="\n"
+                    #     roll_rows+=1
+                    #     char_count=1
+                # while temp1[-1].isnumeric()==False:
+                #     temp1=temp1[:-1]
                 temp1=temp1[:-2]
-                # print("temp1: ",temp1)
                 roll_rows=int(math.ceil(len(temp1)/17))
+                if len(temp1)>50:
+                    roll_rows+=1
+                # if temp1[-1]=="\n":
+                #     temp1=temp1[:-1]
+                #     roll_rows-=1
+                # temp1=temp1[:-2]
+                # temp1+="test"
+                # print("Temp: ",temp1)
+                # print()
+                # print("temp1: ",temp1)
+                # roll_rows=int(math.ceil(len(temp1)/17))
+                # char_count=0
+                # for e in temp1:
+                #     char_count+=1
+                #     if e==",":
+                #         if char_count>16
+
                 roll_flag=0
-                if roll_rows>1:
-                    roll_flag=1
+                # if roll_rows>1:
+                #     roll_flag=1
                 
-                print(hall_name, " ", curr_class," ",k[1])
-                print("Sub r: ", sub_rows)
-                print("Roll r: ", roll_rows)
+                # print(hall_name, " ", curr_class," ",k[1])
+                # print("Sub r: ", sub_rows)
+                # print("Roll r: ", roll_rows)
                 rows=max(sub_rows,roll_rows)
-                print("Rows: ", rows)
-                print()
+                # print("Rows: ", rows)
+                # print()
                 height=10*rows
                 pdf2.set_font(font, '', 10)
 
