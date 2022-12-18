@@ -117,6 +117,32 @@ while seed_value!=-1:
                         j.append(counter)
                         counter+=1
 
+                temp = even_row_subject_list + odd_row_subject_list
+                if ( (len(temp)==1) and (temp[0][0]>threshold_value) ):
+                    logic = 2
+
+                    exception_subname = temp[0][1]
+                    temp = temp[0][2:] # roll no list [S3r1-20,s3r2-30,s3r2-31,...]
+                    temp_list = []
+
+                    for i in temp:
+                        s = i.split("-")
+                        
+                        if s[0] in temp_list:
+                            exception_class_list[temp_list.index(s[0])][0] +=1
+                            exception_class_list[temp_list.index(s[0])].append(i)
+                        else:
+                            temp_list.append(s[0])
+                            exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+                    
+                    if seed_value!=0:
+                            random.shuffle(exception_class_list)
+                    for i in range(len(exception_class_list)):
+                        if i%2==0: #even
+                            exception_even_class_list.append(exception_class_list[i])
+                        else: #odd
+                            exception_odd_class_list.append(exception_class_list[i])
+
                 for i in range(len(Hall_structure)):
                     if allocation_done == True:
                         break
@@ -324,7 +350,36 @@ while seed_value!=-1:
         for i in B_Halls:
             Halls_list.append([B_Halls[i][0],i]) # Hall Capacity , Hall name
 
-        Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
+        Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity
+
+        if logic == 1: 
+
+            temp = even_row_subject_list + odd_row_subject_list
+            if ( (len(temp)==1) and (temp[0][0]>threshold_value) ):
+                logic = 2
+
+                exception_subname = temp[0][1]
+                temp = temp[0][2:] # roll no list [S3r1-20,s3r2-30,s3r2-31,...]
+                temp_list = []
+
+                for i in temp:
+                    s = i.split("-")
+                    
+                    if s[0] in temp_list:
+                        exception_class_list[temp_list.index(s[0])][0] +=1
+                        exception_class_list[temp_list.index(s[0])].append(i)
+                    else:
+                        temp_list.append(s[0])
+                        exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+
+                if seed_value!=0:
+                        random.shuffle(exception_class_list)
+                
+                for i in range(len(exception_class_list)):
+                    if i%2==0: #even
+                        exception_even_class_list.append(exception_class_list[i])
+                    else: #odd
+                        exception_odd_class_list.append(exception_class_list[i])
 
         for i in Halls_list:
             if allocation_done == True:
