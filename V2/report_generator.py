@@ -533,7 +533,8 @@ while seed_value!=-1:
     cursor = conn.execute(cmd)
     Q_list = cursor.fetchall()
 
-    PDF_list = [["Class", "Hall", "RollNo"]]
+    PDF_list = []
+    temp_PDF_list = []
     roll_list = []
     class_name = Q_list[0][0]
     hall_name = Q_list[0][1]
@@ -546,7 +547,9 @@ while seed_value!=-1:
             else:
                 temp = "("+str(len(roll_list))+")"
                 roll_list.append(temp)
-                PDF_list.append([class_name, hall_name, roll_list])
+                
+                temp_PDF_list.append([class_name, hall_name, roll_list])
+
                 hall_name = i[1]
                 roll_list = []
                 roll_list.append(i[2])
@@ -554,7 +557,13 @@ while seed_value!=-1:
         else:
             temp = "("+str(len(roll_list))+")"
             roll_list.append(temp)
-            PDF_list.append([class_name, hall_name, roll_list])
+
+            temp_PDF_list.append([class_name, hall_name, roll_list])
+            temp_PDF_list = sorted(temp_PDF_list, key = lambda x:x[2][0])
+            for h in temp_PDF_list:
+                PDF_list.append(h)
+
+            temp_PDF_list = []
             class_name = i[0]
             hall_name = i[1]
             roll_list = []
@@ -563,7 +572,12 @@ while seed_value!=-1:
         if Q_list[-1] == i:
             temp = "("+str(len(roll_list))+")"
             roll_list.append(temp)
-            PDF_list.append([class_name, hall_name, roll_list])
+
+            temp_PDF_list.append([class_name, hall_name, roll_list])
+            temp_PDF_list = sorted(temp_PDF_list, key = lambda x:x[2][0])
+            for h in temp_PDF_list:
+                PDF_list.append(h)
+
 
     pdf1.set_auto_page_break(auto = True, margin = 15) # Auto page break
     pdf1.add_page()
@@ -594,7 +608,7 @@ while seed_value!=-1:
 
     # Create Table Body
     prev_class=""
-    PDF_list.pop(0)
+    # PDF_list.pop(0)
     for i in PDF_list:
         temp="   "
         rows=1
@@ -947,6 +961,7 @@ while seed_value!=-1:
                 roll_range_raw=k[2]
                 temp1=""
                 a=[]
+                # print("Roll rage raw: ",roll_range_raw)
                 for m in roll_range_raw:
                     if m.isdigit():
                         temp1+=m
@@ -956,20 +971,54 @@ while seed_value!=-1:
                         temp1=""
                     elif m==')':
                         a.append(temp1)
-                roll_rows=len(a)
-                roll_flag=0
-                if roll_rows>1:
-                    roll_flag=1
-                
+                # print("a: ",a)
+                # roll_rows=len(a)
+                roll_rows=1
                 temp1=""
+                # char_count=1
                 for m in a:
                     x=m.split(',')
                     if x[0]==x[1]:
-                        temp1+=x[0]+"\n"
+                        temp1+=x[0]+", "
+                        # char_count+=len(x[0])+2
                     else:
-                        temp1+=x[0]+"-"+x[1]+"\n"
-                temp1=temp1[:-1]
+                        temp1+=x[0]+"-"+x[1]+", "
+                        # char_count+=len(x[0])+len(x[1])+2
+                    # if char_count>16:
+                    #     # temp1+="\n"
+                    #     roll_rows+=1
+                    #     char_count=1
+                # while temp1[-1].isnumeric()==False:
+                #     temp1=temp1[:-1]
+                temp1=temp1[:-2]
+                roll_rows=int(math.ceil(len(temp1)/17))
+                if len(temp1)>50:
+                    roll_rows+=1
+                # if temp1[-1]=="\n":
+                #     temp1=temp1[:-1]
+                #     roll_rows-=1
+                # temp1=temp1[:-2]
+                # temp1+="test"
+                # print("Temp: ",temp1)
+                # print()
+                # print("temp1: ",temp1)
+                # roll_rows=int(math.ceil(len(temp1)/17))
+                # char_count=0
+                # for e in temp1:
+                #     char_count+=1
+                #     if e==",":
+                #         if char_count>16
+
+                roll_flag=0
+                # if roll_rows>1:
+                #     roll_flag=1
+                
+                # print(hall_name, " ", curr_class," ",k[1])
+                # print("Sub r: ", sub_rows)
+                # print("Roll r: ", roll_rows)
                 rows=max(sub_rows,roll_rows)
+                # print("Rows: ", rows)
+                # print()
                 height=10*rows
                 pdf2.set_font(font, '', 10)
 
@@ -1014,11 +1063,12 @@ while seed_value!=-1:
             pdf2.write_html("<U>Invigilators must</U>:")
             pdf2.write_html("<br><br>     1.  Ensure that all candidates have ID-Cards & are in proper uniform.")
             pdf2.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic")
-            y_pos+=23
-            pdf2.set_y(y_pos)
+            # pdf2.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic<br>         gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed<br>         inside.")
+            # y_pos+=23
+            # pdf2.set_y(y_pos)
             pdf2.write_html("<br>         gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
-            y_pos+=8
-            pdf2.set_y(y_pos)
+            # y_pos+=8
+            # pdf2.set_y(y_pos)
             pdf2.write_html("<br>         inside.")
 
             PDF_list = []
