@@ -68,7 +68,7 @@ while seed_value!=-1:
     exception_odd_class_list = []
 
     # yet another exception
-    dont_care = False
+    dont_care = True
 
     if len(D_Halls) != 0 :
 
@@ -291,7 +291,7 @@ while seed_value!=-1:
                                             else: #odd
                                                 exception_odd_class_list.append(exception_class_list[i])
 
-                                    exception_class_list = even_row_subject_list + exception_odd_class_list
+                                    exception_class_list = exception_even_class_list + exception_odd_class_list
                                     if ( (len(exception_class_list)==1) and (dont_care == True) ):
                                         logic = 3
 
@@ -503,7 +503,7 @@ while seed_value!=-1:
                                     else: #odd
                                         exception_odd_class_list.append(exception_class_list[i])
 
-                            exception_class_list = even_row_subject_list + exception_odd_class_list
+                            exception_class_list = exception_even_class_list + exception_odd_class_list
                             if ( (len(exception_class_list)==1) and (dont_care == True) ):
                                 logic = 3
 
