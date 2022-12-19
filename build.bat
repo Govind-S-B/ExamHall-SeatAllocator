@@ -1,7 +1,7 @@
 :: RUN (in root directory)
 
 :: pyinstaller --onefile json_generator.py
-:: pyinstaller --onefile -w ./report_script/report_genv2.py
+:: pyinstaller --onefile -w ./report_script/report_generator.py
 
 :: FETCH FILES FROM dist folder
 
@@ -16,7 +16,7 @@ pyinstaller --onefile -w ./V2/json_generator.py
 pyinstaller --onefile -w ./V2/report_generator.py
 
 del json_generator.spec
-del report_genv2.spec
+del report_generator.spec
 
 copy dist FINAL_BUILD
 
