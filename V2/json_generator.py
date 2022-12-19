@@ -13,7 +13,7 @@ if list_to_generate == 1:
         "D" : {}
     }
     
-    print('\nPress "done" to exit')
+    print('\nPress "done" to exit\n')
 
     while True:
         hall_name = input("Hall Name: ")
@@ -21,24 +21,28 @@ if list_to_generate == 1:
         if hall_name.lower() == "done":
             break
 
-        capacity = int(input("Table Count : "))
-
-        cols = input("Coloumn Count : ") # leave empty if not a drawing hall
-        if cols == "":
-            Halls["B"][hall_name] = [capacity]
+        args = input("Table Count: ").split()
+        
+        if len(args) == 1:
+            Halls["B"][hall_name] = [ int(args[0]) ]
         else:
-            cols = int(cols)
-            Halls["D"][hall_name] = [capacity, cols]
+            Halls["D"][hall_name] = [int(args[0]),int(args[1])]
 
-    if output_mode == 2:
+        print()
+
+    if output_mode == 1:
+        print()
+        print(Halls)
+
+    elif output_mode == 2:
         with open('Halls.json', 'w') as fp:
             json.dump(Halls, fp)
-    elif output_mode == 1:
-        print(Halls)
+
+
 
 elif list_to_generate == 2:
 
-    session_name = input("Enter Session name: ")  # 12-04-2022 FN
+    session_name = input("Enter Session Name: ")  # 12-04-2022 FN
     MetaInfo = {"Session_Name": session_name}
     Subjects = {}
     Subjects["meta"] = MetaInfo
@@ -46,20 +50,20 @@ elif list_to_generate == 2:
     option = 1
     subject_list = {}
 
-    print('\nPress "done" to exit')
+    print('\nPress "done" to exit\n')
 
     while True:
-        subjects = str(input("Enter Subject name: "))
+        subjects = str(input("Enter Subject Name: "))
         if subjects.lower() == "done":
             break
         
         subject_list[option] = subjects
         option +=1
 
-    print('\nPress "done" to exit')
+    print('\nPress "done" to exit\n')
 
     while True:
-        class_name = input("Enter class name: ")
+        class_name = input("Enter Class Name: ")
         if class_name.lower() == "done":
             break
 
@@ -104,12 +108,15 @@ elif list_to_generate == 2:
                             Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
                     else:
                         Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
+        
+        print()
 
     if output_mode == 1:
+        print()
         print(json.dumps(Subjects, indent=4))
 
     elif output_mode == 2:
         with open('Subjects.json', 'w') as fp:
             json.dump(Subjects, fp, indent=4)
 
-input("\n Enter any key to exit ")  # dummy input function to wait for user input to exit script
+input("\nEnter any key to exit ")  # dummy input function to wait for user input to exit script
