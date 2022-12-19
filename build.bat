@@ -13,7 +13,7 @@
 :: my system is x64 , Windows . So the build i make will only work with compatible system of my same configuration
 
 pyinstaller --onefile -w ./V2/json_generator.py
-pyinstaller --onefile -w ./V2/report_genv2.py
+pyinstaller --onefile -w ./V2/report_generator.py
 
 del json_generator.spec
 del report_genv2.spec
