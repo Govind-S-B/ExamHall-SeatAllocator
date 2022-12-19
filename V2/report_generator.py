@@ -5,10 +5,25 @@ import itertools
 import math
 import random
 
-seed_value = int(input("Enter seed value : ")) # 0 for no randomness , and -1 for exit
+args = input("Enter args : ")
+args_list = args.split()
+
+# seed_value threshold_value dont_care
+
+if (len(args_list) == 1):
+    args_list = "done"
+elif (len(args_list) == 3):
+    seed_value = int(args_list[0])
+    threshold_value = int(args_list[1])
+    dont_care = bool(int(args_list[2]))
+else:
+    args = "0 80 0"
+    seed_value = 0
+    threshold_value = 80
+    dont_care = False
+
 
 print("Starting Generation")
-
 
 print("Loading Files")
 
@@ -24,8 +39,8 @@ with open('Subjects.json', 'r') as JSON:
 
 MetaInfo = Subjects.pop("meta") # Meta info global for each generation
 
-while seed_value!=-1:
-
+while args_list!="done":
+    
     random.seed(seed_value)
 
     print("Generating intermediary DB")
@@ -44,6 +59,7 @@ while seed_value!=-1:
 
     allocation_done = False
     Student_allocated_count=0
+    halls_allocated_count=0
 
     Subjects_list = [] # List of subjects
     Students_total=0
@@ -61,14 +77,13 @@ while seed_value!=-1:
 
     # exception case logic
     logic = 1
-    threshold_value = 80
     exception_subname = ""
     exception_class_list = []
     exception_even_class_list = []
     exception_odd_class_list = []
 
     # yet another exception
-    dont_care = True
+
 
     if len(D_Halls) != 0 :
 
@@ -95,6 +110,8 @@ while seed_value!=-1:
                 Hall_name = i[1]
                 Hall_capacity = i[0]
                 Hall_cols = i[2]
+
+                halls_allocated_count += 1
 
                 a = int(Hall_capacity/Hall_cols)
                 b = int(Hall_capacity%Hall_cols)
@@ -388,6 +405,8 @@ while seed_value!=-1:
                 Hall_name = i[1]
                 Hall_capacity = i[0]*2
 
+                halls_allocated_count += 1
+
                 for seat in range(1,Hall_capacity+1):
 
                     if logic == 3:
@@ -565,13 +584,6 @@ while seed_value!=-1:
                             if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)==0):
                                 allocation_done = True
                                 break
-
-    if allocation_done == False:
-        print()
-        print("Hall capacity insufficient.")
-        print("Number of students allocated: ",Student_allocated_count)
-        print("Number of students left to allocate: ",Students_total-Student_allocated_count)
-        input("\n Enter any key to exit ")
 
     print("Generating PDF")
 
@@ -1299,4 +1311,41 @@ while seed_value!=-1:
     pdf3.output(file_name)
 
     print("Done")
-    seed_value = int(input("Enter seed value (-1 to quit): ")) # enter -1 to exit
+
+    if allocation_done == True :
+        print("Allocation Complete")
+        print("Halls allocated: ",halls_allocated_count)
+        print("Number of students allocated: ",Student_allocated_count)
+        print("args: ",args)
+        print("seed: ",seed_value)
+        print("threshold value: ",threshold_value)
+        print("dont care:",dont_care)
+        print("logic: ",logic)
+    else:
+        print("Allocation Incomplete")
+        print("Hall capacity insufficient")
+        print("Halls allocated: ",halls_allocated_count)
+        print("Number of students allocated: ",Student_allocated_count)
+        print("Number of students left to allocate: ",Students_total-Student_allocated_count)
+        print("args: ",args)
+        print("seed: ",seed_value)
+        print("threshold value: ",threshold_value)
+        print("dont care:",dont_care)
+        print("logic: ",logic)
+      
+
+    print("\nEnter done to exit\n")
+    args = input("Enter args : ")
+    args_list = args.split()
+
+    if (len(args_list) == 1):
+        args_list = "done"
+    elif (len(args_list) == 3):
+        seed_value = int(args_list[0])
+        threshold_value = int(args_list[1])
+        dont_care = bool(int(args_list[2]))
+    else:
+        args = "0 80 0"
+        seed_value = 0
+        threshold_value = 80
+        dont_care = False
