@@ -21,8 +21,8 @@ json mode writes the data on file ( this is the required file for processing )<b
 <br>
 3. In Halls mode <br>
 enter the Hall name and the table count<br>
-for benches the table count is a single number `30`<br>
-for drawing halls the table count is a two part number `36 7`. The first indicating the number of benches and the second indicating the number of columns <br>
+- for benches the table count is a single number `30`<br>
+- for drawing halls the table count is a two part number `36 7`. The first indicating the number of benches and the second indicating the number of columns <br>
 <br>
 example : <br>
 ![image](https://user-images.githubusercontent.com/62943847/208368062-1722b871-98c4-401e-8954-376a0512df25.png)<br>
@@ -50,6 +50,11 @@ example : <br>
 ![image](https://user-images.githubusercontent.com/62943847/208370110-4ca6514b-e4a5-42cb-b21c-b7bbe365dece.png)<br>
 <br>
 press done to exit the data entry loop<br>
+<br>
+
+#### Advantages + A few Quirks of using JSON
+- Human readable and therefore easy to edit the data even after entry using a simple text editor ( eg : changing subject names , combining different subjects into one , adding or removing halls / students )<br>
+- With text mode in json generator , new data can be generated and copy pasted into the json file , in a sense botching together for edit functionality<br>
 <br>
 
 
