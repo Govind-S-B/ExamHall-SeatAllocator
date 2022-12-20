@@ -12,10 +12,9 @@
 :: Note : Build will only work with , compiled base system configuration
 :: my system is x64 , Windows . So the build i make will only work with compatible system of my same configuration
 
-python -m PyInstaller --onefile --add-data="./V2/Fonts/*;." ./V2/EHSA.py
+python -m PyInstaller --onefile ./V2/EHSA.py
 
-del json_generator.spec
-del report_generator.spec
+del EHSA.spec
 
 copy dist FINAL_BUILD
 
