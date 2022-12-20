@@ -7,6 +7,8 @@ Collecting data in this format will make it easier for data entry
   
 ## How to use  
   
+Launch the EHSA script and choose the appopriate generator utility
+  
 ### Json Generator  
 Use json_generator to create a json file containing your data  
 Sample data can be found [here](https://github.com/Govind-S-B/ExamHall-SeatAllocator/tree/main/FINAL_BUILD/Backups)  
