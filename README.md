@@ -61,6 +61,25 @@ press done to exit the data entry loop<br>
 ### Report Generator
 Run report_generator to create your pdf <br>
 
+Launch the script and enter the argument list for generation ( seed_value threshold_value dont_care) eg : 7 80 1
+NOTE : If the argument list is empty , the default argument list is taken as 0 80 0 , to exit enter done
+
+The seed value determines the shuffling around of students / classes among halls , so try various seed values to get different arrangements ( 0 is the default unrandomised seed )
+
+The threshold value determines at what value ( number of students to allocate ) does it not matter that students of the same subject sit together as long as they are in different classes (ie, cases where everone has the same subject so its inevitable to pair students of the same subject together) . Put this at a high value so that it is not triggered easily
+NOTE : The program will try its best to pair students with different subjects together , only if its not possible does it trigger this allocation logic ( logic = 2 )
+Defalult value is 80
+
+dont_care is a boolean and can be a 0 or 1 . If dont care is set to true , then it doesnt care if same classmates are together as long as a seat is available . Only use this when you are tight on seats to spare
+NOTE : As earlier the program tries its best to allocate students with different subjects together and if not possible triggers logic 2 allocating students with different classes together ( ignoring subjects ) . Logic 3 ( dont care ) only triggers if logic 2 is triggered
+
+
+The program will generate an intermediary db that can be queried to get any detailed information regarding the allocation ( though the CLI shows a basic report on how the allocation went and the arguments it was passed )
+
+The pdfs will be generated in the same directory as the report_generator file
+
+
+
 ### Drawing Hall Layout
 <img src="https://user-images.githubusercontent.com/62943847/208338088-c07cbad2-cfde-4177-a800-2cfa30ba3d87.jpg" width="400">
 
