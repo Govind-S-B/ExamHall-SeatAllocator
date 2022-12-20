@@ -6,7 +6,8 @@ import math
 import random
 
 print("ExamHall-SeatAllocator | EHSA v2.x - protoRes\n")
-choice = input("Enter Choice (1)JSON Generator (2)Report Generator")
+choice = input("Enter Choice (1)JSON Generator (2)Report Generator: ")
+print()
 
 if choice == "1":
 
