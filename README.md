@@ -60,8 +60,8 @@ press done to exit the data entry loop
 ### Report Generator  
 Run report_generator to create your pdf ( Make sure you have the Halls.json and Subjects.json file in the same directory as the report_genrator )
   
-Launch the script and enter the argument list for generation ( seed_value threshold_value dont_care) eg : 7 80 1  
-**NOTE** : If the argument list is empty , the default argument list is taken as 0 80 0 , to exit enter done
+Launch the script and enter the argument list for generation ( seed_value threshold_value dont_care) eg : `7 80 1` 
+**NOTE** : If the argument list is empty , the default argument list is taken as `0 80 0` , to exit enter done
   
 The seed value determines the shuffling around of students / classes among halls , so try various seed values to get different arrangements ( 0 is the default unrandomised seed )  
   
