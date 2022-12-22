@@ -1144,15 +1144,11 @@ elif choice == "2":
                 pdf2.set_y(y_pos)
                 pdf2.set_font(font, '', 15)
                 pdf2.write_html("<U>Invigilators must</U>:")
-                pdf2.write_html("<br><br>     1.  Ensure that all candidates have ID-Cards & are in proper uniform.")
-                pdf2.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic")
-                # pdf2.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic<br>         gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed<br>         inside.")
-                # y_pos+=23
-                # pdf2.set_y(y_pos)
-                pdf2.write_html("<br>         gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
-                # y_pos+=8
-                # pdf2.set_y(y_pos)
-                pdf2.write_html("<br>         inside.")
+                pdf2.write_html("<br><br>&nbsp;&nbsp;&nbsp;1.  &nbsp;Ensure that all candidates have ID-Cards & are in proper uniform.")
+                pdf2.write_html("<br><br>&nbsp;&nbsp;&nbsp;2. Announce that mobile phones, smartwatches & other electronic")
+                pdf2.write_html("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
+                pdf2.set_y(pdf2.get_y()+1.25)
+                pdf2.write_html("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inside.")
                 
                 PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
 
@@ -1337,15 +1333,11 @@ elif choice == "2":
                 pdf2.set_y(y_pos)
                 pdf2.set_font(font, '', 15)
                 pdf2.write_html("<U>Invigilators must</U>:")
-                pdf2.write_html("<br><br>     1.  Ensure that all candidates have ID-Cards & are in proper uniform.")
-                pdf2.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic")
-                # pdf2.write_html("<br><br>     2. Announce that mobile phones, smartwatches & other electronic<br>         gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed<br>         inside.")
-                # y_pos+=23
-                # pdf2.set_y(y_pos)
-                pdf2.write_html("<br>         gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
-                # y_pos+=8
-                # pdf2.set_y(y_pos)
-                pdf2.write_html("<br>         inside.")
+                pdf2.write_html("<br><br>&nbsp;&nbsp;&nbsp;1.  &nbsp;Ensure that all candidates have ID-Cards & are in proper uniform.")
+                pdf2.write_html("<br><br>&nbsp;&nbsp;&nbsp;2. Announce that mobile phones, smartwatches & other electronic")
+                pdf2.write_html("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
+                pdf2.set_y(pdf2.get_y()+1.25)
+                pdf2.write_html("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inside.")
 
                 PDF_list = []
 
