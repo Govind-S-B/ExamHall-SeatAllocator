@@ -137,10 +137,20 @@ elif choice == "2":
     args = input("Enter args : ")
     args_list = args.split()
 
+    split_enabled = False
+
     # seed_value threshold_value dont_care
 
     if (len(args_list) == 1):
         args_list = "done"
+    elif (len(args_list) == 2):
+        print("Need at least one previous allocation for program to trace back allocated halls count")
+        # uses default since first run
+        args = "0 80 0"
+        seed_value = 0
+        threshold_value = 80
+        dont_care = False
+
     elif (len(args_list) == 3):
         seed_value = int(args_list[0])
         threshold_value = int(args_list[1])
@@ -168,6 +178,9 @@ elif choice == "2":
 
     MetaInfo = Subjects.pop("meta") # Meta info global for each generation
 
+    prev_bench_hall_allocated_count = 0
+    prev_halls_allocated_count = 0
+
     while args_list!="done":
         
         random.seed(seed_value)
@@ -189,6 +202,7 @@ elif choice == "2":
         allocation_done = False
         Student_allocated_count=0
         halls_allocated_count=0
+        bench_hall_allocated_count=0
 
         Subjects_list = [] # List of subjects
         Students_total=0
@@ -498,6 +512,16 @@ elif choice == "2":
 
             Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity
 
+            if split_enabled:
+                check_for_split_halls_list = Halls_list[(prev_bench_hall_allocated_count-split_hall_count):prev_bench_hall_allocated_count]
+
+                split_mean_capacity = 0
+                for i in check_for_split_halls_list:
+                    split_mean_capacity += i[0]*2
+                split_mean_capacity = int (split_mean_capacity / split_hall_count)
+
+
+
             if logic == 1: 
 
                 temp = even_row_subject_list + odd_row_subject_list
@@ -527,14 +551,17 @@ elif choice == "2":
                         else: #odd
                             exception_odd_class_list.append(exception_class_list[i])
 
-            for i in Halls_list:
+            for each_hall in Halls_list:
                 if allocation_done == True:
                         break
                 else:
-                    Hall_name = i[1]
-                    Hall_capacity = i[0]*2
+                    Hall_name = each_hall[1]
+                    Hall_capacity = each_hall[0]*2
 
                     halls_allocated_count += 1
+                    bench_hall_allocated_count += 1
+
+                    current_hall_allocated_count = 0
 
                     for seat in range(1,Hall_capacity+1):
 
@@ -713,6 +740,12 @@ elif choice == "2":
                                 if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)==0):
                                     allocation_done = True
                                     break
+
+                        current_hall_allocated_count += 1
+
+                        if ( (split_enabled) and (each_hall in check_for_split_halls_list) and (current_hall_allocated_count >= split_mean_capacity)) :
+                            break
+
 
         print("Generating PDF")
 
@@ -1445,30 +1478,42 @@ elif choice == "2":
             print("Allocation Complete")
             print("Halls allocated: ",halls_allocated_count)
             print("Number of students allocated: ",Student_allocated_count)
-            print("args: ",args)
-            print("seed: ",seed_value)
-            print("threshold value: ",threshold_value)
-            print("dont care:",dont_care)
-            print("logic: ",logic)
         else:
             print("Allocation Incomplete")
             print("Hall capacity insufficient")
             print("Halls allocated: ",halls_allocated_count)
             print("Number of students allocated: ",Student_allocated_count)
             print("Number of students left to allocate: ",Students_total-Student_allocated_count)
-            print("args: ",args)
-            print("seed: ",seed_value)
-            print("threshold value: ",threshold_value)
-            print("dont care:",dont_care)
-            print("logic: ",logic)
+
+        print("args: ",args)
+        print("seed: ",seed_value)
+        print("threshold value: ",threshold_value)
+        print("dont care:",dont_care)
+        print("logic: ",logic)
+            
+        if split_enabled :
+            print("split : Enabled")
+            print("split halls : ",split_hall_count)
+        else:
+            print("split : Disabled")
         
 
         print("\nEnter done to exit\n")
+        prev_args = args
         args = input("Enter args : ")
         args_list = args.split()
 
+        split_enabled = False
+
         if (len(args_list) == 1):
             args_list = "done"
+        elif (len(args_list) == 2):
+            args = prev_args + " " + args
+            split_enabled = True
+            split_hall_count = int(args_list[1])
+            # uses previous seed_value , threshold_value , dont_care boolean
+            prev_bench_hall_allocated_count = bench_hall_allocated_count
+            prev_halls_allocated_count = halls_allocated_count
         elif (len(args_list) == 3):
             seed_value = int(args_list[0])
             threshold_value = int(args_list[1])
