@@ -342,7 +342,7 @@ elif choice == "2":
                     for i in range(len(Hall_structure)):
                         if allocation_done == True:
                             break
-                        elif split_triggered_break = True:
+                        elif split_triggered_break == True:
                             break
                         else:
                             for j in range(len(Hall_structure[i])):
