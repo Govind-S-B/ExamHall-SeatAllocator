@@ -252,21 +252,6 @@ elif choice == "2":
 
             split_mean_capacity = int (split_student_count / split_hall_count)
 
-            # for each hall in to_split_hall
-            #       get count of students
-            #       split student count += count
-            #
-
-        # if split_enabled:
-        #     check_for_split_halls_list = Halls_list[(prev_hall_allocated_count-split_hall_count):prev_hall_allocated_count]
-
-        #     split_mean_capacity = 0
-
-        #     for i in check_for_split_halls_list:
-        #         split_mean_capacity += i[0]*2
-
-        #     split_mean_capacity = int (split_student_count / split_hall_count)
-
         conn.execute("DROP TABLE IF EXISTS REPORT;")
         conn.execute('''CREATE TABLE REPORT
                 (ID         CHAR(15)         PRIMARY KEY     NOT NULL,
@@ -352,8 +337,12 @@ elif choice == "2":
                             else: #odd
                                 exception_odd_class_list.append(exception_class_list[i])
 
+                    split_triggered_break = False
+
                     for i in range(len(Hall_structure)):
                         if allocation_done == True:
+                            break
+                        elif split_triggered_break = True:
                             break
                         else:
                             for j in range(len(Hall_structure[i])):
@@ -533,6 +522,12 @@ elif choice == "2":
                                         if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)==0):
                                             allocation_done = True
                                             break
+                                
+                                current_hall_allocated_count += 1
+
+                                if ( (split_enabled) and (Hall_name in check_for_split_halls_list) and (current_hall_allocated_count >= split_mean_capacity)) :
+                                    split_triggered_break = True
+                                    break
 
                 Halls_sorted_list.append(Hall_structure)
 
