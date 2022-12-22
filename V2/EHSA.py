@@ -214,13 +214,44 @@ elif choice == "2":
 
         # setting up sqlite DB for processed or sorted data storage ( allocated seats )
         conn = sq.connect("report.db")
+        curr = conn.cursor()
 
         if split_enabled :
             pass
 
-            # make halls list ( drawing sorted + benches sorted) of names only
-            # take last n halls in to_split_hall list
-            # split student count = 0
+            check_for_split_halls_list = []
+
+            Halls_list = [] # List of halls
+
+            for i in D_Halls:
+                #print(i)
+                Halls_list.append([D_Halls[i][0],i]) # Hall Capacity , Hall name 
+
+            Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
+
+            for i in Halls_list:
+                check_for_split_halls_list.append(i[1])
+
+            Halls_list = [] # List of halls 
+
+            for i in B_Halls:
+                Halls_list.append([B_Halls[i][0],i]) # Hall Capacity , Hall name
+
+            Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity
+
+            for i in Halls_list:
+                check_for_split_halls_list.append(i[1])
+
+            check_for_split_halls_list = check_for_split_halls_list[(prev_halls_allocated_count-split_hall_count):prev_halls_allocated_count]
+
+            split_student_count = 0
+
+            for i in check_for_split_halls_list:
+                curr.execute("SELECT COUNT (*) FROM REPORT WHERE HALL='"+i+"'")
+                split_student_count += curr.fetchone()[0]
+
+            split_mean_capacity = int (split_student_count / split_hall_count)
+
             # for each hall in to_split_hall
             #       get count of students
             #       split student count += count
