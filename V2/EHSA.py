@@ -178,26 +178,11 @@ elif choice == "2":
 
     MetaInfo = Subjects.pop("meta") # Meta info global for each generation
 
-    prev_bench_hall_allocated_count = 0
     prev_halls_allocated_count = 0
 
     while args_list!="done":
         
         random.seed(seed_value)
-
-        print("Generating intermediary DB")
-
-        # setting up sqlite DB for processed or sorted data storage ( allocated seats )
-        conn = sq.connect("report.db")
-        conn.execute("DROP TABLE IF EXISTS REPORT;")
-        conn.execute('''CREATE TABLE REPORT
-                (ID         CHAR(15)         PRIMARY KEY     NOT NULL,
-                CLASS       CHAR(10)                         NOT NULL,
-                ROLL        INT                              NOT NULL,
-                HALL        TEXT                             NOT NULL,
-                SEAT_NO     INT                              NOT NULL,
-                SUBJECT     CHAR(50)                         NOT NULL);''')
-
 
         allocation_done = False
         Student_allocated_count=0
@@ -225,7 +210,40 @@ elif choice == "2":
         exception_even_class_list = []
         exception_odd_class_list = []
 
-        # yet another exception
+        print("Generating intermediary DB")
+
+        # setting up sqlite DB for processed or sorted data storage ( allocated seats )
+        conn = sq.connect("report.db")
+
+        if split_enabled :
+            pass
+
+            # make halls list ( drawing sorted + benches sorted) of names only
+            # take last n halls in to_split_hall list
+            # split student count = 0
+            # for each hall in to_split_hall
+            #       get count of students
+            #       split student count += count
+            #
+
+        # if split_enabled:
+        #     check_for_split_halls_list = Halls_list[(prev_hall_allocated_count-split_hall_count):prev_hall_allocated_count]
+
+        #     split_mean_capacity = 0
+
+        #     for i in check_for_split_halls_list:
+        #         split_mean_capacity += i[0]*2
+
+        #     split_mean_capacity = int (split_student_count / split_hall_count)
+
+        conn.execute("DROP TABLE IF EXISTS REPORT;")
+        conn.execute('''CREATE TABLE REPORT
+                (ID         CHAR(15)         PRIMARY KEY     NOT NULL,
+                CLASS       CHAR(10)                         NOT NULL,
+                ROLL        INT                              NOT NULL,
+                HALL        TEXT                             NOT NULL,
+                SEAT_NO     INT                              NOT NULL,
+                SUBJECT     CHAR(50)                         NOT NULL);''')
 
 
         if len(D_Halls) != 0 :
@@ -512,16 +530,6 @@ elif choice == "2":
 
             Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity
 
-            if split_enabled:
-                check_for_split_halls_list = Halls_list[(prev_bench_hall_allocated_count-split_hall_count):prev_bench_hall_allocated_count]
-
-                split_mean_capacity = 0
-                for i in check_for_split_halls_list:
-                    split_mean_capacity += i[0]*2
-                split_mean_capacity = int (split_mean_capacity / split_hall_count)
-
-
-
             if logic == 1: 
 
                 temp = even_row_subject_list + odd_row_subject_list
@@ -559,7 +567,6 @@ elif choice == "2":
                     Hall_capacity = each_hall[0]*2
 
                     halls_allocated_count += 1
-                    bench_hall_allocated_count += 1
 
                     current_hall_allocated_count = 0
 
@@ -743,7 +750,7 @@ elif choice == "2":
 
                         current_hall_allocated_count += 1
 
-                        if ( (split_enabled) and (each_hall in check_for_split_halls_list) and (current_hall_allocated_count >= split_mean_capacity)) :
+                        if ( (split_enabled) and (Hall_name in check_for_split_halls_list) and (current_hall_allocated_count >= split_mean_capacity)) :
                             break
 
 
@@ -1500,7 +1507,7 @@ elif choice == "2":
         if (len(args_list) == 1):
             args_list = "done"
         elif (len(args_list) == 2):
-            args = prev_args + " " + args
+            args = prev_args + " | " + args
             split_enabled = True
             split_hall_count = int(args_list[1])
             # uses previous seed_value , threshold_value , dont_care boolean
