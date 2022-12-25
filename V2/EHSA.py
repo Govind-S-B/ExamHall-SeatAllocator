@@ -22,35 +22,40 @@ def populate_halls(halls):
 
         print()
 
+def output_list(dictionary, mode):
+    assert mode in [1, 2]
+
+    if mode == 1: # Text mode
+        print()
+        print(dictionary)
+
+    elif mode == 2: #JSON Mode
+        with open(f'{"Halls" if mode == 1 else "Subjects"}.json', 'w') as fp:
+            json.dump(dictionary, fp)
+
 def generate_JSON():
     
     output_mode = int(input("Display Mode: (1)Text, (2)JSON: "))
 
     list_to_generate = int(input("Generate: (1)Hall List, (2)Subject List: "))
 
-    if list_to_generate == 1:
+    if list_to_generate == 1: # Hall List
 
         # Bench(B) or Drawing Hall(D)
-        Halls = {
+        halls = {
             "B": {},
             "D": {}
         }
         
         print('\nPress "done" to exit\n')
 
-        populate_halls(Halls)
+        populate_halls(halls)
 
-        if output_mode == 1: # Text mode
-            print()
-            print(Halls)
-
-        elif output_mode == 2:
-            with open('Halls.json', 'w') as fp:
-                json.dump(Halls, fp)
+        output_list(halls, output_mode)
 
 
 
-    elif list_to_generate == 2:
+    elif list_to_generate == 2: # Subject List
 
         session_name = input("Enter Session Name: ")  # 12-04-2022 FN
         MetaInfo = {"Session_Name": session_name}
@@ -166,10 +171,10 @@ def generate_report():
 
     # importing json data files (inputs)
     with open('Halls.json', 'r') as JSON:
-        Halls = json.load(JSON)
+        halls = json.load(JSON)
 
-    D_Halls = Halls["D"] # drawing halls
-    B_Halls = Halls["B"] # bench halls
+    D_Halls = halls["D"] # drawing halls
+    B_Halls = halls["B"] # bench halls
 
     with open('Subjects.json', 'r') as JSON:
         Subjects = json.load(JSON)
