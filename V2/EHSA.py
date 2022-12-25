@@ -63,9 +63,18 @@ def output_list(dictionary, mode, list_type):
 
 def generate_JSON():
     
-    output_mode = int(input("Display Mode: (1)Text, (2)JSON: "))
+    while True:
+        output_mode = int(input("Display Mode: (1)Text, (2)JSON: "))
 
-    list_to_generate = int(input("Generate: (1)Hall List, (2)Subject List: "))
+        if output_mode not in [1, 2]:
+            print("please type 1 or 2")
+            continue
+
+    while True:
+        list_to_generate = int(input("Generate: (1)Hall List, (2)Subject List: "))
+            if output_mode not in [1, 2]:
+            print("please type 1 or 2")
+            continue
 
     if list_to_generate == 1: # Hall List
 
@@ -81,7 +90,7 @@ def generate_JSON():
 
     elif list_to_generate == 2: # Subject List
 
-        session_name = input("Enter Session Name: ")  # 12-04-2022 FN
+        session_name = input("Enter Session Name: ")  #eg: 12-04-2022 FN
         MetaInfo = {"Session_Name": session_name}
         Subjects = {}
         Subjects["meta"] = MetaInfo
