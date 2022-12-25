@@ -72,9 +72,10 @@ def generate_JSON():
 
     while True:
         list_to_generate = int(input("Generate: (1)Hall List, (2)Subject List: "))
-            if output_mode not in [1, 2]:
-                print("please type 1 or 2")
-                continue
+
+        if output_mode not in [1, 2]:
+            print("please type 1 or 2")
+            continue
 
     if list_to_generate == 1: # Hall List
 
