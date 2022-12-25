@@ -62,6 +62,88 @@ def output_list(dictionary, mode, list_type):
             json.dump(dictionary, fp, indent=indent)
 
 
+def generate_hall_JSON():
+    
+        # Bench(B) or Drawing Hall(D)
+        halls = {
+            "B": {},
+            "D": {}
+        }
+        
+        populate_halls(halls)
+        return halls
+
+def generate_subject_JSON():
+    session_name = input("Enter Session Name: ")  #eg: 12-04-2022 FN
+    MetaInfo = {"Session_Name": session_name}
+    Subjects = {}
+    Subjects["meta"] = MetaInfo
+
+    option = 1
+    subject_list = {}
+
+    print('\nPress "done" to exit\n')
+
+    while True:
+        subjects = str(input("Enter Subject Name: "))
+        if subjects.lower() == "done":
+            break
+        
+        subject_list[option] = subjects
+        option +=1
+
+    print('\nPress "done" to exit\n')
+
+    while True:
+        class_name = input("Enter Class Name: ")
+        if class_name.lower() == "done":
+            break
+
+        args = class_name.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
+        class_name = args[0]
+        
+        if len(args) == 1:
+            count = 1 #, repeat below loop only once
+        else:
+            count = int(args[1])
+        # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
+        
+        for i in range(count):
+            for i in subject_list:
+                print(f'{i} - {subject_list[i]}')
+                
+            subject = input("Enter Subject ID: ")
+            if subject.lower() == "done":
+                break
+                
+            subject_ID = int(subject)
+
+            if subject_list[subject_ID] in Subjects:
+                roll = input("Enter roll number list: ")
+                roll_list = roll.split(',')
+                for item in roll_list:
+                    if "-" in item:
+                        roll_no_range = item
+                        for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
+                            Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
+                    else:
+                        Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
+            else:
+                Subjects[subject_list[subject_ID]] = []
+
+                roll = input("Enter roll number list: ")
+                roll_list = roll.split(',')
+                for item in roll_list:
+                    if "-" in item:
+                        roll_no_range = item
+                        for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
+                            Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
+                    else:
+                        Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
+        
+        print()
+    return Subjects
+
 def generate_JSON():
     
     while True:
@@ -82,88 +164,16 @@ def generate_JSON():
 
     if list_to_generate == 1: # Hall List
 
-        # Bench(B) or Drawing Hall(D)
-        halls = {
-            "B": {},
-            "D": {}
-        }
+        generated_JSON = generate_hall_JSON()
+        # output_list(generated_JSON, output_mode, 1)
         
-        populate_halls(halls)
-
-        output_list(halls, output_mode, 1)
 
     elif list_to_generate == 2: # Subject List
 
-        session_name = input("Enter Session Name: ")  #eg: 12-04-2022 FN
-        MetaInfo = {"Session_Name": session_name}
-        Subjects = {}
-        Subjects["meta"] = MetaInfo
+        generated_JSON = generate_subject_JSON()
 
-        option = 1
-        subject_list = {}
-
-        print('\nPress "done" to exit\n')
-
-        while True:
-            subjects = str(input("Enter Subject Name: "))
-            if subjects.lower() == "done":
-                break
-            
-            subject_list[option] = subjects
-            option +=1
-
-        print('\nPress "done" to exit\n')
-
-        while True:
-            class_name = input("Enter Class Name: ")
-            if class_name.lower() == "done":
-                break
-
-            args = class_name.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
-            class_name = args[0]
-            
-            if len(args) == 1:
-                count = 1 #, repeat below loop only once
-            else:
-                count = int(args[1])
-            # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
-            
-            for i in range(count):
-                for i in subject_list:
-                    print(f'{i} - {subject_list[i]}')
-                    
-                subject = input("Enter Subject ID: ")
-                if subject.lower() == "done":
-                    break
-                    
-                subject_ID = int(subject)
-
-                if subject_list[subject_ID] in Subjects:
-                    roll = input("Enter roll number list: ")
-                    roll_list = roll.split(',')
-                    for item in roll_list:
-                        if "-" in item:
-                            roll_no_range = item
-                            for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
-                                Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
-                        else:
-                            Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
-                else:
-                    Subjects[subject_list[subject_ID]] = []
-
-                    roll = input("Enter roll number list: ")
-                    roll_list = roll.split(',')
-                    for item in roll_list:
-                        if "-" in item:
-                            roll_no_range = item
-                            for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
-                                Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
-                        else:
-                            Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
-            
-            print()
-
-        output_list(Subjects, output_mode, 2)
+    
+    output_list(generated_JSON, output_mode, list_to_generate)
 
     input("\nEnter any key to exit ")  # dummy input function to wait for user input to exit script
 
