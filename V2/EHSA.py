@@ -7,18 +7,38 @@ import random
 
 
 def populate_halls(halls):
+    print('\nPress "done" to exit\n')
     while True:
         hall_name = input("Hall Name: ")
 
         if hall_name.lower() == "done":
             break
 
-        args = input("Table Count: ").split()
-        
-        if len(args) == 1:
-            halls["B"][hall_name] = [ int(args[0]) ]
-        else:
-            halls["D"][hall_name] = [int(args[0]),int(args[1])]
+        while True:
+            args = input("Table Count: ").split()
+            
+            if len(args) > 2 or len(args) == 0:
+                print("Error: invalid input")
+                print("input should be of the form 'x' or 'x y' where x and y are numbers")
+                continue
+
+            arg_is_valid = True
+            for num in args:
+                try:
+                    int(num)
+                except ValueError:
+                    print(f"Error: '{num}' is not a number")
+                    arg_is_valid = False
+            
+            if not arg_is_valid:
+                continue
+            
+            if len(args) == 1:
+                halls["B"][hall_name] = [ int(args[0]) ]
+            elif len(args) == 2:
+                halls["D"][hall_name] = [int(args[0]),int(args[1])]
+
+            break
 
         print()
 
@@ -27,7 +47,7 @@ def output_list(dictionary, mode, type):
     assert mode in [1, 2]
     assert type in [1, 2] # 1: Hall, 2: Subjects 
     
-    indent = 0 if type == 1 else 4
+    indent = None if type == 1 else 4
 
     if mode == 1: # Text mode
         print()
@@ -51,8 +71,6 @@ def generate_JSON():
             "D": {}
         }
         
-        print('\nPress "done" to exit\n')
-
         populate_halls(halls)
 
         output_list(halls, output_mode, 1)
