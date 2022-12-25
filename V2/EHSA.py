@@ -17,6 +17,8 @@ def populate_halls(halls):
         while True:
             args = input("Table Count: ").split()
             
+            # ERROR HANDLING
+
             if len(args) > 2 or len(args) == 0:
                 print("Error: invalid input")
                 print("input should be of the form 'x' or 'x y' where x and y are numbers")
@@ -33,6 +35,8 @@ def populate_halls(halls):
             if not arg_is_valid:
                 continue
             
+            # by now the input should be 100% validated and can safely be used and put in the dictionary
+
             if len(args) == 1:
                 halls["B"][hall_name] = [ int(args[0]) ]
             elif len(args) == 2:
