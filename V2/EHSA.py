@@ -86,6 +86,8 @@ def get_subject_list():
         subjects.append(subject)
     return subjects
 
+
+
 def generate_subject_JSON():
     session_name = input("Enter Session Name: ")  #eg: 12-04-2022 FN
     meta_info = {"Session_Name": session_name}
@@ -124,26 +126,26 @@ def generate_subject_JSON():
             subject_ID = int(subject) - 1 # -1 here for the same reasons as mentioned in the above comment 
             subject = subject_list[subject_ID]
 
-            def append_roll_no(num):  # defined in here because it uses subject, Subjects and classname in function body
-                Subjects[subject].append(class_name + '-' + str(num))
 
 
-            if subject not in Subjects:  # initially this will not be true
+
+
+            if subject not in Subjects:
                 Subjects[subject] = []
 
             roll = input("Enter roll number list: ")
             roll_list = roll.split(',')
             for item in roll_list:
-                if "-" in item:
+                if "-" in item:  # item is a roll_no range (eg: 1-20, 10-11 etc)
                     roll_no_range = item.split('-')
                     
                     lower_bound = int(roll_no_range[0])
                     upper_bound = int(roll_no_range[1]) + 1
 
                     for roll_no in range(lower_bound, upper_bound):
-                        append_roll_no(roll_no)
-                else:
-                    append_roll_no(item)
+                        Subjects[subject].append(class_name + '-' + str(num))
+                else:  # item is an individual roll_no (eg: 1, 2, 10 etc)
+                    Subjects[subject].append(class_name + '-' + str(num))
     return Subjects
 
 def generate_JSON():
