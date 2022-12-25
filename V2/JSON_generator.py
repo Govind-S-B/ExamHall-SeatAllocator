@@ -174,7 +174,7 @@ def generate_JSON():
         generated_JSON = generate_subject_JSON()
 
     else:
-        raise Exception("This should never be raised")
+        raise Exception("ERROR: selected JSON type not hall or subject")
     
     output_list(generated_JSON, output_mode, list_to_generate)
 
