@@ -75,12 +75,11 @@ def generate_hall_JSON():
 
 def generate_subject_JSON():
     session_name = input("Enter Session Name: ")  #eg: 12-04-2022 FN
-    MetaInfo = {"Session_Name": session_name}
+    meta_info = {"Session_Name": session_name}
     Subjects = {}
-    Subjects["meta"] = MetaInfo
+    Subjects["meta"] = meta_info
 
-    option = 1
-    subject_list = {}
+    subject_list = []
 
     print('\nPress "done" to exit\n')
 
@@ -89,8 +88,7 @@ def generate_subject_JSON():
         if subjects.lower() == "done":
             break
         
-        subject_list[option] = subjects
-        option +=1
+        subject_list.append(subjects)
 
     print('\nPress "done" to exit\n')
 
@@ -109,14 +107,14 @@ def generate_subject_JSON():
         # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
         
         for i in range(count):
-            for i in subject_list:
-                print(f'{i} - {subject_list[i]}')
+            for i in range(len(subject_list)):
+                print(f'{i+1} - {subject_list[i]}')
                 
             subject = input("Enter Subject ID: ")
             if subject.lower() == "done":
                 break
                 
-            subject_ID = int(subject)
+            subject_ID = int(subject) - 1
 
             if subject_list[subject_ID] in Subjects:
                 roll = input("Enter roll number list: ")
