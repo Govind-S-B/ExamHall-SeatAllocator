@@ -22,16 +22,20 @@ def populate_halls(halls):
 
         print()
 
-def output_list(dictionary, mode):
+
+def output_list(dictionary, mode, type):
     assert mode in [1, 2]
+    assert type in [1, 2] # 1: Hall, 2: Subjects 
+    
+    indent = 0 if type == 1 else 4
 
     if mode == 1: # Text mode
         print()
-        print(dictionary)
+        print(json.dumps(dictionary, indent=indent))
 
     elif mode == 2: #JSON Mode
-        with open(f'{"Halls" if mode == 1 else "Subjects"}.json', 'w') as fp:
-            json.dump(dictionary, fp)
+        with open(f'{"Halls" if type == 1 else "Subjects"}.json', 'w') as fp:
+            json.dump(dictionary, fp, indent=indent)
 
 def generate_JSON():
     
@@ -51,9 +55,7 @@ def generate_JSON():
 
         populate_halls(halls)
 
-        output_list(halls, output_mode)
-
-
+        output_list(halls, output_mode, 1)
 
     elif list_to_generate == 2: # Subject List
 
@@ -126,13 +128,7 @@ def generate_JSON():
             
             print()
 
-        if output_mode == 1:
-            print()
-            print(json.dumps(Subjects, indent=4))
-
-        elif output_mode == 2:
-            with open('Subjects.json', 'w') as fp:
-                json.dump(Subjects, fp, indent=4)
+        output_list(Subjects, output_mode, 2)
 
     input("\nEnter any key to exit ")  # dummy input function to wait for user input to exit script
 
