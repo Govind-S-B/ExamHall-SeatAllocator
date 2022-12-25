@@ -145,6 +145,8 @@ def generate_subject_JSON():
                     Subjects[subject].append(class_name + '-' + str(item))
     return Subjects
 
+
+# this is what gets exported
 def generate_JSON():
     
     while True:
