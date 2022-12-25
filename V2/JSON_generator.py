@@ -1,5 +1,5 @@
 
-import json
+from json import dump, dumps
 
 
 def populate_halls(halls):
@@ -51,11 +51,11 @@ def output_list(dictionary, mode, list_type):
 
     if mode == 1: # Text mode
         print()
-        print(json.dumps(dictionary, indent=indent))
+        print(dumps(dictionary, indent=indent))
 
     elif mode == 2: #JSON Mode
         with open(f'{"Halls" if list_type == 1 else "Subjects"}.json', 'w') as fp:
-            json.dump(dictionary, fp, indent=indent)
+            dump(dictionary, fp, indent=indent)
 
 
 def generate_hall_JSON():
@@ -179,3 +179,4 @@ def generate_JSON():
     output_list(generated_JSON, output_mode, list_to_generate)
 
     input("\nEnter any key to exit ")  # dummy input function to wait for user input to exit script
+
