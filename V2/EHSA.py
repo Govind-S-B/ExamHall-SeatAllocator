@@ -43,18 +43,18 @@ def populate_halls(halls):
         print()
 
 
-def output_list(dictionary, mode, type):
+def output_list(dictionary, mode, list_type):
     assert mode in [1, 2]
-    assert type in [1, 2] # 1: Hall, 2: Subjects 
+    assert list_type in [1, 2] # 1: Hall, 2: Subjects 
     
-    indent = None if type == 1 else 4
+    indent = None if list_type == 1 else 4
 
     if mode == 1: # Text mode
         print()
         print(json.dumps(dictionary, indent=indent))
 
     elif mode == 2: #JSON Mode
-        with open(f'{"Halls" if type == 1 else "Subjects"}.json', 'w') as fp:
+        with open(f'{"Halls" if list_type == 1 else "Subjects"}.json', 'w') as fp:
             json.dump(dictionary, fp, indent=indent)
 
 def generate_JSON():
