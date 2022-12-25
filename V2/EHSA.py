@@ -6,39 +6,41 @@ import math
 import random
 
 
+def populate_halls(halls):
+    while True:
+        hall_name = input("Hall Name: ")
+
+        if hall_name.lower() == "done":
+            break
+
+        args = input("Table Count: ").split()
+        
+        if len(args) == 1:
+            halls["B"][hall_name] = [ int(args[0]) ]
+        else:
+            halls["D"][hall_name] = [int(args[0]),int(args[1])]
+
+        print()
+
 def generate_JSON():
     
     output_mode = int(input("Display Mode: (1)Text, (2)JSON: "))
 
-    list_to_generate = int(
-        input("Generate: (1)Hall List, (2)Subject List: "))
+    list_to_generate = int(input("Generate: (1)Hall List, (2)Subject List: "))
 
     if list_to_generate == 1:
 
         # Bench(B) or Drawing Hall(D)
         Halls = {
-            "B" : {},
-            "D" : {}
+            "B": {},
+            "D": {}
         }
         
         print('\nPress "done" to exit\n')
 
-        while True:
-            hall_name = input("Hall Name: ")
+        populate_halls(Halls)
 
-            if hall_name.lower() == "done":
-                break
-
-            args = input("Table Count: ").split()
-            
-            if len(args) == 1:
-                Halls["B"][hall_name] = [ int(args[0]) ]
-            else:
-                Halls["D"][hall_name] = [int(args[0]),int(args[1])]
-
-            print()
-
-        if output_mode == 1:
+        if output_mode == 1: # Text mode
             print()
             print(Halls)
 
