@@ -61,6 +61,7 @@ def output_list(dictionary, mode, list_type):
         with open(f'{"Halls" if list_type == 1 else "Subjects"}.json', 'w') as fp:
             json.dump(dictionary, fp, indent=indent)
 
+
 def generate_JSON():
     
     while True:
@@ -118,13 +119,13 @@ def generate_JSON():
             if class_name.lower() == "done":
                 break
 
-            count = class_name.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
-            class_name = count[0]
+            args = class_name.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
+            class_name = args[0]
             
-            if len(count) == 1:
-                count = 1 #, reperat below loop only once
+            if len(args) == 1:
+                count = 1 #, repeat below loop only once
             else:
-                count = int(count[1])
+                count = int(args[1])
             # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
             
             for i in range(count):
