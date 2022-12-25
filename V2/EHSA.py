@@ -290,6 +290,8 @@ elif choice == "2":
 
                     halls_allocated_count += 1
 
+                    current_hall_allocated_count = 0
+
                     a = int(Hall_capacity/Hall_cols)
                     b = int(Hall_capacity%Hall_cols)
 
