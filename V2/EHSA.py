@@ -73,22 +73,28 @@ def generate_hall_JSON():
         populate_halls(halls)
         return halls
 
+
+def get_subject_list():
+    print('\nPress "done" to exit\n')
+
+    subjects = []
+    while True:
+        subject = str(input("Enter Subject Name: "))
+        if subject.lower() == "done":
+            break
+        
+        subjects.append(subject)
+    return subjects
+
 def generate_subject_JSON():
     session_name = input("Enter Session Name: ")  #eg: 12-04-2022 FN
     meta_info = {"Session_Name": session_name}
     Subjects = {}
     Subjects["meta"] = meta_info
 
-    subject_list = []
+    subject_list = get_subject_list()
 
-    print('\nPress "done" to exit\n')
 
-    while True:
-        subjects = str(input("Enter Subject Name: "))
-        if subjects.lower() == "done":
-            break
-        
-        subject_list.append(subjects)
 
     print('\nPress "done" to exit\n')
 
@@ -108,38 +114,36 @@ def generate_subject_JSON():
         
         for i in range(count):
             for i in range(len(subject_list)):
-                print(f'{i+1} - {subject_list[i]}')
+                print(f'{i+1} - {subject_list[i]}')  # +1 because in code indexing starts from 0
+                                                     # but for user indexing starts from 1
                 
             subject = input("Enter Subject ID: ")
             if subject.lower() == "done":
                 break
                 
-            subject_ID = int(subject) - 1
+            subject_ID = int(subject) - 1 # -1 here for the same reasons as mentioned in the above comment 
+            subject = subject_list[subject_ID]
 
-            if subject_list[subject_ID] in Subjects:
-                roll = input("Enter roll number list: ")
-                roll_list = roll.split(',')
-                for item in roll_list:
-                    if "-" in item:
-                        roll_no_range = item
-                        for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
-                            Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
-                    else:
-                        Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
-            else:
-                Subjects[subject_list[subject_ID]] = []
+            def append_roll_no(num):  # defined in here because it uses subject, Subjects and classname in function body
+                Subjects[subject].append(class_name + '-' + str(num))
 
-                roll = input("Enter roll number list: ")
-                roll_list = roll.split(',')
-                for item in roll_list:
-                    if "-" in item:
-                        roll_no_range = item
-                        for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
-                            Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
-                    else:
-                        Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
-        
-        print()
+
+            if subject not in Subjects:  # initially this will not be true
+                Subjects[subject] = []
+
+            roll = input("Enter roll number list: ")
+            roll_list = roll.split(',')
+            for item in roll_list:
+                if "-" in item:
+                    roll_no_range = item.split('-')
+                    
+                    lower_bound = int(roll_no_range[0])
+                    upper_bound = int(roll_no_range[1]) + 1
+
+                    for roll_no in range(lower_bound, upper_bound):
+                        append_roll_no(roll_no)
+                else:
+                    append_roll_no(item)
     return Subjects
 
 def generate_JSON():
@@ -160,16 +164,16 @@ def generate_JSON():
             continue
         break
 
-    if list_to_generate == 1: # Hall List
 
+
+    if list_to_generate == 1: # Hall List
         generated_JSON = generate_hall_JSON()
-        # output_list(generated_JSON, output_mode, 1)
-        
 
     elif list_to_generate == 2: # Subject List
-
         generated_JSON = generate_subject_JSON()
 
+    else:
+        raise Exception("This should never be raised")
     
     output_list(generated_JSON, output_mode, list_to_generate)
 
