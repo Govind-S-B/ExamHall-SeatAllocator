@@ -5,16 +5,13 @@ import itertools
 import math
 import random
 
-print("ExamHall-SeatAllocator | EHSA v2.x - protoRes\n")
-choice = input("Enter Choice (1)JSON Generator (2)Report Generator: ")
-print()
 
-if choice == "1":
-
-    output_mode = int(input("Display Mode: (1)Text (2)JSON: "))
+def generate_JSON():
+    
+    output_mode = int(input("Display Mode: (1)Text, (2)JSON: "))
 
     list_to_generate = int(
-        input("Generate: Hall List(1) Subject List(2): "))
+        input("Generate: (1)Hall List, (2)Subject List: "))
 
     if list_to_generate == 1:
 
@@ -132,8 +129,7 @@ if choice == "1":
 
     input("\nEnter any key to exit ")  # dummy input function to wait for user input to exit script
 
-elif choice == "2":
-    
+def generate_report():
     args = input("Enter args : ")
     args_list = args.split()
 
@@ -289,8 +285,6 @@ elif choice == "2":
                     Hall_cols = i[2]
 
                     halls_allocated_count += 1
-
-                    current_hall_allocated_count = 0
 
                     a = int(Hall_capacity/Hall_cols)
                     b = int(Hall_capacity%Hall_cols)
@@ -1550,3 +1544,16 @@ elif choice == "2":
             seed_value = 0
             threshold_value = 80
             dont_care = False
+
+
+print("ExamHall-SeatAllocator | EHSA v2.x - protoRes\n")
+choice = input("Enter Choice (1)JSON Generator, (2)Report Generator: ")
+print()
+
+if choice == "1":
+    generate_JSON()
+
+elif choice == "2": 
+    generate_report()
+
+
