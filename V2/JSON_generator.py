@@ -15,13 +15,13 @@ def get_input_in_range(text, lower, upper):
         try:
             num = int(num)
         except ValueError:
-            print("ERROR: not a number")
+            print(f"ERROR: input should be a number between {lower} and {upper}") 
             continue
 
         if lower <= num <= upper:
             return num
         else:
-            print(f"ERROR: input should be between {lower} and {upper}") 
+            print(f"ERROR: input should be a number between {lower} and {upper}") 
 
 def get_valid_roll_list():
     ERROR_MESSAGE = "ERROR: invalid input, each item should either be a roll nos or a range of roll nos \
@@ -29,10 +29,12 @@ def get_valid_roll_list():
                     example: '1, 3-6,8' will add roll nos 1,3,4,5,6,8"
     while True:
         roll_list = input("enter Roll list: ")
+        is_valid = True
         for item in roll_list.split(","):
             if item.count("-") > 1:
                 print(ERROR_MESSAGE)
-                continue
+                is_valid = False
+                break
 
             # these variables will store the input and be checked 
             num = 0
@@ -47,8 +49,11 @@ def get_valid_roll_list():
                 _ = int(lower), int(upper), int(num)  # _ denotes an unused variable because we do not use these 
             except ValueError:                         # values in the function
                 print(ERROR_MESSAGE)
-                continue
-        return roll_list
+                is_valid = False
+                break
+
+        if is_valid:
+            return roll_list
         
 
 def populate_halls(halls):
