@@ -1,9 +1,9 @@
-import json
+from json import load
 from fpdf import FPDF, HTMLMixin
 import sqlite3 as sq
-import itertools
-import math
-import random
+from itertools import groupby
+from math import ceil
+from random import seed,shuffle
 from JSON_generator import generate_JSON
 
 def generate_report():
@@ -41,13 +41,13 @@ def generate_report():
 
     # importing json data files (inputs)
     with open('Halls.json', 'r') as JSON:
-        halls = json.load(JSON)
+        halls = load(JSON)
 
     D_Halls = halls["D"] # drawing halls
     B_Halls = halls["B"] # bench halls
 
     with open('Subjects.json', 'r') as JSON:
-        Subjects = json.load(JSON)
+        Subjects = load(JSON)
 
     MetaInfo = Subjects.pop("meta") # Meta info global for each generation
 
@@ -55,7 +55,7 @@ def generate_report():
 
     while args_list!="done":
         
-        random.seed(seed_value)
+        seed(seed_value)
 
         allocation_done = False
         Student_allocated_count=0
@@ -71,7 +71,7 @@ def generate_report():
 
         Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
         if seed_value!=0:
-            random.shuffle(Subjects_list)
+            shuffle(Subjects_list)
 
         even_row_subject_list = []
         odd_row_subject_list = []
@@ -205,7 +205,7 @@ def generate_report():
                                 exception_class_list.append([1,s[0],i]) # number , class name , roll nums
                         
                         if seed_value!=0:
-                                random.shuffle(exception_class_list)
+                                shuffle(exception_class_list)
                         for i in range(len(exception_class_list)):
                             if i%2==0: #even
                                 exception_even_class_list.append(exception_class_list[i])
@@ -309,7 +309,7 @@ def generate_report():
                                         if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
                                             Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                             if seed_value!=0:
-                                                random.shuffle(Subjects_list)
+                                                shuffle(Subjects_list)
                                             even_row_subject_list = []
                                             odd_row_subject_list = []
 
@@ -322,7 +322,7 @@ def generate_report():
                                         if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
                                             Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                             if seed_value!=0:
-                                                    random.shuffle(Subjects_list)
+                                                    shuffle(Subjects_list)
                                             even_row_subject_list = []
                                             odd_row_subject_list = []
 
@@ -351,7 +351,7 @@ def generate_report():
                                                     exception_class_list.append([1,s[0],i]) # number , class name , roll nums
                                             
                                             if seed_value!=0:
-                                                    random.shuffle(exception_class_list)
+                                                    shuffle(exception_class_list)
                                             for i in range(len(exception_class_list)):
                                                 if i%2==0: #even
                                                     exception_even_class_list.append(exception_class_list[i])
@@ -367,7 +367,7 @@ def generate_report():
                                         if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)>1):
                                             exception_class_list = sorted(exception_odd_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                             if seed_value!=0:
-                                                    random.shuffle(exception_class_list)
+                                                    shuffle(exception_class_list)
                                             exception_even_class_list = []
                                             exception_odd_class_list = []
 
@@ -380,7 +380,7 @@ def generate_report():
                                         if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
                                             exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                             if seed_value!=0:
-                                                    random.shuffle(exception_class_list)
+                                                    shuffle(exception_class_list)
                                             exception_even_class_list = []
                                             exception_odd_class_list = []
 
@@ -413,7 +413,7 @@ def generate_report():
                 Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
 
                 if seed_value!=0:
-                        random.shuffle(Subjects_list)
+                        shuffle(Subjects_list)
 
             even_row_subject_list = []
             odd_row_subject_list = []
@@ -452,7 +452,7 @@ def generate_report():
                             exception_class_list.append([1,s[0],i]) # number , class name , roll nums
 
                     if seed_value!=0:
-                            random.shuffle(exception_class_list)
+                            shuffle(exception_class_list)
                     
                     for i in range(len(exception_class_list)):
                         if i%2==0: #even
@@ -559,7 +559,7 @@ def generate_report():
                                 if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
                                     Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                     if seed_value!=0:
-                                            random.shuffle(Subjects_list)
+                                            shuffle(Subjects_list)
                                     even_row_subject_list = []
                                     odd_row_subject_list = []
 
@@ -572,7 +572,7 @@ def generate_report():
                                 if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
                                     Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                     if seed_value!=0:
-                                            random.shuffle(Subjects_list)
+                                            shuffle(Subjects_list)
                                     even_row_subject_list = []
                                     odd_row_subject_list = []
 
@@ -601,7 +601,7 @@ def generate_report():
                                             exception_class_list.append([1,s[0],i]) # number , class name , roll nums
 
                                     if seed_value!=0:
-                                            random.shuffle(exception_class_list)
+                                            shuffle(exception_class_list)
                                     
                                     for i in range(len(exception_class_list)):
                                         if i%2==0: #even
@@ -618,7 +618,7 @@ def generate_report():
                                 if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)>1):
                                     exception_class_list = sorted(exception_odd_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                     if seed_value!=0:
-                                            random.shuffle(exception_class_list)
+                                            shuffle(exception_class_list)
                                     exception_even_class_list = []
                                     exception_odd_class_list = []
 
@@ -631,7 +631,7 @@ def generate_report():
                                 if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
                                     exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                     if seed_value!=0:
-                                            random.shuffle(exception_class_list)
+                                            shuffle(exception_class_list)
                                     exception_even_class_list = []
                                     exception_odd_class_list = []
 
@@ -665,7 +665,7 @@ def generate_report():
 
         #Functions
         def ranges(i):
-            for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+            for a, b in groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
                 b = list(b)
                 yield b[0][1], b[-1][1]
         def divide_chunks(l, n):
@@ -982,7 +982,7 @@ def generate_report():
                     # while temp1[-1].isnumeric()==False:
                     #     temp1=temp1[:-1]
                     temp1=temp1[:-2]
-                    roll_rows=int(math.ceil(len(temp1)/17))
+                    roll_rows=int(ceil(len(temp1)/17))
                     if len(temp1)>50:
                         roll_rows+=1
                     # if temp1[-1]=="\n":
@@ -993,7 +993,7 @@ def generate_report():
                     # print("Temp: ",temp1)
                     # print()
                     # print("temp1: ",temp1)
-                    # roll_rows=int(math.ceil(len(temp1)/17))
+                    # roll_rows=int(ceil(len(temp1)/17))
                     # char_count=0
                     # for e in temp1:
                     #     char_count+=1
@@ -1171,7 +1171,7 @@ def generate_report():
                     # while temp1[-1].isnumeric()==False:
                     #     temp1=temp1[:-1]
                     temp1=temp1[:-2]
-                    roll_rows=int(math.ceil(len(temp1)/17))
+                    roll_rows=int(ceil(len(temp1)/17))
                     if len(temp1)>50:
                         roll_rows+=1
                     # if temp1[-1]=="\n":
@@ -1182,7 +1182,7 @@ def generate_report():
                     # print("Temp: ",temp1)
                     # print()
                     # print("temp1: ",temp1)
-                    # roll_rows=int(math.ceil(len(temp1)/17))
+                    # roll_rows=int(ceil(len(temp1)/17))
                     # char_count=0
                     # for e in temp1:
                     #     char_count+=1
@@ -1302,7 +1302,7 @@ def generate_report():
             classes_list = i[1:]
             
             seat_List.pop(0)
-            row_number = int(math.ceil(len(seat_List)/4))
+            row_number = int(ceil(len(seat_List)/4))
             seat_List=divide_chunks(seat_List, row_number)
             x=list(seat_List)
 
