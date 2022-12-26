@@ -57,4 +57,22 @@ line `138-407` is the logic to handle sorting when a hall is of type drawing hal
 
 A lot of code is going to seem copy paste from this point on
 
+#### Drawing Hall Logic
+`140-144` the subjects ( which are sorted ) are split into even_subjects and odd_subjects 
 
+`146-152` a list of halls ( Drawing halls) sorted  by their capacities . the list is of the format
+[Hall capacity , Hall name , Hall column size]
+
+*NOTE* : First the drawing halls are all allocated before the benches are allocated 
+
+Halls_sorted_list is a variable where i add sorted halls ( line `154` and `407` ) . I think its not used now , it was there for debugging in initial version 
+
+##### For each hall loop
+line 156 , for each hall in list of drawing halls
+
+Hall name , capacity , columns , for it are  stored in appropriate variables 
+`halls_allocated_count` keeps track of how many halls have been allocated yet . 
+`current_hall_allocated_count` keeps track of how many students have been allocated in the current hall ( this is used for split functionality later with `split_mean_capacity` to limit the number of students in a class )
+
+lines `168-187` is used to make a hall structure using lists and give seat number to each seat
+## the read me is abandoned now since arjun is working on the refactoring ( and its going well )
