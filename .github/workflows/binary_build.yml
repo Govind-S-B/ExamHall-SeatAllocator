@@ -1,0 +1,34 @@
+name: Binary Build Workflow
+on:
+  push:
+    branches: [ dev ]
+
+jobs:
+
+  Windows_Build:
+    name: Windows Binary Build
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: dev
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        cache: 'pip' # caching pip dependencies
+    - run: |
+        pip install -r requirements.txt
+        ./build.bat
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git add .
+        git commit -m "generated windows build"
+        git push
+    
+#   Mac_Build:
+#     name: Mac OS Binary Build
+#     runs-on: macos-latest
+    
+#   Linux_Build:
+#     name: Linux Binary Build ( Ubuntu )
+#     runs-on: ubuntu-latest
