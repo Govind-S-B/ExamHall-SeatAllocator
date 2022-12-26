@@ -16,7 +16,7 @@ python -m PyInstaller --onefile ./V2/EHSA.py
 
 del EHSA.spec
 
-copy dist FINAL_BUILD/windows/
+xcopy dist FINAL_BUILD/windows/
 
 rmdir /s /q "./build"
 rmdir /s /q "./dist"
