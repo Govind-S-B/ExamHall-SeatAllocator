@@ -24,9 +24,9 @@ def get_input_in_range(text, lower, upper):
             print(f"ERROR: input should be a number between {lower} and {upper}") 
 
 def get_valid_roll_list():
-    ERROR_MESSAGE = "ERROR: invalid input, each item should either be a roll nos or a range of roll nos \
-                    in the form x or x-y where x and y are numbers \
-                    example: '1, 3-6,8' will add roll nos 1,3,4,5,6,8"
+    ERROR_MESSAGE = "ERROR: invalid input, each item should either be a roll nos or a range of roll nos " + \
+                    "in the form x or x-y where x and y are numbers \n" + \
+                    "example: '1, 3-6,8' will add roll nos 1,3,4,5,6,8 \n"
     while True:
         roll_list = input("enter Roll list: ")
         is_valid = True
