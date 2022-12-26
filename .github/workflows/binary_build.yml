@@ -23,6 +23,7 @@ jobs:
         git config user.email github-actions@github.com
         git add .
         git commit -m "generated windows build"
+        git pull --no-edit
         git push
 
   Linux_Build:
@@ -44,6 +45,7 @@ jobs:
         git config user.email github-actions@github.com
         git add .
         git commit -m "generated linux build"
+        git pull --no-edit
         git push
     
 #   Mac_Build:
