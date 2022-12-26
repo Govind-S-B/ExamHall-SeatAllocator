@@ -2,7 +2,7 @@ import json
 from fpdf import FPDF, HTMLMixin
 import sqlite3 as sq
 import itertools
-from math import ceil
+import math
 import random
 from JSON_generator import generate_JSON
 
@@ -982,7 +982,7 @@ def generate_report():
                     # while temp1[-1].isnumeric()==False:
                     #     temp1=temp1[:-1]
                     temp1=temp1[:-2]
-                    roll_rows=int(ceil(len(temp1)/17))
+                    roll_rows=int(math.ceil(len(temp1)/17))
                     if len(temp1)>50:
                         roll_rows+=1
                     # if temp1[-1]=="\n":
@@ -993,7 +993,7 @@ def generate_report():
                     # print("Temp: ",temp1)
                     # print()
                     # print("temp1: ",temp1)
-                    # roll_rows=int(ceil(len(temp1)/17))
+                    # roll_rows=int(math.ceil(len(temp1)/17))
                     # char_count=0
                     # for e in temp1:
                     #     char_count+=1
@@ -1171,7 +1171,7 @@ def generate_report():
                     # while temp1[-1].isnumeric()==False:
                     #     temp1=temp1[:-1]
                     temp1=temp1[:-2]
-                    roll_rows=int(ceil(len(temp1)/17))
+                    roll_rows=int(math.ceil(len(temp1)/17))
                     if len(temp1)>50:
                         roll_rows+=1
                     # if temp1[-1]=="\n":
@@ -1182,7 +1182,7 @@ def generate_report():
                     # print("Temp: ",temp1)
                     # print()
                     # print("temp1: ",temp1)
-                    # roll_rows=int(ceil(len(temp1)/17))
+                    # roll_rows=int(math.ceil(len(temp1)/17))
                     # char_count=0
                     # for e in temp1:
                     #     char_count+=1
@@ -1302,7 +1302,7 @@ def generate_report():
             classes_list = i[1:]
             
             seat_List.pop(0)
-            row_number = int(ceil(len(seat_List)/4))
+            row_number = int(math.ceil(len(seat_List)/4))
             seat_List=divide_chunks(seat_List, row_number)
             x=list(seat_List)
 
