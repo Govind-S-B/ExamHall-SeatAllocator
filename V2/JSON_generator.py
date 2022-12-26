@@ -23,6 +23,32 @@ def get_input_in_range(text, lower, upper):
         else:
             print(f"ERROR: input should be between {lower} and {upper}") 
 
+def get_valid_roll_list():
+    ERROR_MESSAGE = "ERROR: invalid input, each item should either be a roll nos or a range of roll nos \
+                    in the form x or x-y where x and y are numbers \
+                    example: '1, 3-6,8' will add roll nos 1,3,4,5,6,8"
+    while True:
+        roll_list = input("enter Roll list: ")
+        for item in roll_list.split(","):
+            if item.count("-") > 1:
+                print(ERROR_MESSAGE)
+                continue
+
+            # these variables will store the input and be checked 
+            num = 0
+            lower = 0
+            upper = 0
+            if item.count("-") == 1:
+                lower, upper = item.split("-")
+            else:
+                num = item
+            
+            try:
+                _ = int(lower), int(upper), int(num)  # _ denotes an unused variable because we do not use these 
+            except ValueError:                         # values in the function
+                print(ERROR_MESSAGE)
+                continue
+        return roll_list
         
 
 def populate_halls(halls):
@@ -151,9 +177,9 @@ def generate_subject_JSON():
             count = num_of_electives
         # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
         
-        for i in range(count):
-            for i in range(len(subject_list)):
-                print(f'{i+1} - {subject_list[i]}')  # +1 because in code indexing starts from 0
+        for roll_no in range(count):
+            for roll_no in range(len(subject_list)):
+                print(f'{roll_no+1} - {subject_list[roll_no]}')  # +1 because in code indexing starts from 0
                                                      # but for user indexing starts from 1
                 
             subject = get_input_in_range("Enter Subject ID: ", 1, count)
@@ -163,11 +189,10 @@ def generate_subject_JSON():
             subject_ID = int(subject) - 1 # -1 here for the same reasons as mentioned in the above comment 
             subject = subject_list[subject_ID]
 
-
             if subject not in Subjects:
                 Subjects[subject] = []
 
-            roll = input("Enter roll number list: ")
+            roll = get_valid_roll_list()
             roll_list = roll.split(',')
             for item in roll_list:
                 if "-" in item:  # item is a roll_no range (eg: 1-20, 10-11 etc)
