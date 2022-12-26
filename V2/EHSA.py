@@ -5,16 +5,11 @@ import itertools
 import math
 import random
 from JSON_generator import generate_JSON
-
-
-def generate_db():
-    pass
+from db_generator import generate_db
 
 def generate_report():
 
         conn = generate_db()
-
-        print("Generating PDF")
 
         with open('Subjects.json', 'r') as JSON:
             MetaInfo = json.load(JSON).pop("meta")
