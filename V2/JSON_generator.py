@@ -102,8 +102,16 @@ def generate_subject_JSON():
             break
 
         args = class_name.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
+
+        #  Error Handling
+
+        if len(args) not in [1, 2]:
+            print("ERROR invalid input")
+            print("input should be off the form CLASS_NAME NUMBER where CLASS_NAME is the name of the class \
+                and NUMBER is the number of electives (or NUMBER is left empty if the exam is not for an elective)")
+            continue
+
         class_name = args[0]
-        
         if len(args) == 1:
             count = 1 #, repeat below loop only once
         else:
