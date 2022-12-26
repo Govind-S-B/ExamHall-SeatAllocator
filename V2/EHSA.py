@@ -47,9 +47,9 @@ def generate_report():
     B_Halls = halls["B"] # bench halls
 
     with open('Subjects.json', 'r') as JSON:
-        Subjects = json.load(JSON)
+        roll_list_in_subject = json.load(JSON)
 
-    MetaInfo = Subjects.pop("meta") # Meta info global for each generation
+    MetaInfo = roll_list_in_subject.pop("meta") # Meta info global for each generation
 
     prev_halls_allocated_count = 0
 
@@ -63,11 +63,11 @@ def generate_report():
         bench_hall_allocated_count=0
 
         Subjects_list = [] # List of subjects
-        Students_total=0
+        Students_total = 0
 
-        for i in Subjects:
-            Subjects_list.append([len(Subjects[i]),i] + Subjects[i]) # No of students , Sub Name , roll nos ...
-            Students_total+=len(Subjects[i])
+        for subject, roll_list in roll_list_in_subject:
+            Subjects_list.append([len(roll_list),subject] + roll_list) # No of students , Sub Name , roll nos ...
+            Students_total+=len(roll_list_in_subject[subject])
 
         Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
         if seed_value!=0:
@@ -96,31 +96,31 @@ def generate_report():
 
             Halls_list = [] # List of halls
 
-            for i in D_Halls:
+            for subject in D_Halls:
                 #print(i)
-                Halls_list.append([D_Halls[i][0],i]) # Hall Capacity , Hall name 
+                Halls_list.append([D_Halls[subject][0],subject]) # Hall Capacity , Hall name 
 
             Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
 
-            for i in Halls_list:
-                check_for_split_halls_list.append(i[1])
+            for subject in Halls_list:
+                check_for_split_halls_list.append(subject[1])
 
             Halls_list = [] # List of halls 
 
-            for i in B_Halls:
-                Halls_list.append([B_Halls[i][0],i]) # Hall Capacity , Hall name
+            for subject in B_Halls:
+                Halls_list.append([B_Halls[subject][0],subject]) # Hall Capacity , Hall name
 
             Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity
 
-            for i in Halls_list:
-                check_for_split_halls_list.append(i[1])
+            for subject in Halls_list:
+                check_for_split_halls_list.append(subject[1])
 
             check_for_split_halls_list = check_for_split_halls_list[(prev_halls_allocated_count-split_hall_count):prev_halls_allocated_count]
 
             split_student_count = 0
 
-            for i in check_for_split_halls_list:
-                curr.execute("SELECT COUNT (*) FROM REPORT WHERE HALL='"+i+"'")
+            for subject in check_for_split_halls_list:
+                curr.execute("SELECT COUNT (*) FROM REPORT WHERE HALL='"+subject+"'")
                 split_student_count += curr.fetchone()[0]
 
             split_mean_capacity = int (split_student_count / split_hall_count)
@@ -137,29 +137,29 @@ def generate_report():
 
         if len(D_Halls) != 0 :
 
-            for i in range(len(Subjects_list)):
-                if i%2==0: #even
-                    even_row_subject_list.append(Subjects_list[i])
+            for subject in range(len(Subjects_list)):
+                if subject%2==0: #even
+                    even_row_subject_list.append(Subjects_list[subject])
                 else: #odd
-                    odd_row_subject_list.append(Subjects_list[i])
+                    odd_row_subject_list.append(Subjects_list[subject])
 
             Halls_list = [] # List of halls
 
-            for i in D_Halls:
+            for subject in D_Halls:
                 #print(i)
-                Halls_list.append([D_Halls[i][0],i,D_Halls[i][1]]) # Hall Capacity , Hall name , Hall col size
+                Halls_list.append([D_Halls[subject][0],subject,D_Halls[subject][1]]) # Hall Capacity , Hall name , Hall col size
 
             Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
 
             Halls_sorted_list = []
 
-            for i in Halls_list:
+            for subject in Halls_list:
                 if allocation_done == True:
                         break
                 else:
-                    Hall_name = i[1]
-                    Hall_capacity = i[0]
-                    Hall_cols = i[2]
+                    Hall_name = subject[1]
+                    Hall_capacity = subject[0]
+                    Hall_cols = subject[2]
 
                     halls_allocated_count += 1
 
@@ -171,18 +171,18 @@ def generate_report():
                     Hall_structure = [ [] for x in range(Hall_cols)]
 
                     
-                    for i in Hall_structure:
+                    for subject in Hall_structure:
                         if b>0:
                             k=1
                         else:
                             k=0
 
-                        i.extend([  [] for x in range(a+k) ])
+                        subject.extend([  [] for x in range(a+k) ])
                         b-=1
 
                     counter = 1
-                    for i in Hall_structure:
-                        for j in i:
+                    for subject in Hall_structure:
+                        for j in subject:
                             j.append(counter)
                             counter+=1
 
@@ -194,39 +194,39 @@ def generate_report():
                         temp = temp[0][2:] # roll no list [S3r1-20,s3r2-30,s3r2-31,...]
                         temp_list = []
 
-                        for i in temp:
-                            s = i.split("-")
+                        for subject in temp:
+                            s = subject.split("-")
                             
                             if s[0] in temp_list:
                                 exception_class_list[temp_list.index(s[0])][0] +=1
-                                exception_class_list[temp_list.index(s[0])].append(i)
+                                exception_class_list[temp_list.index(s[0])].append(subject)
                             else:
                                 temp_list.append(s[0])
-                                exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+                                exception_class_list.append([1,s[0],subject]) # number , class name , roll nums
                         
                         if seed_value!=0:
                                 random.shuffle(exception_class_list)
-                        for i in range(len(exception_class_list)):
-                            if i%2==0: #even
-                                exception_even_class_list.append(exception_class_list[i])
+                        for subject in range(len(exception_class_list)):
+                            if subject%2==0: #even
+                                exception_even_class_list.append(exception_class_list[subject])
                             else: #odd
-                                exception_odd_class_list.append(exception_class_list[i])
+                                exception_odd_class_list.append(exception_class_list[subject])
 
                     split_triggered_break = False
 
-                    for i in range(len(Hall_structure)):
+                    for subject in range(len(Hall_structure)):
                         if allocation_done == True:
                             break
                         elif split_triggered_break == True:
                             break
                         else:
-                            for j in range(len(Hall_structure[i])):
+                            for j in range(len(Hall_structure[subject])):
 
                                 if logic == 3:
 
-                                    Hall_structure[i][j].extend([exception_class_list[0].pop(2),exception_subname])
-                                    temp_expression = Hall_structure[i][j][1].split("-")
-                                    conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                    Hall_structure[subject][j].extend([exception_class_list[0].pop(2),exception_subname])
+                                    temp_expression = Hall_structure[subject][j][1].split("-")
+                                    conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[subject][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[subject][j][0]}','{Hall_structure[subject][j][2]}')")
                                     conn.commit()
                                     Student_allocated_count+=1
                                     exception_class_list[0][0]-=1
@@ -239,16 +239,16 @@ def generate_report():
 
                                 else:
 
-                                    if i%2 == 0: #even row
+                                    if subject%2 == 0: #even row
 
                                         if logic == 1:
 
                                             if len(even_row_subject_list) == 0:
                                                 pass
-                                            elif len(Hall_structure[i][j])<3:
-                                                Hall_structure[i][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
-                                                temp_expression = Hall_structure[i][j][1].split("-")
-                                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                            elif len(Hall_structure[subject][j])<3:
+                                                Hall_structure[subject][j].extend([even_row_subject_list[0].pop(2),even_row_subject_list[0][1]])
+                                                temp_expression = Hall_structure[subject][j][1].split("-")
+                                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[subject][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[subject][j][0]}','{Hall_structure[subject][j][2]}')")
                                                 conn.commit()
                                                 Student_allocated_count+=1
                                                 even_row_subject_list[0][0]-=1
@@ -260,10 +260,10 @@ def generate_report():
 
                                             if len(exception_even_class_list) == 0:
                                                 pass
-                                            elif len(Hall_structure[i][j])<3:
-                                                Hall_structure[i][j].extend([exception_even_class_list[0].pop(2),exception_subname])
-                                                temp_expression = Hall_structure[i][j][1].split("-")
-                                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                            elif len(Hall_structure[subject][j])<3:
+                                                Hall_structure[subject][j].extend([exception_even_class_list[0].pop(2),exception_subname])
+                                                temp_expression = Hall_structure[subject][j][1].split("-")
+                                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[subject][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[subject][j][0]}','{Hall_structure[subject][j][2]}')")
                                                 conn.commit()
                                                 Student_allocated_count+=1
                                                 exception_even_class_list[0][0]-=1
@@ -276,10 +276,10 @@ def generate_report():
 
                                             if len(odd_row_subject_list) == 0:
                                                 pass
-                                            elif len(Hall_structure[i][j])<3:
-                                                Hall_structure[i][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
-                                                temp_expression = Hall_structure[i][j][1].split("-")
-                                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                            elif len(Hall_structure[subject][j])<3:
+                                                Hall_structure[subject][j].extend([odd_row_subject_list[0].pop(2),odd_row_subject_list[0][1]])
+                                                temp_expression = Hall_structure[subject][j][1].split("-")
+                                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[subject][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[subject][j][0]}','{Hall_structure[subject][j][2]}')")
                                                 conn.commit()
                                                 Student_allocated_count+=1
                                                 odd_row_subject_list[0][0]-=1
@@ -291,10 +291,10 @@ def generate_report():
 
                                             if len(exception_odd_class_list) == 0:
                                                 pass
-                                            elif len(Hall_structure[i][j])<3:
-                                                Hall_structure[i][j].extend([exception_odd_class_list[0].pop(2),exception_subname])
-                                                temp_expression = Hall_structure[i][j][1].split("-")
-                                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[i][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[i][j][0]}','{Hall_structure[i][j][2]}')")
+                                            elif len(Hall_structure[subject][j])<3:
+                                                Hall_structure[subject][j].extend([exception_odd_class_list[0].pop(2),exception_subname])
+                                                temp_expression = Hall_structure[subject][j][1].split("-")
+                                                conn.execute(f"INSERT INTO REPORT VALUES('{Hall_structure[subject][j][1]}','{temp_expression[0]}','{temp_expression[1]}','{Hall_name}','{Hall_structure[subject][j][0]}','{Hall_structure[subject][j][2]}')")
                                                 conn.commit()
                                                 Student_allocated_count+=1
                                                 exception_odd_class_list[0][0]-=1
@@ -313,11 +313,11 @@ def generate_report():
                                             even_row_subject_list = []
                                             odd_row_subject_list = []
 
-                                            for i in range(len(Subjects_list)):
-                                                if i%2==0: #even
-                                                    even_row_subject_list.append(Subjects_list[i])
+                                            for subject in range(len(Subjects_list)):
+                                                if subject%2==0: #even
+                                                    even_row_subject_list.append(Subjects_list[subject])
                                                 else: #odd
-                                                    odd_row_subject_list.append(Subjects_list[i])
+                                                    odd_row_subject_list.append(Subjects_list[subject])
 
                                         if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
                                             Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
@@ -326,11 +326,11 @@ def generate_report():
                                             even_row_subject_list = []
                                             odd_row_subject_list = []
 
-                                            for i in range(len(Subjects_list)):
-                                                if i%2==0: #even
-                                                    even_row_subject_list.append(Subjects_list[i])
+                                            for subject in range(len(Subjects_list)):
+                                                if subject%2==0: #even
+                                                    even_row_subject_list.append(Subjects_list[subject])
                                                 else: #odd
-                                                    odd_row_subject_list.append(Subjects_list[i])
+                                                    odd_row_subject_list.append(Subjects_list[subject])
 
                                         temp = even_row_subject_list + odd_row_subject_list
                                         if ( (len(temp)==1) and (temp[0][0]>threshold_value) ):
@@ -340,23 +340,23 @@ def generate_report():
                                             temp = temp[0][2:] # roll no list [S3r1-20,s3r2-30,s3r2-31,...]
                                             temp_list = []
 
-                                            for i in temp:
-                                                s = i.split("-")
+                                            for subject in temp:
+                                                s = subject.split("-")
                                                 
                                                 if s[0] in temp_list:
                                                     exception_class_list[temp_list.index(s[0])][0] +=1
-                                                    exception_class_list[temp_list.index(s[0])].append(i)
+                                                    exception_class_list[temp_list.index(s[0])].append(subject)
                                                 else:
                                                     temp_list.append(s[0])
-                                                    exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+                                                    exception_class_list.append([1,s[0],subject]) # number , class name , roll nums
                                             
                                             if seed_value!=0:
                                                     random.shuffle(exception_class_list)
-                                            for i in range(len(exception_class_list)):
-                                                if i%2==0: #even
-                                                    exception_even_class_list.append(exception_class_list[i])
+                                            for subject in range(len(exception_class_list)):
+                                                if subject%2==0: #even
+                                                    exception_even_class_list.append(exception_class_list[subject])
                                                 else: #odd
-                                                    exception_odd_class_list.append(exception_class_list[i])
+                                                    exception_odd_class_list.append(exception_class_list[subject])
 
                                         if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
                                             allocation_done = True
@@ -371,11 +371,11 @@ def generate_report():
                                             exception_even_class_list = []
                                             exception_odd_class_list = []
 
-                                            for i in range(len(exception_class_list)):
-                                                if i%2==0: #even
-                                                    exception_even_class_list.append(exception_class_list[i])
+                                            for subject in range(len(exception_class_list)):
+                                                if subject%2==0: #even
+                                                    exception_even_class_list.append(exception_class_list[subject])
                                                 else: #odd
-                                                    exception_odd_class_list.append(exception_class_list[i])
+                                                    exception_odd_class_list.append(exception_class_list[subject])
 
                                         if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
                                             exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
@@ -384,11 +384,11 @@ def generate_report():
                                             exception_even_class_list = []
                                             exception_odd_class_list = []
 
-                                            for i in range(len(exception_class_list)):
-                                                if i%2==0: #even
-                                                    exception_even_class_list.append(exception_class_list[i])
+                                            for subject in range(len(exception_class_list)):
+                                                if subject%2==0: #even
+                                                    exception_even_class_list.append(exception_class_list[subject])
                                                 else: #odd
-                                                    exception_odd_class_list.append(exception_class_list[i])
+                                                    exception_odd_class_list.append(exception_class_list[subject])
 
                                         exception_class_list = exception_even_class_list + exception_odd_class_list
                                         if ( (len(exception_class_list)==1) and (dont_care == True) ):
@@ -418,16 +418,16 @@ def generate_report():
             even_row_subject_list = []
             odd_row_subject_list = []
 
-            for i in range(len(Subjects_list)):
-                if i%2==0: #even
-                    even_row_subject_list.append(Subjects_list[i])
+            for subject in range(len(Subjects_list)):
+                if subject%2==0: #even
+                    even_row_subject_list.append(Subjects_list[subject])
                 else: #odd
-                    odd_row_subject_list.append(Subjects_list[i])
+                    odd_row_subject_list.append(Subjects_list[subject])
 
             Halls_list = [] # List of halls 
 
-            for i in B_Halls:
-                Halls_list.append([B_Halls[i][0],i]) # Hall Capacity , Hall name
+            for subject in B_Halls:
+                Halls_list.append([B_Halls[subject][0],subject]) # Hall Capacity , Hall name
 
             Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity
 
@@ -441,24 +441,24 @@ def generate_report():
                     temp = temp[0][2:] # roll no list [S3r1-20,s3r2-30,s3r2-31,...]
                     temp_list = []
 
-                    for i in temp:
-                        s = i.split("-")
+                    for subject in temp:
+                        s = subject.split("-")
                         
                         if s[0] in temp_list:
                             exception_class_list[temp_list.index(s[0])][0] +=1
-                            exception_class_list[temp_list.index(s[0])].append(i)
+                            exception_class_list[temp_list.index(s[0])].append(subject)
                         else:
                             temp_list.append(s[0])
-                            exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+                            exception_class_list.append([1,s[0],subject]) # number , class name , roll nums
 
                     if seed_value!=0:
                             random.shuffle(exception_class_list)
                     
-                    for i in range(len(exception_class_list)):
-                        if i%2==0: #even
-                            exception_even_class_list.append(exception_class_list[i])
+                    for subject in range(len(exception_class_list)):
+                        if subject%2==0: #even
+                            exception_even_class_list.append(exception_class_list[subject])
                         else: #odd
-                            exception_odd_class_list.append(exception_class_list[i])
+                            exception_odd_class_list.append(exception_class_list[subject])
 
             for each_hall in Halls_list:
                 if allocation_done == True:
@@ -563,11 +563,11 @@ def generate_report():
                                     even_row_subject_list = []
                                     odd_row_subject_list = []
 
-                                    for i in range(len(Subjects_list)):
-                                        if i%2==0: #even
-                                            even_row_subject_list.append(Subjects_list[i])
+                                    for subject in range(len(Subjects_list)):
+                                        if subject%2==0: #even
+                                            even_row_subject_list.append(Subjects_list[subject])
                                         else: #odd
-                                            odd_row_subject_list.append(Subjects_list[i])
+                                            odd_row_subject_list.append(Subjects_list[subject])
 
                                 if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
                                     Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
@@ -576,11 +576,11 @@ def generate_report():
                                     even_row_subject_list = []
                                     odd_row_subject_list = []
 
-                                    for i in range(len(Subjects_list)):
-                                        if i%2==0: #even
-                                            even_row_subject_list.append(Subjects_list[i])
+                                    for subject in range(len(Subjects_list)):
+                                        if subject%2==0: #even
+                                            even_row_subject_list.append(Subjects_list[subject])
                                         else: #odd
-                                            odd_row_subject_list.append(Subjects_list[i])
+                                            odd_row_subject_list.append(Subjects_list[subject])
 
                                 temp = even_row_subject_list + odd_row_subject_list
                                 if ( (len(temp)==1) and (temp[0][0]>threshold_value) ):
@@ -590,24 +590,24 @@ def generate_report():
                                     temp = temp[0][2:] # roll no list [S3r1-20,s3r2-30,s3r2-31,...]
                                     temp_list = []
 
-                                    for i in temp:
-                                        s = i.split("-")
+                                    for subject in temp:
+                                        s = subject.split("-")
                                         
                                         if s[0] in temp_list:
                                             exception_class_list[temp_list.index(s[0])][0] +=1
-                                            exception_class_list[temp_list.index(s[0])].append(i)
+                                            exception_class_list[temp_list.index(s[0])].append(subject)
                                         else:
                                             temp_list.append(s[0])
-                                            exception_class_list.append([1,s[0],i]) # number , class name , roll nums
+                                            exception_class_list.append([1,s[0],subject]) # number , class name , roll nums
 
                                     if seed_value!=0:
                                             random.shuffle(exception_class_list)
                                     
-                                    for i in range(len(exception_class_list)):
-                                        if i%2==0: #even
-                                            exception_even_class_list.append(exception_class_list[i])
+                                    for subject in range(len(exception_class_list)):
+                                        if subject%2==0: #even
+                                            exception_even_class_list.append(exception_class_list[subject])
                                         else: #odd
-                                            exception_odd_class_list.append(exception_class_list[i])
+                                            exception_odd_class_list.append(exception_class_list[subject])
 
                                 if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)==0):
                                     allocation_done = True
@@ -622,11 +622,11 @@ def generate_report():
                                     exception_even_class_list = []
                                     exception_odd_class_list = []
 
-                                    for i in range(len(exception_class_list)):
-                                        if i%2==0: #even
-                                            exception_even_class_list.append(exception_class_list[i])
+                                    for subject in range(len(exception_class_list)):
+                                        if subject%2==0: #even
+                                            exception_even_class_list.append(exception_class_list[subject])
                                         else: #odd
-                                            exception_odd_class_list.append(exception_class_list[i])
+                                            exception_odd_class_list.append(exception_class_list[subject])
 
                                 if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
                                     exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
@@ -635,11 +635,11 @@ def generate_report():
                                     exception_even_class_list = []
                                     exception_odd_class_list = []
 
-                                    for i in range(len(exception_class_list)):
-                                        if i%2==0: #even
-                                            exception_even_class_list.append(exception_class_list[i])
+                                    for subject in range(len(exception_class_list)):
+                                        if subject%2==0: #even
+                                            exception_even_class_list.append(exception_class_list[subject])
                                         else: #odd
-                                            exception_odd_class_list.append(exception_class_list[i])
+                                            exception_odd_class_list.append(exception_class_list[subject])
 
                                 exception_class_list = exception_even_class_list + exception_odd_class_list
                                 if ( (len(exception_class_list)==1) and (dont_care == True) ):
@@ -723,20 +723,20 @@ def generate_report():
         class_name = Q_list[0][0]
         hall_name = Q_list[0][1]
 
-        for i in Q_list:
-            if class_name == i[0]:
+        for subject in Q_list:
+            if class_name == subject[0]:
 
-                if hall_name == i[1]:
-                    roll_list.append(i[2])
+                if hall_name == subject[1]:
+                    roll_list.append(subject[2])
                 else:
                     temp = "("+str(len(roll_list))+")"
                     roll_list.append(temp)
                     
                     temp_PDF_list.append([class_name, hall_name, roll_list])
 
-                    hall_name = i[1]
+                    hall_name = subject[1]
                     roll_list = []
-                    roll_list.append(i[2])
+                    roll_list.append(subject[2])
 
             else:
                 temp = "("+str(len(roll_list))+")"
@@ -748,12 +748,12 @@ def generate_report():
                     PDF_list.append(h)
 
                 temp_PDF_list = []
-                class_name = i[0]
-                hall_name = i[1]
+                class_name = subject[0]
+                hall_name = subject[1]
                 roll_list = []
-                roll_list.append(i[2])
+                roll_list.append(subject[2])
 
-            if Q_list[-1] == i:
+            if Q_list[-1] == subject:
                 temp = "("+str(len(roll_list))+")"
                 roll_list.append(temp)
 
@@ -793,13 +793,13 @@ def generate_report():
         # Create Table Body
         prev_class=""
         # PDF_list.pop(0)
-        for i in PDF_list:
+        for subject in PDF_list:
             temp="   "
             rows=1
             temp_count=1
             
             roll_list=[]
-            roll_list.append(i[2])
+            roll_list.append(subject[2])
             for j in roll_list[0]:
                 if temp_count>78:  #to split rows
                     temp+="\n   "
@@ -813,7 +813,7 @@ def generate_report():
                     temp+=(str(j)+", ")
                 temp_count+=len(str(j))+2
 
-            curr_class=i[0]
+            curr_class=subject[0]
             height=rows*12
 
             pdf1.set_font(font, 'B', 11)
@@ -823,7 +823,7 @@ def generate_report():
                 pdf1.cell(22.1, height, curr_class, align='C', border=True)
             prev_class=curr_class
             pdf1.set_font(font, '', 11)
-            pdf1.cell(18.5, height, i[1], align='C', border=True, new_x="RIGHT")
+            pdf1.cell(18.5, height, subject[1], align='C', border=True, new_x="RIGHT")
 
             pdf1.multi_cell(0, height/rows, temp, new_x="LMARGIN", new_y="NEXT", border=True, align="L")
 
@@ -852,29 +852,29 @@ def generate_report():
         class_name = Q_list[0][1]
         subject_name = Q_list[0][2]
 
-        for i in Q_list:
-            if hall_name == i[0]:
-                if class_name == i[1]:
+        for subject in Q_list:
+            if hall_name == subject[0]:
+                if class_name == subject[1]:
 
-                    if subject_name == i[2]:
-                        roll_list.append(i[3])
+                    if subject_name == subject[2]:
+                        roll_list.append(subject[3])
 
                     else:
                         roll_ = ranges(roll_list)
                         no_of_candidates = len(roll_list)
                         PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
-                        subject_name = i[2]
+                        subject_name = subject[2]
                         roll_list = []
-                        roll_list.append(i[3])
+                        roll_list.append(subject[3])
 
                 else:
                     roll_ = ranges(roll_list)
                     no_of_candidates = len(roll_list)
                     PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
-                    class_name = i[1]
-                    subject_name = i[2]
+                    class_name = subject[1]
+                    subject_name = subject[2]
                     roll_list = []
-                    roll_list.append(i[3])
+                    roll_list.append(subject[3])
 
             else:
                 # append , PDF Generate and empty pdf list
@@ -1060,13 +1060,13 @@ def generate_report():
                 
                 PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
 
-                hall_name = i[0]
-                class_name = i[1]
-                subject_name = i [2]
+                hall_name = subject[0]
+                class_name = subject[1]
+                subject_name = subject [2]
                 roll_list = []
-                roll_list.append(i[3])
+                roll_list.append(subject[3])
 
-            if Q_list[-1] == i:
+            if Q_list[-1] == subject:
                 roll_ = ranges(roll_list)
                 no_of_candidates = len(roll_list)
                 PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
@@ -1262,8 +1262,8 @@ def generate_report():
         cursor = conn.execute(cmd)
         x = cursor.fetchall()
         distinct_class = []
-        for i in x:
-            distinct_class.append(list(i))
+        for subject in x:
+            distinct_class.append(list(subject))
 
         cmd = """SELECT HALL,SEAT_NO,ID
                 FROM REPORT
@@ -1271,27 +1271,27 @@ def generate_report():
         cursor = conn.execute(cmd)
         x = cursor.fetchall()
         query_list = []
-        for i in x:
-            query_list.append(list(i))
+        for subject in x:
+            query_list.append(list(subject))
 
         hall_distinct_list = [[distinct_class[0][0]]]
         hall = query_list[0][0]
         hall_check_for_distinct = distinct_class[0][0]
 
-        for i in distinct_class:
-            if hall_check_for_distinct == i[0]:
-                if i[1] not in hall_distinct_list:
-                    hall_distinct_list[-1].append(i[1])
+        for subject in distinct_class:
+            if hall_check_for_distinct == subject[0]:
+                if subject[1] not in hall_distinct_list:
+                    hall_distinct_list[-1].append(subject[1])
             else:
-                hall_check_for_distinct = i[0]
-                hall_distinct_list.append(i)
-                if i[1] not in hall_distinct_list[-1]:
-                    hall_distinct_list[-1].append(i[1])
+                hall_check_for_distinct = subject[0]
+                hall_distinct_list.append(subject)
+                if subject[1] not in hall_distinct_list[-1]:
+                    hall_distinct_list[-1].append(subject[1])
 
         # print distinct
-        for i in hall_distinct_list:
+        for subject in hall_distinct_list:
             seat_List = [["Seat", "RollNo"]]
-            hall = i[0]
+            hall = subject[0]
             for j in query_list:
                 if hall == j[0]:
                     seat_List.append([j[1], j[2]])
@@ -1299,7 +1299,7 @@ def generate_report():
             for k in range(1, last_seat_no+1):
                 if seat_List[k][0]!=k:
                     seat_List.insert(k, [k, "-"])
-            classes_list = i[1:]
+            classes_list = subject[1:]
             
             seat_List.pop(0)
             row_number = int(math.ceil(len(seat_List)/4))
