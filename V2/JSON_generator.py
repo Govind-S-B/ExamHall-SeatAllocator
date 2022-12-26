@@ -111,11 +111,19 @@ def generate_subject_JSON():
                 and NUMBER is the number of electives (or NUMBER is left empty if the exam is not for an elective)")
             continue
 
+        try:
+            num_of_electives = int(args[1])
+        except ValueError:
+            print("ERROR invalid input")
+            print("input should be off the form CLASS_NAME NUMBER where CLASS_NAME is the name of the class \
+                and NUMBER is the number of electives (or NUMBER is left empty if the exam is not for an elective)")
+            continue
+
         class_name = args[0]
         if len(args) == 1:
             count = 1 #, repeat below loop only once
         else:
-            count = int(args[1])
+            count = num_of_electives
         # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
         
         for i in range(count):
