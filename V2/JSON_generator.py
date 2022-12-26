@@ -2,6 +2,29 @@
 from json import dump, dumps
 
 
+def get_input_in_range(text, lower, upper):
+    if lower > upper:
+        raise ValueError(f"lower bound ({lower}) is bigger than upper bound ({upper})")
+
+    while True:
+        num = input(text)
+
+        if num.lower() == "done":
+            return "done"
+
+        try:
+            num = int(num)
+        except ValueError:
+            print("ERROR: not a number")
+            continue
+
+        if lower <= num <= upper:
+            return num
+        else:
+            print(f"ERROR: input should be between {lower} and {upper}") 
+
+        
+
 def populate_halls(halls):
     print('\nPress "done" to exit\n')
     while True:
@@ -119,6 +142,8 @@ def generate_subject_JSON():
                 and NUMBER is the number of electives (or NUMBER is left empty if the exam is not for an elective)")
             continue
 
+        #  Error Handling done
+
         class_name = args[0]
         if len(args) == 1:
             count = 1 #, repeat below loop only once
@@ -131,15 +156,12 @@ def generate_subject_JSON():
                 print(f'{i+1} - {subject_list[i]}')  # +1 because in code indexing starts from 0
                                                      # but for user indexing starts from 1
                 
-            subject = input("Enter Subject ID: ")
-            if subject.lower() == "done":
+            subject = get_input_in_range("Enter Subject ID: ", 1, count)
+            if subject == "done":
                 break
                 
             subject_ID = int(subject) - 1 # -1 here for the same reasons as mentioned in the above comment 
             subject = subject_list[subject_ID]
-
-
-
 
 
             if subject not in Subjects:
