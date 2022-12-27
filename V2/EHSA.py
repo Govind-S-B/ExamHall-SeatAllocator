@@ -189,6 +189,7 @@ def generate_report():
 
 
     # Packaging List PDF------------------------------------------------------------------------------------------------
+    # Packaging List PDF------------------------------------------------------------------------------------------------
     pdf2.set_auto_page_break(auto = True, margin = 15) # Auto page break
     # code
     cmd = """SELECT HALL,CLASS,SUBJECT,ROLL
@@ -209,144 +210,40 @@ def generate_report():
     class_name = Q_list[0][1]
     subject_name = Q_list[0][2]
 
-    for subject in Q_list:
-        if hall_name == subject[0]:
-            if class_name == subject[1]:
+    for i in Q_list:
+        if hall_name == i[0]:
+            if class_name == i[1]:
 
-                if subject_name == subject[2]:
-                    roll_list.append(subject[3])
+                if subject_name == i[2]:
+                    roll_list.append(i[3])
 
                 else:
                     roll_ = ranges(roll_list)
                     no_of_candidates = len(roll_list)
                     PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
-                    subject_name = subject[2]
+                    subject_name = i[2]
                     roll_list = []
-                    roll_list.append(subject[3])
+                    roll_list.append(i[3])
 
             else:
                 roll_ = ranges(roll_list)
                 no_of_candidates = len(roll_list)
                 PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
-                class_name = subject[1]
-                subject_name = subject[2]
+                class_name = i[1]
+                subject_name = i[2]
                 roll_list = []
-                roll_list.append(subject[3])
+                roll_list.append(i[3])
 
-                pdf2.add_page()
-                pdf2.set_font(font, '', 27)
-                text="Marian Engineering College"
-                text_w=pdf2.get_string_width(text)+6
-                pdf2.set_x((pdf2.w - text_w) / 2)
-                pdf2.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
-
-                pdf2.set_font(font, '', 20)
-                text="Packing List for Internal Examination"
-                text_w=pdf2.get_string_width(text)+6
-                pdf2.set_x((pdf2.w - text_w) / 2)
-                pdf2.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')
-
-                pdf2.set_y(45)
-                pdf2.set_font(font, '', 18)
-                pdf2.set_x(30)
-                pdf2.write_html(f"<align=\"center\">Hall No: <b>{hall_name}</b>      Date: <b>{Date}</b>      Session: <b>{Session}<b/>")
-                pdf2.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
-
-                #Create Table Header
-                pdf2.set_font(font, 'B', 10)
-                pdf2.set_y(60)
-                class_w=pdf2.get_string_width("Class")+8    # 18.06122222222222
-                print(class_w)
-                pdf2.cell(class_w, 20, "Class", align='C', border=True)
-                pdf2.cell(65, 20, "Subject", align='C', border=True)
-                pdf2.cell(30, 20, "", align='C', border=True)
-                pdf2.set_y(66.1)
-                pdf2.set_x(class_w+65+14)
-                pdf2.write_html("<b>Roll No.s of</b>")
-                pdf2.set_y(71.1)
-                pdf2.set_x(class_w+65+13.1)
-                pdf2.write_html("<b>Candidates</b>")
-
-                pdf2.set_y(60)
-                pdf2.set_x(class_w+65+30+10)
-                pdf2.cell(30, 20, "", align='C', border=True)
-                pdf2.set_y(66.1)
-                pdf2.set_x(class_w+65+14+35)
-                pdf2.write_html("<b>No. of</b>")
-                pdf2.set_y(71.1)
-                pdf2.set_x(class_w+65+13.1+30)
-                pdf2.write_html("<b>Candidates</b>")
-                
-                pdf2.set_y(60)
-                pdf2.set_x(class_w+65+30+10+30)
-                pdf2.cell(0, 20, "", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
-                pdf2.set_y(66.1)
-                pdf2.set_x(class_w+65+14+35+34)
-                pdf2.write_html("<b>Roll No.s of</b>")
-                pdf2.set_y(71.1)
-                pdf2.set_x(class_w+65+13.1+30+40)
-                pdf2.write_html("<b>Absentees</b>")
-
-                #Create Table Body
-                y_pos=80
-                pdf2.set_y(80)
-                pdf2.set_x(10)
-                prev_class=""
-                PDF_list.pop(0)
-                for k in PDF_list:
-                    sub_rows=1
-                    sub_flag=0
-                    if len(k[1])>33:
-                        sub_rows=2
-                        sub_flag=1
-
-                    roll_range_raw=k[2]
-                    temp1=""
-                    a=[]
-                    for m in roll_range_raw:
-                        if m.isdigit():
-                            temp1+=m
-                        elif m==',':
-                            temp1+=','
-                        elif m=='(':
-                            temp1=""
-                        elif m==')':
-                            a.append(temp1)
-                    roll_rows=1
-                    temp1=""
-                    for m in a:
-                        x=m.split(',')
-                        if x[0]==x[1]:
-                            temp1+=x[0]+", "
-                        else:
-                            temp1+=x[0]+"-"+x[1]+", "
-                    temp1=temp1[:-2]
-                    roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/28))
-                    roll_flag=0
-                    rows=max(sub_rows,roll_rows)
-                    height=10*rows
-                    pdf2.set_font(font, '', 10)
-
-                    curr_class=k[0]
-                    if prev_class==curr_class:
-                        pdf2.cell(class_w, height, '"', align='C', border=True) # Class
-                    else:
-                        pdf2.cell(class_w, height, curr_class, align='C', border=True) # Class
-                    prev_class=curr_class
-                    if sub_flag==0:
-                        pdf2.multi_cell(65, height, k[1], align='C', border=True) # Subject when subject is one line only
-                    elif sub_flag==1 and roll_flag==0:
-                        pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject when subject is two line but roll no range is only one line
-                    elif sub_flag==1 and roll_flag==1:
-                        pdf2.multi_cell(65, (10*rows)/2, k[1], align='C', border=True) # Subject subject is 2 line and roll range is also multi line
-                    else:
-                        pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject in other cases
+        else:
+            # append , PDF Generate and empty pdf list
+            roll_ = ranges(roll_list)
+            no_of_candidates = len(roll_list)
+            PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
 
             pdf2.add_page()
             pdf2.set_font(font, '', 27)
             text="Marian Engineering College"
             text_w=pdf2.get_string_width(text)+6
-            pdf2.w=pdf2.w
             pdf2.set_x((pdf2.w - text_w) / 2)
             pdf2.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
 
@@ -365,7 +262,8 @@ def generate_report():
             #Create Table Header
             pdf2.set_font(font, 'B', 10)
             pdf2.set_y(60)
-            class_w=pdf2.get_string_width("Class")+8
+            class_w=pdf2.get_string_width("Class")+8    # 18.06122222222222
+            print(class_w)
             pdf2.cell(class_w, 20, "Class", align='C', border=True)
             pdf2.cell(65, 20, "Subject", align='C', border=True)
             pdf2.cell(30, 20, "", align='C', border=True)
@@ -385,7 +283,7 @@ def generate_report():
             pdf2.set_y(71.1)
             pdf2.set_x(class_w+65+13.1+30)
             pdf2.write_html("<b>Candidates</b>")
-            
+
             pdf2.set_y(60)
             pdf2.set_x(class_w+65+30+10+30)
             pdf2.cell(0, 20, "", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
@@ -412,7 +310,6 @@ def generate_report():
                 roll_range_raw=k[2]
                 temp1=""
                 a=[]
-                # print("Roll rage raw: ",roll_range_raw)
                 for m in roll_range_raw:
                     if m.isdigit():
                         temp1+=m
@@ -422,54 +319,18 @@ def generate_report():
                         temp1=""
                     elif m==')':
                         a.append(temp1)
-                # print("a: ",a)
-                # roll_rows=len(a)
                 roll_rows=1
                 temp1=""
-                # char_count=1
                 for m in a:
                     x=m.split(',')
                     if x[0]==x[1]:
                         temp1+=x[0]+", "
-                        # char_count+=len(x[0])+2
                     else:
                         temp1+=x[0]+"-"+x[1]+", "
-                        # char_count+=len(x[0])+len(x[1])+2
-                    # if char_count>16:
-                    #     # temp1+="\n"
-                    #     roll_rows+=1
-                    #     char_count=1
-                # while temp1[-1].isnumeric()==False:
-                #     temp1=temp1[:-1]
                 temp1=temp1[:-2]
-                roll_rows=int(math.ceil(len(temp1)/17))
-                if len(temp1)>50:
-                    roll_rows+=1
-                # if temp1[-1]=="\n":
-                #     temp1=temp1[:-1]
-                #     roll_rows-=1
-                # temp1=temp1[:-2]
-                # temp1+="test"
-                # print("Temp: ",temp1)
-                # print()
-                # print("temp1: ",temp1)
-                # roll_rows=int(math.ceil(len(temp1)/17))
-                # char_count=0
-                # for e in temp1:
-                #     char_count+=1
-                #     if e==",":
-                #         if char_count>16
-
+                roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/28))
                 roll_flag=0
-                # if roll_rows>1:
-                #     roll_flag=1
-                
-                # print(hall_name, " ", curr_class," ",k[1])
-                # print("Sub r: ", sub_rows)
-                # print("Roll r: ", roll_rows)
                 rows=max(sub_rows,roll_rows)
-                # print("Rows: ", rows)
-                # print()
                 height=10*rows
                 pdf2.set_font(font, '', 10)
 
@@ -497,84 +358,10 @@ def generate_report():
                 pdf2.set_y(y_pos)
                 pdf2.set_x(class_w+65+30+10)
 
-                pdf2.cell(30, 20, "", align='C', border=True)
-                pdf2.set_y(66.1)
-                pdf2.set_x(class_w+65+14+35)
-                pdf2.write_html("<b>No. of</b>")
-                pdf2.set_y(71.1)
-                pdf2.set_x(class_w+65+13.1+30)
-                pdf2.write_html("<b>Candidates</b>")
-                
-                pdf2.set_y(60)
-                pdf2.set_x(class_w+65+30+10+30)
-                pdf2.cell(0, 20, "", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
-                pdf2.set_y(66.1)
-                pdf2.set_x(class_w+65+14+35+34)
-                pdf2.write_html("<b>Roll No.s of</b>")
-                pdf2.set_y(71.1)
-                pdf2.set_x(class_w+65+13.1+30+40)
-                pdf2.write_html("<b>Absentees</b>")
-
-                #Create Table Body
-                y_pos=80
-                pdf2.set_y(80)
-                pdf2.set_x(10)
-                prev_class=""
-                PDF_list.pop(0)
-                for k in PDF_list:
-                    sub_rows=1
-                    sub_flag=0
-                    if len(k[1])>33:
-                        sub_rows=2
-                        sub_flag=1
-
-                    roll_range_raw=k[2]
-                    temp1=""
-                    a=[]
-                    for m in roll_range_raw:
-                        if m.isdigit():
-                            temp1+=m
-                        elif m==',':
-                            temp1+=','
-                        elif m=='(':
-                            temp1=""
-                        elif m==')':
-                            a.append(temp1)
-                    roll_rows=1
-                    temp1=""
-                    for m in a:
-                        x=m.split(',')
-                        if x[0]==x[1]:
-                            temp1+=x[0]+", "
-                        else:
-                            temp1+=x[0]+"-"+x[1]+", "
-                    temp1=temp1[:-2]
-                    roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/30))
-                    roll_flag=0
-                    rows=max(sub_rows,roll_rows)
-                    height=10*rows
-                    pdf2.set_font(font, '', 10)
-
-                    curr_class=k[0]
-                    if prev_class==curr_class:
-                        pdf2.cell(class_w, height, '"', align='C', border=True) # Class
-                    else:
-                        pdf2.cell(class_w, height, curr_class, align='C', border=True) # Class
-                    prev_class=curr_class
-                    if sub_flag==0:
-                        pdf2.multi_cell(65, height, k[1], align='C', border=True) # Subject when subject is one line only
-                    elif sub_flag==1 and roll_flag==0:
-                        pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject when subject is two line but roll no range is only one line
-                    elif sub_flag==1 and roll_flag==1:
-                        pdf2.multi_cell(65, (10*rows)/2, k[1], align='C', border=True) # Subject subject is 2 line and roll range is also multi line
-                    else:
-                        pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject in other cases
-
-
                 pdf2.cell(30, height, str(k[3]), align='C', border=True) # No of candidates
                 pdf2.cell(0, height, "", border=True, new_x="LMARGIN", new_y="NEXT") # Absentees blank column
                 y_pos+=height
-            
+
             pdf2.set_font(font, 'B', 10)
             pdf2.cell(class_w+65+30, 10, "Total:", border=True, align="C") # Total
             for l in R_list:
@@ -591,20 +378,20 @@ def generate_report():
             pdf2.write_html("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
             pdf2.set_y(pdf2.get_y()+1.25)
             pdf2.write_html("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inside.")
-            
+
             PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
 
-            hall_name = subject[0]
-            class_name = subject[1]
-            subject_name = subject [2]
+            hall_name = i[0]
+            class_name = i[1]
+            subject_name = i [2]
             roll_list = []
-            roll_list.append(subject[3])
+            roll_list.append(i[3])
 
-        if Q_list[-1] == subject:
+        if Q_list[-1] == i:
             roll_ = ranges(roll_list)
             no_of_candidates = len(roll_list)
             PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
-            
+
             pdf2.add_page()
             pdf2.set_font(font, '', 27)
             text="Marian Engineering College"
@@ -648,7 +435,7 @@ def generate_report():
             pdf2.set_y(71.1)
             pdf2.set_x(class_w+65+13.1+30)
             pdf2.write_html("<b>Candidates</b>")
-            
+
             pdf2.set_y(60)
             pdf2.set_x(class_w+65+30+10+30)
             pdf2.cell(0, 20, "", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
@@ -675,7 +462,6 @@ def generate_report():
                 roll_range_raw=k[2]
                 temp1=""
                 a=[]
-                # print("Roll rage raw: ",roll_range_raw)
                 for m in roll_range_raw:
                     if m.isdigit():
                         temp1+=m
@@ -685,54 +471,18 @@ def generate_report():
                         temp1=""
                     elif m==')':
                         a.append(temp1)
-                # print("a: ",a)
-                # roll_rows=len(a)
                 roll_rows=1
                 temp1=""
-                # char_count=1
                 for m in a:
                     x=m.split(',')
                     if x[0]==x[1]:
                         temp1+=x[0]+", "
-                        # char_count+=len(x[0])+2
                     else:
                         temp1+=x[0]+"-"+x[1]+", "
-                        # char_count+=len(x[0])+len(x[1])+2
-                    # if char_count>16:
-                    #     # temp1+="\n"
-                    #     roll_rows+=1
-                    #     char_count=1
-                # while temp1[-1].isnumeric()==False:
-                #     temp1=temp1[:-1]
                 temp1=temp1[:-2]
-                roll_rows=int(math.ceil(len(temp1)/17))
-                if len(temp1)>50:
-                    roll_rows+=1
-                # if temp1[-1]=="\n":
-                #     temp1=temp1[:-1]
-                #     roll_rows-=1
-                # temp1=temp1[:-2]
-                # temp1+="test"
-                # print("Temp: ",temp1)
-                # print()
-                # print("temp1: ",temp1)
-                # roll_rows=int(math.ceil(len(temp1)/17))
-                # char_count=0
-                # for e in temp1:
-                #     char_count+=1
-                #     if e==",":
-                #         if char_count>16
-
+                roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/30))
                 roll_flag=0
-                # if roll_rows>1:
-                #     roll_flag=1
-                
-                # print(hall_name, " ", curr_class," ",k[1])
-                # print("Sub r: ", sub_rows)
-                # print("Roll r: ", roll_rows)
                 rows=max(sub_rows,roll_rows)
-                # print("Rows: ", rows)
-                # print()
                 height=10*rows
                 pdf2.set_font(font, '', 10)
 
@@ -763,7 +513,7 @@ def generate_report():
                 pdf2.cell(30, height, str(k[3]), align='C', border=True) # No of candidates
                 pdf2.cell(0, height, "", border=True, new_x="LMARGIN", new_y="NEXT") # Absentees blank column
                 y_pos+=height
-            
+
             pdf2.set_font(font, 'B', 10)
             pdf2.cell(class_w+65+30, 10, "Total:", border=True, align="C") # Total
             for l in R_list:
@@ -785,7 +535,6 @@ def generate_report():
 
     file_name="Packaging "+Date+" "+Session+".pdf"
     pdf2.output(file_name)
-
 
     # Seating List PDF------------------------------------------------------------------------------------------------
     pdf3.set_auto_page_break(auto = True, margin = 15) # Set auto page break
