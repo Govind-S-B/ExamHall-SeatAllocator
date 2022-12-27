@@ -945,7 +945,6 @@ elif choice == "2":
                 pdf2.set_font(font, '', 27)
                 text="Marian Engineering College"
                 text_w=pdf2.get_string_width(text)+6
-                pdf2.w=pdf2.w
                 pdf2.set_x((pdf2.w - text_w) / 2)
                 pdf2.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
 
@@ -964,7 +963,8 @@ elif choice == "2":
                 #Create Table Header
                 pdf2.set_font(font, 'B', 10)
                 pdf2.set_y(60)
-                class_w=pdf2.get_string_width("Class")+8
+                class_w=pdf2.get_string_width("Class")+8    # 18.06122222222222
+                print(class_w)
                 pdf2.cell(class_w, 20, "Class", align='C', border=True)
                 pdf2.cell(65, 20, "Subject", align='C', border=True)
                 pdf2.cell(30, 20, "", align='C', border=True)
@@ -1011,7 +1011,6 @@ elif choice == "2":
                     roll_range_raw=k[2]
                     temp1=""
                     a=[]
-                    # print("Roll rage raw: ",roll_range_raw)
                     for m in roll_range_raw:
                         if m.isdigit():
                             temp1+=m
@@ -1021,54 +1020,18 @@ elif choice == "2":
                             temp1=""
                         elif m==')':
                             a.append(temp1)
-                    # print("a: ",a)
-                    # roll_rows=len(a)
                     roll_rows=1
                     temp1=""
-                    # char_count=1
                     for m in a:
                         x=m.split(',')
                         if x[0]==x[1]:
                             temp1+=x[0]+", "
-                            # char_count+=len(x[0])+2
                         else:
                             temp1+=x[0]+"-"+x[1]+", "
-                            # char_count+=len(x[0])+len(x[1])+2
-                        # if char_count>16:
-                        #     # temp1+="\n"
-                        #     roll_rows+=1
-                        #     char_count=1
-                    # while temp1[-1].isnumeric()==False:
-                    #     temp1=temp1[:-1]
                     temp1=temp1[:-2]
-                    roll_rows=int(math.ceil(len(temp1)/17))
-                    if len(temp1)>50:
-                        roll_rows+=1
-                    # if temp1[-1]=="\n":
-                    #     temp1=temp1[:-1]
-                    #     roll_rows-=1
-                    # temp1=temp1[:-2]
-                    # temp1+="test"
-                    # print("Temp: ",temp1)
-                    # print()
-                    # print("temp1: ",temp1)
-                    # roll_rows=int(math.ceil(len(temp1)/17))
-                    # char_count=0
-                    # for e in temp1:
-                    #     char_count+=1
-                    #     if e==",":
-                    #         if char_count>16
-
+                    roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/28))
                     roll_flag=0
-                    # if roll_rows>1:
-                    #     roll_flag=1
-                    
-                    # print(hall_name, " ", curr_class," ",k[1])
-                    # print("Sub r: ", sub_rows)
-                    # print("Roll r: ", roll_rows)
                     rows=max(sub_rows,roll_rows)
-                    # print("Rows: ", rows)
-                    # print()
                     height=10*rows
                     pdf2.set_font(font, '', 10)
 
@@ -1200,7 +1163,6 @@ elif choice == "2":
                     roll_range_raw=k[2]
                     temp1=""
                     a=[]
-                    # print("Roll rage raw: ",roll_range_raw)
                     for m in roll_range_raw:
                         if m.isdigit():
                             temp1+=m
@@ -1210,54 +1172,18 @@ elif choice == "2":
                             temp1=""
                         elif m==')':
                             a.append(temp1)
-                    # print("a: ",a)
-                    # roll_rows=len(a)
                     roll_rows=1
                     temp1=""
-                    # char_count=1
                     for m in a:
                         x=m.split(',')
                         if x[0]==x[1]:
                             temp1+=x[0]+", "
-                            # char_count+=len(x[0])+2
                         else:
                             temp1+=x[0]+"-"+x[1]+", "
-                            # char_count+=len(x[0])+len(x[1])+2
-                        # if char_count>16:
-                        #     # temp1+="\n"
-                        #     roll_rows+=1
-                        #     char_count=1
-                    # while temp1[-1].isnumeric()==False:
-                    #     temp1=temp1[:-1]
                     temp1=temp1[:-2]
-                    roll_rows=int(math.ceil(len(temp1)/17))
-                    if len(temp1)>50:
-                        roll_rows+=1
-                    # if temp1[-1]=="\n":
-                    #     temp1=temp1[:-1]
-                    #     roll_rows-=1
-                    # temp1=temp1[:-2]
-                    # temp1+="test"
-                    # print("Temp: ",temp1)
-                    # print()
-                    # print("temp1: ",temp1)
-                    # roll_rows=int(math.ceil(len(temp1)/17))
-                    # char_count=0
-                    # for e in temp1:
-                    #     char_count+=1
-                    #     if e==",":
-                    #         if char_count>16
-
+                    roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/30))
                     roll_flag=0
-                    # if roll_rows>1:
-                    #     roll_flag=1
-                    
-                    # print(hall_name, " ", curr_class," ",k[1])
-                    # print("Sub r: ", sub_rows)
-                    # print("Roll r: ", roll_rows)
                     rows=max(sub_rows,roll_rows)
-                    # print("Rows: ", rows)
-                    # print()
                     height=10*rows
                     pdf2.set_font(font, '', 10)
 
