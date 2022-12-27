@@ -233,11 +233,114 @@ def generate_report():
                 roll_list = []
                 roll_list.append(subject[3])
 
-        else:
-            # append , PDF Generate and empty pdf list
-            roll_ = ranges(roll_list)
-            no_of_candidates = len(roll_list)
-            PDF_list.append([class_name, subject_name, str(list(roll_))[1:-1], no_of_candidates])
+                pdf2.add_page()
+                pdf2.set_font(font, '', 27)
+                text="Marian Engineering College"
+                text_w=pdf2.get_string_width(text)+6
+                pdf2.set_x((pdf2.w - text_w) / 2)
+                pdf2.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+
+                pdf2.set_font(font, '', 20)
+                text="Packing List for Internal Examination"
+                text_w=pdf2.get_string_width(text)+6
+                pdf2.set_x((pdf2.w - text_w) / 2)
+                pdf2.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')
+
+                pdf2.set_y(45)
+                pdf2.set_font(font, '', 18)
+                pdf2.set_x(30)
+                pdf2.write_html(f"<align=\"center\">Hall No: <b>{hall_name}</b>      Date: <b>{Date}</b>      Session: <b>{Session}<b/>")
+                pdf2.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
+
+                #Create Table Header
+                pdf2.set_font(font, 'B', 10)
+                pdf2.set_y(60)
+                class_w=pdf2.get_string_width("Class")+8    # 18.06122222222222
+                print(class_w)
+                pdf2.cell(class_w, 20, "Class", align='C', border=True)
+                pdf2.cell(65, 20, "Subject", align='C', border=True)
+                pdf2.cell(30, 20, "", align='C', border=True)
+                pdf2.set_y(66.1)
+                pdf2.set_x(class_w+65+14)
+                pdf2.write_html("<b>Roll No.s of</b>")
+                pdf2.set_y(71.1)
+                pdf2.set_x(class_w+65+13.1)
+                pdf2.write_html("<b>Candidates</b>")
+
+                pdf2.set_y(60)
+                pdf2.set_x(class_w+65+30+10)
+                pdf2.cell(30, 20, "", align='C', border=True)
+                pdf2.set_y(66.1)
+                pdf2.set_x(class_w+65+14+35)
+                pdf2.write_html("<b>No. of</b>")
+                pdf2.set_y(71.1)
+                pdf2.set_x(class_w+65+13.1+30)
+                pdf2.write_html("<b>Candidates</b>")
+                
+                pdf2.set_y(60)
+                pdf2.set_x(class_w+65+30+10+30)
+                pdf2.cell(0, 20, "", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
+                pdf2.set_y(66.1)
+                pdf2.set_x(class_w+65+14+35+34)
+                pdf2.write_html("<b>Roll No.s of</b>")
+                pdf2.set_y(71.1)
+                pdf2.set_x(class_w+65+13.1+30+40)
+                pdf2.write_html("<b>Absentees</b>")
+
+                #Create Table Body
+                y_pos=80
+                pdf2.set_y(80)
+                pdf2.set_x(10)
+                prev_class=""
+                PDF_list.pop(0)
+                for k in PDF_list:
+                    sub_rows=1
+                    sub_flag=0
+                    if len(k[1])>33:
+                        sub_rows=2
+                        sub_flag=1
+
+                    roll_range_raw=k[2]
+                    temp1=""
+                    a=[]
+                    for m in roll_range_raw:
+                        if m.isdigit():
+                            temp1+=m
+                        elif m==',':
+                            temp1+=','
+                        elif m=='(':
+                            temp1=""
+                        elif m==')':
+                            a.append(temp1)
+                    roll_rows=1
+                    temp1=""
+                    for m in a:
+                        x=m.split(',')
+                        if x[0]==x[1]:
+                            temp1+=x[0]+", "
+                        else:
+                            temp1+=x[0]+"-"+x[1]+", "
+                    temp1=temp1[:-2]
+                    roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/28))
+                    roll_flag=0
+                    rows=max(sub_rows,roll_rows)
+                    height=10*rows
+                    pdf2.set_font(font, '', 10)
+
+                    curr_class=k[0]
+                    if prev_class==curr_class:
+                        pdf2.cell(class_w, height, '"', align='C', border=True) # Class
+                    else:
+                        pdf2.cell(class_w, height, curr_class, align='C', border=True) # Class
+                    prev_class=curr_class
+                    if sub_flag==0:
+                        pdf2.multi_cell(65, height, k[1], align='C', border=True) # Subject when subject is one line only
+                    elif sub_flag==1 and roll_flag==0:
+                        pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject when subject is two line but roll no range is only one line
+                    elif sub_flag==1 and roll_flag==1:
+                        pdf2.multi_cell(65, (10*rows)/2, k[1], align='C', border=True) # Subject subject is 2 line and roll range is also multi line
+                    else:
+                        pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject in other cases
 
             pdf2.add_page()
             pdf2.set_font(font, '', 27)
@@ -393,6 +496,80 @@ def generate_report():
                     pdf2.multi_cell(30, 10, temp1, align='C', border=True) # Roll no range
                 pdf2.set_y(y_pos)
                 pdf2.set_x(class_w+65+30+10)
+
+                pdf2.cell(30, 20, "", align='C', border=True)
+                pdf2.set_y(66.1)
+                pdf2.set_x(class_w+65+14+35)
+                pdf2.write_html("<b>No. of</b>")
+                pdf2.set_y(71.1)
+                pdf2.set_x(class_w+65+13.1+30)
+                pdf2.write_html("<b>Candidates</b>")
+                
+                pdf2.set_y(60)
+                pdf2.set_x(class_w+65+30+10+30)
+                pdf2.cell(0, 20, "", align='C', border=True, new_x="LMARGIN", new_y="NEXT")
+                pdf2.set_y(66.1)
+                pdf2.set_x(class_w+65+14+35+34)
+                pdf2.write_html("<b>Roll No.s of</b>")
+                pdf2.set_y(71.1)
+                pdf2.set_x(class_w+65+13.1+30+40)
+                pdf2.write_html("<b>Absentees</b>")
+
+                #Create Table Body
+                y_pos=80
+                pdf2.set_y(80)
+                pdf2.set_x(10)
+                prev_class=""
+                PDF_list.pop(0)
+                for k in PDF_list:
+                    sub_rows=1
+                    sub_flag=0
+                    if len(k[1])>33:
+                        sub_rows=2
+                        sub_flag=1
+
+                    roll_range_raw=k[2]
+                    temp1=""
+                    a=[]
+                    for m in roll_range_raw:
+                        if m.isdigit():
+                            temp1+=m
+                        elif m==',':
+                            temp1+=','
+                        elif m=='(':
+                            temp1=""
+                        elif m==')':
+                            a.append(temp1)
+                    roll_rows=1
+                    temp1=""
+                    for m in a:
+                        x=m.split(',')
+                        if x[0]==x[1]:
+                            temp1+=x[0]+", "
+                        else:
+                            temp1+=x[0]+"-"+x[1]+", "
+                    temp1=temp1[:-2]
+                    roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/30))
+                    roll_flag=0
+                    rows=max(sub_rows,roll_rows)
+                    height=10*rows
+                    pdf2.set_font(font, '', 10)
+
+                    curr_class=k[0]
+                    if prev_class==curr_class:
+                        pdf2.cell(class_w, height, '"', align='C', border=True) # Class
+                    else:
+                        pdf2.cell(class_w, height, curr_class, align='C', border=True) # Class
+                    prev_class=curr_class
+                    if sub_flag==0:
+                        pdf2.multi_cell(65, height, k[1], align='C', border=True) # Subject when subject is one line only
+                    elif sub_flag==1 and roll_flag==0:
+                        pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject when subject is two line but roll no range is only one line
+                    elif sub_flag==1 and roll_flag==1:
+                        pdf2.multi_cell(65, (10*rows)/2, k[1], align='C', border=True) # Subject subject is 2 line and roll range is also multi line
+                    else:
+                        pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject in other cases
+
 
                 pdf2.cell(30, height, str(k[3]), align='C', border=True) # No of candidates
                 pdf2.cell(0, height, "", border=True, new_x="LMARGIN", new_y="NEXT") # Absentees blank column
