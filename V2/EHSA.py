@@ -1,146 +1,29 @@
-import json
+from json import load
 from fpdf import FPDF, HTMLMixin
 import sqlite3 as sq
-import itertools
-import math
-import random
+from itertools import groupby
+from math import ceil
+from random import seed,shuffle
+from JSON_generator import generate_JSON
 
-print("ExamHall-SeatAllocator | EHSA v2.x - protoRes\n")
-choice = input("Enter Choice (1)JSON Generator (2)Report Generator: ")
-print()
-
-if choice == "1":
-
-    output_mode = int(input("Display Mode: (1)Text (2)JSON: "))
-
-    list_to_generate = int(
-        input("Generate: Hall List(1) Subject List(2): "))
-
-    if list_to_generate == 1:
-
-        # Bench(B) or Drawing Hall(D)
-        Halls = {
-            "B" : {},
-            "D" : {}
-        }
-        
-        print('\nPress "done" to exit\n')
-
-        while True:
-            hall_name = input("Hall Name: ")
-
-            if hall_name.lower() == "done":
-                break
-
-            args = input("Table Count: ").split()
-            
-            if len(args) == 1:
-                Halls["B"][hall_name] = [ int(args[0]) ]
-            else:
-                Halls["D"][hall_name] = [int(args[0]),int(args[1])]
-
-            print()
-
-        if output_mode == 1:
-            print()
-            print(Halls)
-
-        elif output_mode == 2:
-            with open('Halls.json', 'w') as fp:
-                json.dump(Halls, fp)
-
-
-
-    elif list_to_generate == 2:
-
-        session_name = input("Enter Session Name: ")  # 12-04-2022 FN
-        MetaInfo = {"Session_Name": session_name}
-        Subjects = {}
-        Subjects["meta"] = MetaInfo
-
-        option = 1
-        subject_list = {}
-
-        print('\nPress "done" to exit\n')
-
-        while True:
-            subjects = str(input("Enter Subject Name: "))
-            if subjects.lower() == "done":
-                break
-            
-            subject_list[option] = subjects
-            option +=1
-
-        print('\nPress "done" to exit\n')
-
-        while True:
-            class_name = input("Enter Class Name: ")
-            if class_name.lower() == "done":
-                break
-
-            count = class_name.split() # s3r1 2 , s3r1 5 , something like this or simplu s3r1 if no electives
-            class_name = count[0]
-            
-            if len(count) == 1:
-                count = 1 #, reperat below loop only once
-            else:
-                count = int(count[1])
-            # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
-            
-            for i in range(count):
-                for i in subject_list:
-                    print(f'{i} - {subject_list[i]}')
-                    
-                subject = input("Enter Subject ID: ")
-                if subject.lower() == "done":
-                    break
-                    
-                subject_ID = int(subject)
-
-                if subject_list[subject_ID] in Subjects:
-                    roll = input("Enter roll number list: ")
-                    roll_list = roll.split(',')
-                    for item in roll_list:
-                        if "-" in item:
-                            roll_no_range = item
-                            for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
-                                Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
-                        else:
-                            Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
-                else:
-                    Subjects[subject_list[subject_ID]] = []
-
-                    roll = input("Enter roll number list: ")
-                    roll_list = roll.split(',')
-                    for item in roll_list:
-                        if "-" in item:
-                            roll_no_range = item
-                            for roll_ in range(int(roll_no_range.split('-')[0]), int(roll_no_range.split('-')[1])+1):
-                                Subjects[subject_list[subject_ID]].append(class_name + '-' + str(roll_))
-                        else:
-                            Subjects[subject_list[subject_ID]].append(class_name + '-' + item)
-            
-            print()
-
-        if output_mode == 1:
-            print()
-            print(json.dumps(Subjects, indent=4))
-
-        elif output_mode == 2:
-            with open('Subjects.json', 'w') as fp:
-                json.dump(Subjects, fp, indent=4)
-
-    input("\nEnter any key to exit ")  # dummy input function to wait for user input to exit script
-
-elif choice == "2":
-    
+def generate_report():
     args = input("Enter args : ")
     args_list = args.split()
+
+    split_enabled = False
 
     # seed_value threshold_value dont_care
 
     if (len(args_list) == 1):
         args_list = "done"
+    elif (len(args_list) == 2):
+        print("Need at least one previous allocation for program to trace back allocated halls count")
+        # uses default since first run
+        args = "0 80 0"
+        seed_value = 0
+        threshold_value = 80
+        dont_care = False
+
     elif (len(args_list) == 3):
         seed_value = int(args_list[0])
         threshold_value = int(args_list[1])
@@ -158,37 +41,26 @@ elif choice == "2":
 
     # importing json data files (inputs)
     with open('Halls.json', 'r') as JSON:
-        Halls = json.load(JSON)
+        halls = load(JSON)
 
-    D_Halls = Halls["D"] # drawing halls
-    B_Halls = Halls["B"] # bench halls
+    D_Halls = halls["D"] # drawing halls
+    B_Halls = halls["B"] # bench halls
 
     with open('Subjects.json', 'r') as JSON:
-        Subjects = json.load(JSON)
+        Subjects = load(JSON)
 
     MetaInfo = Subjects.pop("meta") # Meta info global for each generation
 
+    prev_halls_allocated_count = 0
+
     while args_list!="done":
         
-        random.seed(seed_value)
-
-        print("Generating intermediary DB")
-
-        # setting up sqlite DB for processed or sorted data storage ( allocated seats )
-        conn = sq.connect("report.db")
-        conn.execute("DROP TABLE IF EXISTS REPORT;")
-        conn.execute('''CREATE TABLE REPORT
-                (ID         CHAR(15)         PRIMARY KEY     NOT NULL,
-                CLASS       CHAR(10)                         NOT NULL,
-                ROLL        INT                              NOT NULL,
-                HALL        TEXT                             NOT NULL,
-                SEAT_NO     INT                              NOT NULL,
-                SUBJECT     CHAR(50)                         NOT NULL);''')
-
+        seed(seed_value)
 
         allocation_done = False
         Student_allocated_count=0
         halls_allocated_count=0
+        bench_hall_allocated_count=0
 
         Subjects_list = [] # List of subjects
         Students_total=0
@@ -199,7 +71,7 @@ elif choice == "2":
 
         Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
         if seed_value!=0:
-            random.shuffle(Subjects_list)
+            shuffle(Subjects_list)
 
         even_row_subject_list = []
         odd_row_subject_list = []
@@ -211,7 +83,56 @@ elif choice == "2":
         exception_even_class_list = []
         exception_odd_class_list = []
 
-        # yet another exception
+        print("Generating intermediary DB")
+
+        # setting up sqlite DB for processed or sorted data storage ( allocated seats )
+        conn = sq.connect("report.db")
+        curr = conn.cursor()
+
+        if split_enabled :
+            pass
+
+            check_for_split_halls_list = []
+
+            Halls_list = [] # List of halls
+
+            for i in D_Halls:
+                #print(i)
+                Halls_list.append([D_Halls[i][0],i]) # Hall Capacity , Hall name 
+
+            Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity 
+
+            for i in Halls_list:
+                check_for_split_halls_list.append(i[1])
+
+            Halls_list = [] # List of halls 
+
+            for i in B_Halls:
+                Halls_list.append([B_Halls[i][0],i]) # Hall Capacity , Hall name
+
+            Halls_list = sorted(Halls_list, key = lambda x: x[0],reverse=True) # Sorting by capacity
+
+            for i in Halls_list:
+                check_for_split_halls_list.append(i[1])
+
+            check_for_split_halls_list = check_for_split_halls_list[(prev_halls_allocated_count-split_hall_count):prev_halls_allocated_count]
+
+            split_student_count = 0
+
+            for i in check_for_split_halls_list:
+                curr.execute("SELECT COUNT (*) FROM REPORT WHERE HALL='"+i+"'")
+                split_student_count += curr.fetchone()[0]
+
+            split_mean_capacity = int (split_student_count / split_hall_count)
+
+        conn.execute("DROP TABLE IF EXISTS REPORT;")
+        conn.execute('''CREATE TABLE REPORT
+                (ID         CHAR(15)         PRIMARY KEY     NOT NULL,
+                CLASS       CHAR(10)                         NOT NULL,
+                ROLL        INT                              NOT NULL,
+                HALL        TEXT                             NOT NULL,
+                SEAT_NO     INT                              NOT NULL,
+                SUBJECT     CHAR(50)                         NOT NULL);''')
 
 
         if len(D_Halls) != 0 :
@@ -241,6 +162,8 @@ elif choice == "2":
                     Hall_cols = i[2]
 
                     halls_allocated_count += 1
+
+                    current_hall_allocated_count = 0
 
                     a = int(Hall_capacity/Hall_cols)
                     b = int(Hall_capacity%Hall_cols)
@@ -282,15 +205,19 @@ elif choice == "2":
                                 exception_class_list.append([1,s[0],i]) # number , class name , roll nums
                         
                         if seed_value!=0:
-                                random.shuffle(exception_class_list)
+                                shuffle(exception_class_list)
                         for i in range(len(exception_class_list)):
                             if i%2==0: #even
                                 exception_even_class_list.append(exception_class_list[i])
                             else: #odd
                                 exception_odd_class_list.append(exception_class_list[i])
 
+                    split_triggered_break = False
+
                     for i in range(len(Hall_structure)):
                         if allocation_done == True:
+                            break
+                        elif split_triggered_break == True:
                             break
                         else:
                             for j in range(len(Hall_structure[i])):
@@ -382,7 +309,7 @@ elif choice == "2":
                                         if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
                                             Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                             if seed_value!=0:
-                                                random.shuffle(Subjects_list)
+                                                shuffle(Subjects_list)
                                             even_row_subject_list = []
                                             odd_row_subject_list = []
 
@@ -395,7 +322,7 @@ elif choice == "2":
                                         if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
                                             Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                             if seed_value!=0:
-                                                    random.shuffle(Subjects_list)
+                                                    shuffle(Subjects_list)
                                             even_row_subject_list = []
                                             odd_row_subject_list = []
 
@@ -424,7 +351,7 @@ elif choice == "2":
                                                     exception_class_list.append([1,s[0],i]) # number , class name , roll nums
                                             
                                             if seed_value!=0:
-                                                    random.shuffle(exception_class_list)
+                                                    shuffle(exception_class_list)
                                             for i in range(len(exception_class_list)):
                                                 if i%2==0: #even
                                                     exception_even_class_list.append(exception_class_list[i])
@@ -440,7 +367,7 @@ elif choice == "2":
                                         if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)>1):
                                             exception_class_list = sorted(exception_odd_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                             if seed_value!=0:
-                                                    random.shuffle(exception_class_list)
+                                                    shuffle(exception_class_list)
                                             exception_even_class_list = []
                                             exception_odd_class_list = []
 
@@ -453,7 +380,7 @@ elif choice == "2":
                                         if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
                                             exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                             if seed_value!=0:
-                                                    random.shuffle(exception_class_list)
+                                                    shuffle(exception_class_list)
                                             exception_even_class_list = []
                                             exception_odd_class_list = []
 
@@ -470,6 +397,12 @@ elif choice == "2":
                                         if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)==0):
                                             allocation_done = True
                                             break
+                                
+                                current_hall_allocated_count += 1
+
+                                if ( (split_enabled) and (Hall_name in check_for_split_halls_list) and (current_hall_allocated_count >= split_mean_capacity)) :
+                                    split_triggered_break = True
+                                    break
 
                 Halls_sorted_list.append(Hall_structure)
 
@@ -480,7 +413,7 @@ elif choice == "2":
                 Subjects_list = sorted(Subjects_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
 
                 if seed_value!=0:
-                        random.shuffle(Subjects_list)
+                        shuffle(Subjects_list)
 
             even_row_subject_list = []
             odd_row_subject_list = []
@@ -519,7 +452,7 @@ elif choice == "2":
                             exception_class_list.append([1,s[0],i]) # number , class name , roll nums
 
                     if seed_value!=0:
-                            random.shuffle(exception_class_list)
+                            shuffle(exception_class_list)
                     
                     for i in range(len(exception_class_list)):
                         if i%2==0: #even
@@ -527,14 +460,16 @@ elif choice == "2":
                         else: #odd
                             exception_odd_class_list.append(exception_class_list[i])
 
-            for i in Halls_list:
+            for each_hall in Halls_list:
                 if allocation_done == True:
                         break
                 else:
-                    Hall_name = i[1]
-                    Hall_capacity = i[0]*2
+                    Hall_name = each_hall[1]
+                    Hall_capacity = each_hall[0]*2
 
                     halls_allocated_count += 1
+
+                    current_hall_allocated_count = 0
 
                     for seat in range(1,Hall_capacity+1):
 
@@ -624,7 +559,7 @@ elif choice == "2":
                                 if (len(even_row_subject_list)==0) and (len(odd_row_subject_list)>1):
                                     Subjects_list = sorted(odd_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                     if seed_value!=0:
-                                            random.shuffle(Subjects_list)
+                                            shuffle(Subjects_list)
                                     even_row_subject_list = []
                                     odd_row_subject_list = []
 
@@ -637,7 +572,7 @@ elif choice == "2":
                                 if (len(odd_row_subject_list)==0) and (len(even_row_subject_list)>1):
                                     Subjects_list = sorted(even_row_subject_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                     if seed_value!=0:
-                                            random.shuffle(Subjects_list)
+                                            shuffle(Subjects_list)
                                     even_row_subject_list = []
                                     odd_row_subject_list = []
 
@@ -666,7 +601,7 @@ elif choice == "2":
                                             exception_class_list.append([1,s[0],i]) # number , class name , roll nums
 
                                     if seed_value!=0:
-                                            random.shuffle(exception_class_list)
+                                            shuffle(exception_class_list)
                                     
                                     for i in range(len(exception_class_list)):
                                         if i%2==0: #even
@@ -683,7 +618,7 @@ elif choice == "2":
                                 if (len(exception_even_class_list)==0) and (len(exception_odd_class_list)>1):
                                     exception_class_list = sorted(exception_odd_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                     if seed_value!=0:
-                                            random.shuffle(exception_class_list)
+                                            shuffle(exception_class_list)
                                     exception_even_class_list = []
                                     exception_odd_class_list = []
 
@@ -696,7 +631,7 @@ elif choice == "2":
                                 if (len(exception_odd_class_list)==0) and (len(exception_even_class_list)>1):
                                     exception_class_list = sorted(exception_even_class_list, key = lambda x: x[0],reverse=True) # Sorting by number of students
                                     if seed_value!=0:
-                                            random.shuffle(exception_class_list)
+                                            shuffle(exception_class_list)
                                     exception_even_class_list = []
                                     exception_odd_class_list = []
 
@@ -714,6 +649,12 @@ elif choice == "2":
                                     allocation_done = True
                                     break
 
+                        current_hall_allocated_count += 1
+
+                        if ( (split_enabled) and (Hall_name in check_for_split_halls_list) and (current_hall_allocated_count >= split_mean_capacity)) :
+                            break
+
+
         print("Generating PDF")
 
 
@@ -724,7 +665,7 @@ elif choice == "2":
 
         #Functions
         def ranges(i):
-            for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
+            for a, b in groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
                 b = list(b)
                 yield b[0][1], b[-1][1]
         def divide_chunks(l, n):
@@ -1287,7 +1228,7 @@ elif choice == "2":
             classes_list = i[1:]
             
             seat_List.pop(0)
-            row_number = int(math.ceil(len(seat_List)/4))
+            row_number = int(ceil(len(seat_List)/4))
             seat_List=divide_chunks(seat_List, row_number)
             x=list(seat_List)
 
@@ -1363,30 +1304,42 @@ elif choice == "2":
             print("Allocation Complete")
             print("Halls allocated: ",halls_allocated_count)
             print("Number of students allocated: ",Student_allocated_count)
-            print("args: ",args)
-            print("seed: ",seed_value)
-            print("threshold value: ",threshold_value)
-            print("dont care:",dont_care)
-            print("logic: ",logic)
         else:
             print("Allocation Incomplete")
             print("Hall capacity insufficient")
             print("Halls allocated: ",halls_allocated_count)
             print("Number of students allocated: ",Student_allocated_count)
             print("Number of students left to allocate: ",Students_total-Student_allocated_count)
-            print("args: ",args)
-            print("seed: ",seed_value)
-            print("threshold value: ",threshold_value)
-            print("dont care:",dont_care)
-            print("logic: ",logic)
+
+        print("args: ",args)
+        print("seed: ",seed_value)
+        print("threshold value: ",threshold_value)
+        print("dont care:",dont_care)
+        print("logic: ",logic)
+            
+        if split_enabled :
+            print("split : Enabled")
+            print("split halls : ",split_hall_count)
+        else:
+            print("split : Disabled")
         
 
         print("\nEnter done to exit\n")
+        prev_args = args
         args = input("Enter args : ")
         args_list = args.split()
 
+        split_enabled = False
+
         if (len(args_list) == 1):
             args_list = "done"
+        elif (len(args_list) == 2):
+            args = prev_args + " | " + args
+            split_enabled = True
+            split_hall_count = int(args_list[1])
+            # uses previous seed_value , threshold_value , dont_care boolean
+            prev_bench_hall_allocated_count = bench_hall_allocated_count
+            prev_halls_allocated_count = halls_allocated_count
         elif (len(args_list) == 3):
             seed_value = int(args_list[0])
             threshold_value = int(args_list[1])
@@ -1396,3 +1349,16 @@ elif choice == "2":
             seed_value = 0
             threshold_value = 80
             dont_care = False
+
+
+print("ExamHall-SeatAllocator | EHSA v2.x - protoRes\n")
+choice = input("Enter Choice (1)JSON Generator, (2)Report Generator: ")
+print()
+
+if choice == "1":
+    generate_JSON()
+
+elif choice == "2": 
+    generate_report()
+
+

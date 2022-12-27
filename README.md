@@ -77,6 +77,16 @@ dont_care is a boolean and can be a 0 or 1 . If dont care is set to true , then 
 The program will generate an intermediary db that can be queried to get any detailed information regarding the allocation ( though the CLI shows a basic report on how the allocation went and the arguments it was passed )  
   
 The pdfs will be generated in the same directory as the report_generator file  
+
+#### Split Functionality  
+syntax : `split <halls count>`  
+splits students equally among specified number of halls in the end , uses the arguments supplied earlier for generation  
+  
+**NOTE** :  
+- need a previous normal allocation to be run to work ( since it requires tracing back what halls were allocated and how many students were allocated in the previous allocation . Therefore run the desired seed to split first and then type in `split 3` in the args if u want to split the last 3 halls students equally  
+- After each split run the previous seed again , do not run split commands consecutively as it depends on previous generated db file for trace back functionality  
+- use split functionality only if the halls you wish to redistribute the students have the capacity to hold them after redistribution , if not it might take up extra halls
+
   
 ### Drawing Hall Layout  
 <img src="https://user-images.githubusercontent.com/62943847/208338088-c07cbad2-cfde-4177-a800-2cfa30ba3d87.jpg" width="400">  
