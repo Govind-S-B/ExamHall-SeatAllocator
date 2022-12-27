@@ -16,6 +16,6 @@ python -m PyInstaller --onefile ./V2/EHSA.py
 
 del EHSA.spec
 
-move dist FINAL_BUILD/windows_build/
+move dist FINAL_BUILD/windows_build
 
 rmdir /s /q "./build"
