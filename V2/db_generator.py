@@ -44,6 +44,9 @@ def generate_db():
     for subject,student_list in subjects_json.items():
         students_to_be_seated += len(student_list)
 
+    total_capacity = sum(hall_capacity.values())
+    if total_capacity < students_to_be_seated:
+        raise OverflowError("too many students({students_to_be_seated}), not enough halls(capacity: {total_capacity})")
 
     seating = hall_capacity.copy()
     for hall in hall_capacity:
