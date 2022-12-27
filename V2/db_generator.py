@@ -28,30 +28,14 @@ class Student():
             'seat'   : self.seat
         }
 
-def generate_db():
-    with open('Halls.json', 'r') as halls_file, open('Subjects.json') as subjects_file:
-        halls_dict = json.load(halls_file)
-        hall_capacity = {key:halls_dict["B"][key][0] * 2 for key in halls_dict["B"]} | ( \
-                {key:halls_dict["D"][key][0] for key in halls_dict["D"]}
-        )
-        # hall_capacity is a dict mapping hall name to hall size
 
-        subjects_json = json.load(subjects_file)
-        subjects_json.pop("meta")
-    
-
-    students_to_be_seated = 0
+def distribute_students(subjects_json, hall_capacity):
+        students_to_be_seated = 0
     for subject,student_list in subjects_json.items():
         students_to_be_seated += len(student_list)
-
-    total_capacity = sum(hall_capacity.values())
-    if total_capacity < students_to_be_seated:
-        raise OverflowError("too many students({students_to_be_seated}), not enough halls(capacity: {total_capacity})")
-
-    seating = hall_capacity.copy()
+    seating = {}
     for hall in hall_capacity:
         seating[hall] = []
-
     for hall,capacity in hall_capacity.items():
 
         subjects_in_consideration = [subject for subject in subjects_json.keys() if subjects_json[subject]] 
@@ -79,7 +63,29 @@ def generate_db():
 
         seating[hall] = sorted(seating[hall], key=lambda x: x.subject)
 
+    return seating
 
+
+def generate_db():
+    with open('Halls.json', 'r') as halls_file, open('Subjects.json') as subjects_file:
+        halls_dict = json.load(halls_file)
+        hall_capacity = {key:halls_dict["B"][key][0] * 2 for key in halls_dict["B"]} | ( \
+                {key:halls_dict["D"][key][0] for key in halls_dict["D"]}
+        )
+        # hall_capacity is a dict mapping hall name to hall size
+
+        subjects_json = json.load(subjects_file)
+        subjects_json.pop("meta")
+    
+
+    total_capacity = sum(hall_capacity.values())
+    if total_capacity < students_to_be_seated:
+        raise OverflowError("too many students({students_to_be_seated}), not enough halls(capacity: {total_capacity})")
+
+    seating = distribute_students(subjects_json, hall_capacity)
+
+
+    for hall,capacity in hall_capacity.items():
         seating[hall] = interleave(seating[hall])
 
         for seat_no, student in enumerate(seating[hall]):
