@@ -29,43 +29,6 @@ class Student():
         }
 
 
-def distribute_students(subjects_json, hall_capacity):
-        students_to_be_seated = 0
-    for subject,student_list in subjects_json.items():
-        students_to_be_seated += len(student_list)
-    seating = {}
-    for hall in hall_capacity:
-        seating[hall] = []
-    for hall,capacity in hall_capacity.items():
-
-        subjects_in_consideration = [subject for subject in subjects_json.keys() if subjects_json[subject]] 
-        biggest_subject = get_biggest_subject(subjects_json, subjects_in_consideration)
-        subject_removed_flag = False
-
-        for seat_no in range(capacity):
-            if seat_no == capacity // 2 and subject_removed_flag is not True:
-                subjects_in_consideration.remove(biggest_subject)
-                biggest_subject = get_biggest_subject(subjects_json, subjects_in_consideration)
-
-            if len(subjects_json[biggest_subject]) == 0:
-                subjects_in_consideration.remove(biggest_subject)
-                biggest_subject = get_biggest_subject(subjects_json, subjects_in_consideration)
-                subject_removed_flag = True
-
-            student = get_student_from_subject(subjects_json, biggest_subject)
-            student.hall = hall
-            seating[hall].append(student)
-
-            students_to_be_seated -= 1
-            if students_to_be_seated == 0:
-                break
-
-
-        seating[hall] = sorted(seating[hall], key=lambda x: x.subject)
-
-    return seating
-
-
 def generate_db():
     with open('Halls.json', 'r') as halls_file, open('Subjects.json') as subjects_file:
         halls_dict = json.load(halls_file)
@@ -73,16 +36,20 @@ def generate_db():
                 {key:halls_dict["D"][key][0] for key in halls_dict["D"]}
         )
         # hall_capacity is a dict mapping hall name to hall size
+        # hall_capacity is a dict mapping hall name to hall size
 
         subjects_json = json.load(subjects_file)
         subjects_json.pop("meta")
     
+    for subject, roll_list in subjects_json.items():
+        for id in roll_list:
+            _ = Student(id, subject)
 
     total_capacity = sum(hall_capacity.values())
-    if total_capacity < students_to_be_seated:
+    if total_capacity < len(Student.ALL):
         raise OverflowError("too many students({students_to_be_seated}), not enough halls(capacity: {total_capacity})")
 
-    seating = distribute_students(subjects_json, hall_capacity)
+    seating = distribute_students(hall_capacity)
 
 
     for hall,capacity in hall_capacity.items():
@@ -110,24 +77,75 @@ def generate_db():
 
 
     for s in Student.ALL:  # s is a student
+        input = f'INSERT INTO report (ID,CLASS,ROLL,HALL,SEAT_NO,SUBJECT) \
+                VALUES ("{s.id}","{s.college_class}",{s.roll_no},"{s.hall}",{s.seat},"{s.subject}")' 
         try:
-            input = f'INSERT INTO report (ID,CLASS,ROLL,HALL,SEAT_NO,SUBJECT) \
-                    VALUES ("{s.id}","{s.college_class}",{s.roll_no},"{s.hall}",{s.seat},"{s.subject}")' 
             # print(input)
             cursor.execute(input)
         except sq.OperationalError as err:
-            print(repr(err))
+            # print(repr(err))
+            # print(input)
+            ...
 
     db.commit()
+    generate_seating_json(seating)
+    test_seating()
     return db
 
 
-def get_student_from_subject(roll_list, subject):
-    student  = Student(roll_list[subject].pop(), subject)
+def fill_hall_by_subject(hall_name, capacity, seating, students_to_be_seated):
+
+    subjects_in_consideration = set([student.subject for student in students_to_be_seated]) 
+    # print(subjects_in_consideration)
+    biggest_subject = get_biggest_subject(students_to_be_seated, subjects_in_consideration)
+    subject_removed_flag = False
+
+    for seat_no in range(capacity):
+        if seat_no == capacity // 2 and subject_removed_flag is not True:
+            subjects_in_consideration.remove(biggest_subject)
+            biggest_subject = get_biggest_subject(students_to_be_seated, subjects_in_consideration)
+
+        if not any(student for student in students_to_be_seated if student.subject == biggest_subject):
+            subjects_in_consideration.remove(biggest_subject)
+            if len(subjects_in_consideration) == 0:
+                break
+
+            biggest_subject = get_biggest_subject(students_to_be_seated, subjects_in_consideration)
+            subject_removed_flag = True
+
+        student = get_student_from_subject(students_to_be_seated, biggest_subject)
+        student.hall = hall_name
+        seating[hall_name].append(student)
+
+
+        if not students_to_be_seated:  # if students to be seated is an empty list
+            break
+
+
+def distribute_students(hall_capacity):
+    students_to_be_seated = Student.ALL.copy()
+
+    seating = {}
+    for hall in hall_capacity:
+        seating[hall] = []
+
+    for hall,capacity in hall_capacity.items():
+        fill_hall_by_subject(hall, capacity, seating, students_to_be_seated)
+        seating[hall] = sorted(seating[hall], key=lambda x: (x.subject))
+        if not students_to_be_seated:
+            break
+
+    return seating
+
+
+
+def get_student_from_subject(students_to_be_seated, subject):
+    student_index = next(iter([i for i in range(len(students_to_be_seated)) if students_to_be_seated[i].subject == subject]))
+    student = students_to_be_seated.pop(student_index)
     return student
 
-def get_biggest_subject(roll_list, subjects_to_consider):
-    return max(subjects_to_consider, key=lambda x: len(roll_list[x]))
+def get_biggest_subject(students_to_be_seated, subjects_to_consider):
+    return max(subjects_to_consider, key=lambda sub: len([student for student in students_to_be_seated if student.subject == sub]))
 
 def interleave(array):
     midpoint_index = math.ceil(len(array)/2)
