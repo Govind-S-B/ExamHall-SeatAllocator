@@ -9,12 +9,17 @@ import sqlite3 as sq
 
 class Student():
     ALL = []
-    def __init__(self, id, subject):
+
+    @classmethod
+    def empty(cls, hall_name):
+        return Student("EMPTY-0", "N/A", hall_name, 0)
+
+    def __init__(self, id, subject, hall_name=None, seat_no=None):
         self.id = id
         self.college_class, self.roll_no = self.id.split("-") 
         self.subject = subject
-        self.hall = None
-        self.seat = None
+        self.hall = hall_name
+        self.seat = seat_no
 
         Student.ALL.append(self)
 
@@ -56,7 +61,8 @@ def generate_db():
         seating[hall] = interleave(seating[hall])
 
         for seat_no, student in enumerate(seating[hall]):
-            student.seat = seat_no + 1
+            if student:
+                student.seat = seat_no + 1
 
     # generate_seating_json(seating)
 
@@ -96,18 +102,21 @@ def generate_db():
 def fill_hall_by_subject(hall_name, capacity, seating, students_to_be_seated):
 
     subjects_in_consideration = set([student.subject for student in students_to_be_seated]) 
-    # print(subjects_in_consideration)
     biggest_subject = get_biggest_subject(students_to_be_seated, subjects_in_consideration)
     subject_removed_flag = False
 
     for seat_no in range(capacity):
         if seat_no == capacity // 2 and subject_removed_flag is not True:
             subjects_in_consideration.remove(biggest_subject)
+            if len(subjects_in_consideration) == 0: 
+                seating[hall_name] += [None for _ in range(capacity - seat_no)]
+                break
+
             biggest_subject = get_biggest_subject(students_to_be_seated, subjects_in_consideration)
 
         if not any(student for student in students_to_be_seated if student.subject == biggest_subject):
             subjects_in_consideration.remove(biggest_subject)
-            if len(subjects_in_consideration) == 0:
+            if len(subjects_in_consideration) == 0:  #this should only be true here if all students have been seated
                 break
 
             biggest_subject = get_biggest_subject(students_to_be_seated, subjects_in_consideration)
@@ -131,7 +140,7 @@ def distribute_students(hall_capacity):
 
     for hall,capacity in hall_capacity.items():
         fill_hall_by_subject(hall, capacity, seating, students_to_be_seated)
-        seating[hall] = sorted(seating[hall], key=lambda x: (x.subject))
+        seating[hall] = sorted(seating[hall], key=lambda x: (x.subject if x else "N/A"))
         if not students_to_be_seated:
             break
 
@@ -165,7 +174,7 @@ def interleave(array):
 def generate_seating_json(seating):
     seating = seating.copy()
     for hall,student_list in seating.items():
-        seating[hall] = [student.to_dict() for student in student_list]
+        seating[hall] = [student.to_dict() for student in student_list if student]
 
 
     with open(f'Seating.json', 'w') as fp:
