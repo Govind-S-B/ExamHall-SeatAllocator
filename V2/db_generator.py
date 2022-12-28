@@ -16,7 +16,8 @@ class Student():
 
     def __init__(self, id, subject, hall_name=None, seat_no=None):
         self.id = id
-        self.college_class, self.roll_no = self.id.split("-") 
+        college_class, roll_no = self.id.split("-") 
+        self.college_class, self.roll_no = college_class, int(roll_no)
         self.subject = subject
         self.hall = hall_name
         self.seat = seat_no
@@ -52,7 +53,7 @@ def generate_db():
 
     total_capacity = sum(hall_capacity.values())
     if total_capacity < len(Student.ALL):
-        raise OverflowError("too many students({students_to_be_seated}), not enough halls(capacity: {total_capacity})")
+        raise OverflowError(f"too many students({len(Student.ALL)}), not enough halls(capacity: {total_capacity})")
 
     seating = distribute_students(hall_capacity)
 
@@ -62,6 +63,7 @@ def generate_db():
 
         for seat_no, student in enumerate(seating[hall]):
             if student:
+                student.hall = hall
                 student.seat = seat_no + 1
 
     # generate_seating_json(seating)
@@ -94,12 +96,33 @@ def generate_db():
             ...
 
     db.commit()
-    generate_seating_json(seating)
-    test_seating()
     return db
 
 
-def fill_hall_by_subject(hall_name, capacity, seating, students_to_be_seated):
+def distribute_students(hall_capacity):
+
+    students_to_be_seated = sorted(Student.ALL, key=lambda s: (s.college_class, s.roll_no))
+
+    seating = {}
+    for hall in hall_capacity:
+        seating[hall] = []
+
+    fill_all_halls_by_subject(hall_capacity, seating, students_to_be_seated)
+
+    if len(students_to_be_seated) != 0:
+        distribute_students_by_class(hall_capacity, students_to_be_seated, seating)
+
+    return seating
+
+
+def fill_all_halls_by_subject(hall_capacity, seating, students_to_be_seated):
+    for hall,capacity in hall_capacity.items():
+        fill_one_hall_by_subject(hall, capacity, seating, students_to_be_seated)
+        seating[hall] = sorted(seating[hall], key=lambda x: (x.subject if x else "N/A"))
+        if not students_to_be_seated:
+            break
+
+def fill_one_hall_by_subject(hall_name, capacity, seating, students_to_be_seated):
 
     subjects_in_consideration = set([student.subject for student in students_to_be_seated]) 
     biggest_subject = get_biggest_subject(students_to_be_seated, subjects_in_consideration)
@@ -123,7 +146,7 @@ def fill_hall_by_subject(hall_name, capacity, seating, students_to_be_seated):
             subject_removed_flag = True
 
         student = get_student_from_subject(students_to_be_seated, biggest_subject)
-        student.hall = hall_name
+        # student.hall = hall_name
         seating[hall_name].append(student)
 
 
@@ -131,21 +154,33 @@ def fill_hall_by_subject(hall_name, capacity, seating, students_to_be_seated):
             break
 
 
-def distribute_students(hall_capacity):
-    students_to_be_seated = Student.ALL.copy()
 
-    seating = {}
-    for hall in hall_capacity:
-        seating[hall] = []
 
+def distribute_students_by_class(hall_capacity, students_to_be_seated, seating):
     for hall,capacity in hall_capacity.items():
-        fill_hall_by_subject(hall, capacity, seating, students_to_be_seated)
-        seating[hall] = sorted(seating[hall], key=lambda x: (x.subject if x else "N/A"))
-        if not students_to_be_seated:
-            break
+        if None not in seating[hall]:
+            continue
+        for student in seating[hall]:
+            if student:
+                students_to_be_seated.append(student)
+        seating[hall] = []
+    
+    students_to_be_seated.sort(key=lambda s: (s.college_class, s.roll_no))
+    #as all students should have the same subject left now
+    subject = students_to_be_seated[0].subject
 
-    return seating
+    students_with_same_subject_as_class_name = []
+    for student in students_to_be_seated:
+        student.subject = student.college_class
+        students_with_same_subject_as_class_name.append(student)
 
+    # we don't have to consider halls that are already filled
+    # and calling the function with nonempty halls will cause problems
+    reduced_hall_capacity = {hall:capacity for hall,capacity in hall_capacity.items() if len(seating[hall]) == 0}
+    fill_all_halls_by_subject(reduced_hall_capacity, seating, students_to_be_seated)
+
+    for student in students_with_same_subject_as_class_name:
+        student.subject = subject
 
 
 def get_student_from_subject(students_to_be_seated, subject):
@@ -181,7 +216,7 @@ def generate_seating_json(seating):
 
         json.dump(seating, fp, indent=4)
 
-def test_seating():
+def test_seating():  # note results in false negative when empty seats exist 
     with open('Seating.json', 'r') as seating_file:
         seating_dict = json.load(seating_file)
         for hall, student_list in seating_dict.items():
