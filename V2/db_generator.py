@@ -112,6 +112,16 @@ def distribute_students(hall_capacity):
     if len(students_to_be_seated) != 0:
         distribute_students_by_class(hall_capacity, students_to_be_seated, seating)
 
+    if len(students_to_be_seated) != 0:
+        students_to_be_seated.sort(key=lambda s: (s.college_class, s.roll_no), reverse=True)
+
+        for hall, seat_list in seating.items():
+            for seat_no, student in enumerate(seat_list):
+                if student is None:
+                    seat_list[seat_no] = students_to_be_seated.pop() 
+                    
+
+
     return seating
 
 
