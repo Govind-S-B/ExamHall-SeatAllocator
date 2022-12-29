@@ -189,7 +189,6 @@ def generate_report():
 
 
     # Packaging List PDF------------------------------------------------------------------------------------------------
-    # Packaging List PDF------------------------------------------------------------------------------------------------
     pdf2.set_auto_page_break(auto = True, margin = 15) # Auto page break
     # code
     cmd = """SELECT HALL,CLASS,SUBJECT,ROLL
@@ -263,25 +262,24 @@ def generate_report():
             pdf2.set_font(font, 'B', 10)
             pdf2.set_y(60)
             class_w=pdf2.get_string_width("Class")+8    # 18.06122222222222
-            print(class_w)
             pdf2.cell(class_w, 20, "Class", align='C', border=True)
             pdf2.cell(65, 20, "Subject", align='C', border=True)
-            pdf2.cell(30, 20, "", align='C', border=True)
+            pdf2.cell(35, 20, "", align='C', border=True)
             pdf2.set_y(66.1)
-            pdf2.set_x(class_w+65+14)
+            pdf2.set_x(class_w+82.4)
             pdf2.write_html("<b>Roll No.s of</b>")
             pdf2.set_y(71.1)
-            pdf2.set_x(class_w+65+13.1)
+            pdf2.set_x(class_w+81.5)
             pdf2.write_html("<b>Candidates</b>")
 
             pdf2.set_y(60)
-            pdf2.set_x(class_w+65+30+10)
-            pdf2.cell(30, 20, "", align='C', border=True)
+            pdf2.set_x(class_w+65+35+10)
+            pdf2.cell(25, 20, "", align='C', border=True)
             pdf2.set_y(66.1)
-            pdf2.set_x(class_w+65+14+35)
+            pdf2.set_x(class_w+116.5)
             pdf2.write_html("<b>No. of</b>")
             pdf2.set_y(71.1)
-            pdf2.set_x(class_w+65+13.1+30)
+            pdf2.set_x(class_w+110.6)
             pdf2.write_html("<b>Candidates</b>")
 
             pdf2.set_y(60)
@@ -332,9 +330,6 @@ def generate_report():
                         temp1+=x[0]+"-"+x[1]+" , "
                 temp1=temp1[:-3]
                 roll_rows=int(math.ceil(pdf2.get_string_width(temp1)/28))
-                # roll_flag=0
-                # if roll_rows>1:
-                #     roll_flag=1
                 rows=max(sub_rows,roll_rows)
                 height=10*rows
                 pdf2.set_font(font, '', 10)
@@ -347,31 +342,27 @@ def generate_report():
                 prev_class=curr_class
                 if sub_flag==0:
                     pdf2.multi_cell(65, height, k[1], align='C', border=True) # Subject when subject is one line only
-                # elif sub_flag==1 and roll_flag==0:
-                #     pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject when subject is two line but roll no range is only one line
-                # elif sub_flag==1 and roll_flag==1:
-                #     pdf2.multi_cell(65, (10*rows)/2, k[1], align='C', border=True) # Subject subject is 2 line and roll range is also multi line
                 else:
                     pdf2.multi_cell(65, 10, k[1], align='C', border=True) # Subject in other cases
 
                 pdf2.set_y(y_pos)
                 pdf2.set_x(pdf2.w-(pdf2.w-(18.061+65))+10)
                 if sub_flag==1:
-                    pdf2.multi_cell(30, height, temp1, align='C', border=True) # Roll no range when sub is 2 line and roll range is one line
+                    pdf2.multi_cell(35, height, temp1, align='C', border=True) # Roll no range when sub is 2 line and roll range is one line
                 else:
-                    pdf2.multi_cell(30, 10, temp1, align='C', border=True) # Roll no range
+                    pdf2.multi_cell(35, 10, temp1, align='C', border=True) # Roll no range
                 pdf2.set_y(y_pos)
-                pdf2.set_x(class_w+65+30+10)
+                pdf2.set_x(class_w+65+35+10)
 
-                pdf2.cell(30, height, str(k[3]), align='C', border=True) # No of candidates
+                pdf2.cell(25, height, str(k[3]), align='C', border=True) # No of candidates
                 pdf2.cell(0, height, "", border=True, new_x="LMARGIN", new_y="NEXT") # Absentees blank column
                 y_pos+=height
             
             pdf2.set_font(font, 'B', 10)
-            pdf2.cell(class_w+65+30, 10, "Total:", border=True, align="C") # Total
+            pdf2.cell(class_w+65+35, 10, "Total:", border=True, align="C") # Total
             for l in R_list:
                 if l[0]==hall_name:
-                    pdf2.cell(30, 10, str(l[1]), border=True, align="C") # Total count
+                    pdf2.cell(25, 10, str(l[1]), border=True, align="C") # Total count
             pdf2.cell(0, 10, "", border=True, new_x="LMARGIN", new_y="NEXT") # Final blank cell
 
             y_pos+=25
@@ -381,7 +372,7 @@ def generate_report():
             pdf2.write_html("<br><br>&nbsp;&nbsp;&nbsp;1.  &nbsp;Ensure that all candidates have ID-Cards & are in proper uniform.")
             pdf2.write_html("<br><br>&nbsp;&nbsp;&nbsp;2. Announce that mobile phones, smartwatches & other electronic")
             pdf2.write_html("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;gadgets, pouches, bags, calculator-cover etc. are <B>NOT</B> allowed")
-            pdf2.set_y(pdf2.get_y()+1.25)
+            pdf2.set_y(pdf2.get_y()+1.3)
             pdf2.write_html("<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;inside.")
 
             PDF_list = [["Class", "Subject", "RollNo", "No. of candidates"]]
@@ -670,7 +661,9 @@ def generate_report():
 
 
 print("ExamHall-SeatAllocator | EHSA v2.x - protoRes\n")
-choice = input("Enter Choice (1)JSON Generator, (2)Report Generator: ")
+# choice = input("Enter Choice (1)JSON Generator, (2)Report Generator: ")
+print("###Uncomment before merging...")
+choice='2'
 print()
 
 if choice == "1":
