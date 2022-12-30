@@ -35,6 +35,7 @@ class Student():
         }
 
 
+
 def generate_db():
     with open('Halls.json', 'r') as halls_file, open('Subjects.json') as subjects_file:
         halls_dict = json.load(halls_file)
@@ -46,6 +47,8 @@ def generate_db():
 
         subjects_json = json.load(subjects_file)
         subjects_json.pop("meta")
+
+        hall_capacity = sort_dictionary(hall_capacity, reverse=True)
     
     for subject, roll_list in subjects_json.items():
         for id in roll_list:
