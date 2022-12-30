@@ -40,6 +40,7 @@ def sort_dictionary(dict, reverse):
     keys.sort(key=lambda key:dict[key], reverse=reverse)
     return {key:dict[key] for key in keys}
 
+
 def generate_db():
     with open('Halls.json', 'r') as halls_file, open('Subjects.json') as subjects_file:
         halls_dict = json.load(halls_file)
@@ -65,8 +66,12 @@ def generate_db():
     seating = distribute_students(hall_capacity)
 
 
-    for hall in hall_capacity:
+    for hall, capacity in hall_capacity.items():
+        while len(seating[hall]) < capacity:
+            seating[hall].append(None)
+
         seating[hall] = interleave(seating[hall])
+
 
         for seat_no, student in enumerate(seating[hall]):
             if student:
@@ -93,14 +98,10 @@ def generate_db():
 
     for s in Student.ALL:  # s is a student
         input = f'INSERT INTO report (ID,CLASS,ROLL,HALL,SEAT_NO,SUBJECT) \
-                VALUES ("{s.id}","{s.college_class}",{s.roll_no},"{s.hall}",{s.seat},"{s.subject}")' 
-        try:
-            # print(input)
-            cursor.execute(input)
-        except sq.OperationalError as err:
-            # print(repr(err))
-            # print(input)
-            ...
+                VALUES ("{s.id}","{s.college_class}",{s.roll_no},"{s.hall}",{s.seat},"{s.subject}")'
+        cursor.execute(input)
+
+
 
     db.commit()
     return db
@@ -139,6 +140,7 @@ def fill_all_halls_by_subject(hall_capacity, seating, students_to_be_seated):
         if not students_to_be_seated:
             break
 
+
 def fill_one_hall_by_subject(hall_name, capacity, seating, students_to_be_seated):
 
     subjects_in_consideration = set([student.subject for student in students_to_be_seated]) 
@@ -169,8 +171,6 @@ def fill_one_hall_by_subject(hall_name, capacity, seating, students_to_be_seated
 
         if not students_to_be_seated:  # if students to be seated is an empty list
             break
-
-
 
 
 def distribute_students_by_class(hall_capacity, students_to_be_seated, seating):
@@ -205,14 +205,15 @@ def get_student_from_subject(students_to_be_seated, subject):
     student = students_to_be_seated.pop(student_index)
     return student
 
+
 def get_biggest_subject(students_to_be_seated, subjects_to_consider):
     return max(subjects_to_consider, key=lambda sub: len([student for student in students_to_be_seated if student.subject == sub]))
+
 
 def interleave(array):
     midpoint_index = math.ceil(len(array)/2)
     first = array[:midpoint_index]
     second = array[midpoint_index:]
-
 
     separated_array = []
     for _ in range(len(second)):
@@ -222,6 +223,7 @@ def interleave(array):
         separated_array.append(first.pop())
 
     return separated_array
+
 
 def generate_seating_json(seating):
     seating = seating.copy()
