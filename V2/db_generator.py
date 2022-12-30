@@ -35,6 +35,10 @@ class Student():
         }
 
 
+def sort_dictionary(dict, reverse):
+    keys = dict.keys()
+    keys.sort(key=lambda key:dict[key], reverse=reverse)
+    return {key:dict[key] for key in keys}
 
 def generate_db():
     with open('Halls.json', 'r') as halls_file, open('Subjects.json') as subjects_file:
@@ -61,7 +65,7 @@ def generate_db():
     seating = distribute_students(hall_capacity)
 
 
-    for hall,capacity in hall_capacity.items():
+    for hall in hall_capacity:
         seating[hall] = interleave(seating[hall])
 
         for seat_no, student in enumerate(seating[hall]):
