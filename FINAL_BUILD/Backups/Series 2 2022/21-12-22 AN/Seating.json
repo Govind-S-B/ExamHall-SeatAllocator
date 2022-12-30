@@ -1,0 +1,1208 @@
+{
+    "SX205": [
+        {
+            "id": "S5C1-20",
+            "class": "S5C1",
+            "roll_no": "20",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 1
+        },
+        {
+            "id": "S5C1-19",
+            "class": "S5C1",
+            "roll_no": "19",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 3
+        },
+        {
+            "id": "S5C1-18",
+            "class": "S5C1",
+            "roll_no": "18",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 5
+        },
+        {
+            "id": "S5C1-17",
+            "class": "S5C1",
+            "roll_no": "17",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 7
+        },
+        {
+            "id": "S5C1-16",
+            "class": "S5C1",
+            "roll_no": "16",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 9
+        },
+        {
+            "id": "S5C1-15",
+            "class": "S5C1",
+            "roll_no": "15",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 11
+        },
+        {
+            "id": "S5C1-14",
+            "class": "S5C1",
+            "roll_no": "14",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 13
+        },
+        {
+            "id": "S5C1-13",
+            "class": "S5C1",
+            "roll_no": "13",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 15
+        },
+        {
+            "id": "S5C1-12",
+            "class": "S5C1",
+            "roll_no": "12",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 17
+        },
+        {
+            "id": "S5C1-11",
+            "class": "S5C1",
+            "roll_no": "11",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 19
+        },
+        {
+            "id": "S5C1-10",
+            "class": "S5C1",
+            "roll_no": "10",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 21
+        },
+        {
+            "id": "S5C1-9",
+            "class": "S5C1",
+            "roll_no": "9",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 23
+        },
+        {
+            "id": "S5C1-8",
+            "class": "S5C1",
+            "roll_no": "8",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 25
+        },
+        {
+            "id": "S5C1-7",
+            "class": "S5C1",
+            "roll_no": "7",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 27
+        },
+        {
+            "id": "S5C1-6",
+            "class": "S5C1",
+            "roll_no": "6",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 29
+        },
+        {
+            "id": "S5C1-5",
+            "class": "S5C1",
+            "roll_no": "5",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 31
+        },
+        {
+            "id": "S5C1-4",
+            "class": "S5C1",
+            "roll_no": "4",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 33
+        },
+        {
+            "id": "S5C1-3",
+            "class": "S5C1",
+            "roll_no": "3",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 35
+        },
+        {
+            "id": "S5C1-2",
+            "class": "S5C1",
+            "roll_no": "2",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 37
+        },
+        {
+            "id": "S5C1-1",
+            "class": "S5C1",
+            "roll_no": "1",
+            "subject": "Disaster Management",
+            "hall": "SX205",
+            "seat": 39
+        }
+    ],
+    "SX212": [
+        {
+            "id": "S5C2-2",
+            "class": "S5C2",
+            "roll_no": "2",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 1
+        },
+        {
+            "id": "S5C2-1",
+            "class": "S5C2",
+            "roll_no": "1",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 3
+        },
+        {
+            "id": "S5C1-38",
+            "class": "S5C1",
+            "roll_no": "38",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 5
+        },
+        {
+            "id": "S5C1-37",
+            "class": "S5C1",
+            "roll_no": "37",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 7
+        },
+        {
+            "id": "S5C1-36",
+            "class": "S5C1",
+            "roll_no": "36",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 9
+        },
+        {
+            "id": "S5C1-35",
+            "class": "S5C1",
+            "roll_no": "35",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 11
+        },
+        {
+            "id": "S5C1-34",
+            "class": "S5C1",
+            "roll_no": "34",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 13
+        },
+        {
+            "id": "S5C1-33",
+            "class": "S5C1",
+            "roll_no": "33",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 15
+        },
+        {
+            "id": "S5C1-32",
+            "class": "S5C1",
+            "roll_no": "32",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 17
+        },
+        {
+            "id": "S5C1-31",
+            "class": "S5C1",
+            "roll_no": "31",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 19
+        },
+        {
+            "id": "S5C1-30",
+            "class": "S5C1",
+            "roll_no": "30",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 21
+        },
+        {
+            "id": "S5C1-29",
+            "class": "S5C1",
+            "roll_no": "29",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 23
+        },
+        {
+            "id": "S5C1-28",
+            "class": "S5C1",
+            "roll_no": "28",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 25
+        },
+        {
+            "id": "S5C1-27",
+            "class": "S5C1",
+            "roll_no": "27",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 27
+        },
+        {
+            "id": "S5C1-26",
+            "class": "S5C1",
+            "roll_no": "26",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 29
+        },
+        {
+            "id": "S5C1-25",
+            "class": "S5C1",
+            "roll_no": "25",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 31
+        },
+        {
+            "id": "S5C1-24",
+            "class": "S5C1",
+            "roll_no": "24",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 33
+        },
+        {
+            "id": "S5C1-23",
+            "class": "S5C1",
+            "roll_no": "23",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 35
+        },
+        {
+            "id": "S5C1-22",
+            "class": "S5C1",
+            "roll_no": "22",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 37
+        },
+        {
+            "id": "S5C1-21",
+            "class": "S5C1",
+            "roll_no": "21",
+            "subject": "Disaster Management",
+            "hall": "SX212",
+            "seat": 39
+        }
+    ],
+    "SM301": [
+        {
+            "id": "S5C2-17",
+            "class": "S5C2",
+            "roll_no": "17",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 1
+        },
+        {
+            "id": "S5C2-16",
+            "class": "S5C2",
+            "roll_no": "16",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 3
+        },
+        {
+            "id": "S5C2-15",
+            "class": "S5C2",
+            "roll_no": "15",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 5
+        },
+        {
+            "id": "S5C2-14",
+            "class": "S5C2",
+            "roll_no": "14",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 7
+        },
+        {
+            "id": "S5C2-13",
+            "class": "S5C2",
+            "roll_no": "13",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 9
+        },
+        {
+            "id": "S5C2-12",
+            "class": "S5C2",
+            "roll_no": "12",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 11
+        },
+        {
+            "id": "S5C2-11",
+            "class": "S5C2",
+            "roll_no": "11",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 13
+        },
+        {
+            "id": "S5C2-10",
+            "class": "S5C2",
+            "roll_no": "10",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 15
+        },
+        {
+            "id": "S5C2-9",
+            "class": "S5C2",
+            "roll_no": "9",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 17
+        },
+        {
+            "id": "S5C2-8",
+            "class": "S5C2",
+            "roll_no": "8",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 19
+        },
+        {
+            "id": "S5C2-7",
+            "class": "S5C2",
+            "roll_no": "7",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 21
+        },
+        {
+            "id": "S5C2-6",
+            "class": "S5C2",
+            "roll_no": "6",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 23
+        },
+        {
+            "id": "S5C2-5",
+            "class": "S5C2",
+            "roll_no": "5",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 25
+        },
+        {
+            "id": "S5C2-4",
+            "class": "S5C2",
+            "roll_no": "4",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 27
+        },
+        {
+            "id": "S5C2-3",
+            "class": "S5C2",
+            "roll_no": "3",
+            "subject": "Disaster Management",
+            "hall": "SM301",
+            "seat": 29
+        }
+    ],
+    "SH304": [
+        {
+            "id": "S5E-4",
+            "class": "S5E",
+            "roll_no": "4",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 1
+        },
+        {
+            "id": "S5E-3",
+            "class": "S5E",
+            "roll_no": "3",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 3
+        },
+        {
+            "id": "S5E-2",
+            "class": "S5E",
+            "roll_no": "2",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 5
+        },
+        {
+            "id": "S5E-1",
+            "class": "S5E",
+            "roll_no": "1",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 7
+        },
+        {
+            "id": "S5C2-34",
+            "class": "S5C2",
+            "roll_no": "34",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 9
+        },
+        {
+            "id": "S5C2-33",
+            "class": "S5C2",
+            "roll_no": "33",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 11
+        },
+        {
+            "id": "S5C2-32",
+            "class": "S5C2",
+            "roll_no": "32",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 13
+        },
+        {
+            "id": "S5C2-31",
+            "class": "S5C2",
+            "roll_no": "31",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 15
+        },
+        {
+            "id": "S5C2-30",
+            "class": "S5C2",
+            "roll_no": "30",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 17
+        },
+        {
+            "id": "S5C2-29",
+            "class": "S5C2",
+            "roll_no": "29",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 19
+        },
+        {
+            "id": "S5C2-28",
+            "class": "S5C2",
+            "roll_no": "28",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 21
+        },
+        {
+            "id": "S5C2-27",
+            "class": "S5C2",
+            "roll_no": "27",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 23
+        },
+        {
+            "id": "S5C2-26",
+            "class": "S5C2",
+            "roll_no": "26",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 25
+        },
+        {
+            "id": "S5C2-25",
+            "class": "S5C2",
+            "roll_no": "25",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 27
+        },
+        {
+            "id": "S5C2-24",
+            "class": "S5C2",
+            "roll_no": "24",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 29
+        },
+        {
+            "id": "S5C2-23",
+            "class": "S5C2",
+            "roll_no": "23",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 31
+        },
+        {
+            "id": "S5C2-22",
+            "class": "S5C2",
+            "roll_no": "22",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 33
+        },
+        {
+            "id": "S5C2-21",
+            "class": "S5C2",
+            "roll_no": "21",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 35
+        },
+        {
+            "id": "S5C2-20",
+            "class": "S5C2",
+            "roll_no": "20",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 37
+        },
+        {
+            "id": "S5C2-19",
+            "class": "S5C2",
+            "roll_no": "19",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 39
+        },
+        {
+            "id": "S5C2-18",
+            "class": "S5C2",
+            "roll_no": "18",
+            "subject": "Disaster Management",
+            "hall": "SH304",
+            "seat": 41
+        }
+    ],
+    "SJ205": [
+        {
+            "id": "S5M-8",
+            "class": "S5M",
+            "roll_no": "8",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 1
+        },
+        {
+            "id": "S5M-7",
+            "class": "S5M",
+            "roll_no": "7",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 3
+        },
+        {
+            "id": "S5M-6",
+            "class": "S5M",
+            "roll_no": "6",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 5
+        },
+        {
+            "id": "S5M-5",
+            "class": "S5M",
+            "roll_no": "5",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 7
+        },
+        {
+            "id": "S5M-4",
+            "class": "S5M",
+            "roll_no": "4",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 9
+        },
+        {
+            "id": "S5M-3",
+            "class": "S5M",
+            "roll_no": "3",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 11
+        },
+        {
+            "id": "S5M-2",
+            "class": "S5M",
+            "roll_no": "2",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 13
+        },
+        {
+            "id": "S5M-1",
+            "class": "S5M",
+            "roll_no": "1",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 15
+        },
+        {
+            "id": "S5E-19",
+            "class": "S5E",
+            "roll_no": "19",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 17
+        },
+        {
+            "id": "S5E-18",
+            "class": "S5E",
+            "roll_no": "18",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 19
+        },
+        {
+            "id": "S5E-17",
+            "class": "S5E",
+            "roll_no": "17",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 21
+        },
+        {
+            "id": "S5E-16",
+            "class": "S5E",
+            "roll_no": "16",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 23
+        },
+        {
+            "id": "S5E-15",
+            "class": "S5E",
+            "roll_no": "15",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 25
+        },
+        {
+            "id": "S5E-14",
+            "class": "S5E",
+            "roll_no": "14",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 27
+        },
+        {
+            "id": "S5E-13",
+            "class": "S5E",
+            "roll_no": "13",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 29
+        },
+        {
+            "id": "S5E-12",
+            "class": "S5E",
+            "roll_no": "12",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 31
+        },
+        {
+            "id": "S5E-11",
+            "class": "S5E",
+            "roll_no": "11",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 33
+        },
+        {
+            "id": "S5E-10",
+            "class": "S5E",
+            "roll_no": "10",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 35
+        },
+        {
+            "id": "S5E-9",
+            "class": "S5E",
+            "roll_no": "9",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 37
+        },
+        {
+            "id": "S5E-8",
+            "class": "S5E",
+            "roll_no": "8",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 39
+        },
+        {
+            "id": "S5E-7",
+            "class": "S5E",
+            "roll_no": "7",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 41
+        },
+        {
+            "id": "S5E-6",
+            "class": "S5E",
+            "roll_no": "6",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 43
+        },
+        {
+            "id": "S5E-5",
+            "class": "S5E",
+            "roll_no": "5",
+            "subject": "Disaster Management",
+            "hall": "SJ205",
+            "seat": 45
+        }
+    ],
+    "SJ208": [
+        {
+            "id": "S5M-30",
+            "class": "S5M",
+            "roll_no": "30",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 1
+        },
+        {
+            "id": "S5M-29",
+            "class": "S5M",
+            "roll_no": "29",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 3
+        },
+        {
+            "id": "S5M-28",
+            "class": "S5M",
+            "roll_no": "28",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 5
+        },
+        {
+            "id": "S5M-27",
+            "class": "S5M",
+            "roll_no": "27",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 7
+        },
+        {
+            "id": "S5M-26",
+            "class": "S5M",
+            "roll_no": "26",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 9
+        },
+        {
+            "id": "S5M-25",
+            "class": "S5M",
+            "roll_no": "25",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 11
+        },
+        {
+            "id": "S5M-24",
+            "class": "S5M",
+            "roll_no": "24",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 13
+        },
+        {
+            "id": "S5M-23",
+            "class": "S5M",
+            "roll_no": "23",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 15
+        },
+        {
+            "id": "S5M-22",
+            "class": "S5M",
+            "roll_no": "22",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 17
+        },
+        {
+            "id": "S5M-21",
+            "class": "S5M",
+            "roll_no": "21",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 19
+        },
+        {
+            "id": "S5M-20",
+            "class": "S5M",
+            "roll_no": "20",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 21
+        },
+        {
+            "id": "S5M-19",
+            "class": "S5M",
+            "roll_no": "19",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 23
+        },
+        {
+            "id": "S5M-18",
+            "class": "S5M",
+            "roll_no": "18",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 25
+        },
+        {
+            "id": "S5M-17",
+            "class": "S5M",
+            "roll_no": "17",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 27
+        },
+        {
+            "id": "S5M-16",
+            "class": "S5M",
+            "roll_no": "16",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 29
+        },
+        {
+            "id": "S5M-15",
+            "class": "S5M",
+            "roll_no": "15",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 31
+        },
+        {
+            "id": "S5M-14",
+            "class": "S5M",
+            "roll_no": "14",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 33
+        },
+        {
+            "id": "S5M-13",
+            "class": "S5M",
+            "roll_no": "13",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 35
+        },
+        {
+            "id": "S5M-12",
+            "class": "S5M",
+            "roll_no": "12",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 37
+        },
+        {
+            "id": "S5M-11",
+            "class": "S5M",
+            "roll_no": "11",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 39
+        },
+        {
+            "id": "S5M-10",
+            "class": "S5M",
+            "roll_no": "10",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 41
+        },
+        {
+            "id": "S5M-9",
+            "class": "S5M",
+            "roll_no": "9",
+            "subject": "Disaster Management",
+            "hall": "SJ208",
+            "seat": 43
+        }
+    ],
+    "SX301": [
+        {
+            "id": "S5R1-13",
+            "class": "S5R1",
+            "roll_no": "13",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 1
+        },
+        {
+            "id": "S5R1-12",
+            "class": "S5R1",
+            "roll_no": "12",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 3
+        },
+        {
+            "id": "S5R1-11",
+            "class": "S5R1",
+            "roll_no": "11",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 5
+        },
+        {
+            "id": "S5R1-10",
+            "class": "S5R1",
+            "roll_no": "10",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 7
+        },
+        {
+            "id": "S5R1-9",
+            "class": "S5R1",
+            "roll_no": "9",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 9
+        },
+        {
+            "id": "S5R1-8",
+            "class": "S5R1",
+            "roll_no": "8",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 11
+        },
+        {
+            "id": "S5R1-7",
+            "class": "S5R1",
+            "roll_no": "7",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 13
+        },
+        {
+            "id": "S5R1-6",
+            "class": "S5R1",
+            "roll_no": "6",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 15
+        },
+        {
+            "id": "S5R1-5",
+            "class": "S5R1",
+            "roll_no": "5",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 17
+        },
+        {
+            "id": "S5R1-4",
+            "class": "S5R1",
+            "roll_no": "4",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 19
+        },
+        {
+            "id": "S5R1-3",
+            "class": "S5R1",
+            "roll_no": "3",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 21
+        },
+        {
+            "id": "S5R1-2",
+            "class": "S5R1",
+            "roll_no": "2",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 23
+        },
+        {
+            "id": "S5R1-1",
+            "class": "S5R1",
+            "roll_no": "1",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 25
+        },
+        {
+            "id": "S5M-45",
+            "class": "S5M",
+            "roll_no": "45",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 27
+        },
+        {
+            "id": "S5M-44",
+            "class": "S5M",
+            "roll_no": "44",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 29
+        },
+        {
+            "id": "S5M-43",
+            "class": "S5M",
+            "roll_no": "43",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 31
+        },
+        {
+            "id": "S5M-42",
+            "class": "S5M",
+            "roll_no": "42",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 33
+        },
+        {
+            "id": "S5M-41",
+            "class": "S5M",
+            "roll_no": "41",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 35
+        },
+        {
+            "id": "S5M-40",
+            "class": "S5M",
+            "roll_no": "40",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 37
+        },
+        {
+            "id": "S5M-39",
+            "class": "S5M",
+            "roll_no": "39",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 39
+        },
+        {
+            "id": "S5M-38",
+            "class": "S5M",
+            "roll_no": "38",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 41
+        },
+        {
+            "id": "S5M-37",
+            "class": "S5M",
+            "roll_no": "37",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 43
+        },
+        {
+            "id": "S5M-36",
+            "class": "S5M",
+            "roll_no": "36",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 45
+        },
+        {
+            "id": "S5M-35",
+            "class": "S5M",
+            "roll_no": "35",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 47
+        },
+        {
+            "id": "S5M-34",
+            "class": "S5M",
+            "roll_no": "34",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 49
+        },
+        {
+            "id": "S5M-33",
+            "class": "S5M",
+            "roll_no": "33",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 51
+        },
+        {
+            "id": "S5M-32",
+            "class": "S5M",
+            "roll_no": "32",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 53
+        },
+        {
+            "id": "S5M-31",
+            "class": "S5M",
+            "roll_no": "31",
+            "subject": "Disaster Management",
+            "hall": "SX301",
+            "seat": 55
+        }
+    ]
+}

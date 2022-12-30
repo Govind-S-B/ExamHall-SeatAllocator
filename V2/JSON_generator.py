@@ -166,7 +166,8 @@ def generate_subject_JSON():
             continue
 
         try:
-            num_of_electives = int(args[1])
+            if len(args) == 2:
+                _ = int(args[1])
         except ValueError:
             print("ERROR invalid input")
             print("input should be off the form CLASS_NAME NUMBER where CLASS_NAME is the name of the class \
@@ -179,7 +180,7 @@ def generate_subject_JSON():
         if len(args) == 1:
             count = 1 #, repeat below loop only once
         else:
-            count = num_of_electives
+            count = int(args[1])
         # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
         
         for roll_no in range(count):
