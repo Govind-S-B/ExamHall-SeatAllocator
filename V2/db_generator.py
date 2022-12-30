@@ -36,7 +36,7 @@ class Student():
 
 
 def sort_dictionary(dict, reverse):
-    keys = dict.keys()
+    keys = list(dict.keys())
     keys.sort(key=lambda key:dict[key], reverse=reverse)
     return {key:dict[key] for key in keys}
 
