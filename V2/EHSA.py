@@ -653,9 +653,7 @@ def generate_report():
 
 
 print("ExamHall-SeatAllocator | EHSA v2.x - protoRes\n")
-# choice = input("Enter Choice (1)JSON Generator, (2)Report Generator: ")
-print("###Uncomment before merging...")
-choice='2'
+choice = input("Enter Choice (1)JSON Generator, (2)Report Generator: ")
 print()
 
 if choice == "1":
