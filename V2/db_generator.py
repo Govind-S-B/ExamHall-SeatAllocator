@@ -1,11 +1,7 @@
 import json
 import math
 import sqlite3 as sq
-# don't know how many colums
-# know how many benches
-# benches have 2 seats per person
-# try to not have too many subjects in 1 class
-# 
+
 
 class Student():
     ALL = []
@@ -43,11 +39,7 @@ def sort_dictionary(dict, reverse):
 
 def generate_db():
     with open('Halls.json', 'r') as halls_file, open('Subjects.json') as subjects_file:
-        halls_dict = json.load(halls_file)
-        hall_capacity = {key:halls_dict["B"][key][0] * 2 for key in halls_dict["B"]} | ( \
-                {key:halls_dict["D"][key][0] for key in halls_dict["D"]}
-        )
-        # hall_capacity is a dict mapping hall name to hall size
+        hall_capacity = json.load(halls_file)
         # hall_capacity is a dict mapping hall name to hall size
 
         subjects_json = json.load(subjects_file)
