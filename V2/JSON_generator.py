@@ -87,7 +87,7 @@ def populate_halls(halls):
             
             # by now the input should be 100% validated and can safely be used and put in the dictionary
 
-            halls[hall_name] = [ int(args[0]) ]
+            halls[hall_name] = int(args[0])
 
             break
 
