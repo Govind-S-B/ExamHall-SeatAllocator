@@ -69,9 +69,9 @@ def populate_halls(halls):
             
             # ERROR HANDLING
 
-            if len(args) > 2 or len(args) == 0:
+            if len(args) > 1 or len(args) == 0:
                 print("Error: invalid input")
-                print("input should be of the form 'x' or 'x y' where x and y are numbers")
+                print("input should be a single argument")
                 continue
 
             arg_is_valid = True
@@ -87,10 +87,7 @@ def populate_halls(halls):
             
             # by now the input should be 100% validated and can safely be used and put in the dictionary
 
-            if len(args) == 1:
-                halls["B"][hall_name] = [ int(args[0]) ]
-            elif len(args) == 2:
-                halls["D"][hall_name] = [int(args[0]),int(args[1])]
+            halls[hall_name] = int(args[0])
 
             break
 
@@ -115,10 +112,7 @@ def output_list(dictionary, mode, list_type):
 def generate_hall_JSON():
     
         # Bench(B) or Drawing Hall(D)
-        halls = {
-            "B": {},
-            "D": {}
-        }
+        halls = { }
         
         populate_halls(halls)
         return halls
@@ -166,7 +160,8 @@ def generate_subject_JSON():
             continue
 
         try:
-            num_of_electives = int(args[1])
+            if len(args) == 2:
+                _ = int(args[1])
         except ValueError:
             print("ERROR invalid input")
             print("input should be off the form CLASS_NAME NUMBER where CLASS_NAME is the name of the class \
@@ -179,7 +174,7 @@ def generate_subject_JSON():
         if len(args) == 1:
             count = 1 #, repeat below loop only once
         else:
-            count = num_of_electives
+            count = int(args[1])
         # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
         
         for roll_no in range(count):
