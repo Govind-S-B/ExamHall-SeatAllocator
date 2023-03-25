@@ -177,12 +177,12 @@ def generate_subject_JSON():
             count = int(args[1])
         # take in one more argument with classname , ie the number of subjects , if none provided cosider 1 subject
         
-        for roll_no in range(count):
-            for roll_no in range(len(subject_list)):
-                print(f'{roll_no+1} - {subject_list[roll_no]}')  # +1 because in code indexing starts from 0
+        for temp_list_counter in range(count):
+            for temp_list_counter in range(len(subject_list)):
+                print(f'{temp_list_counter+1} - {subject_list[temp_list_counter]}')  # +1 because in code indexing starts from 0
                                                      # but for user indexing starts from 1
                 
-            subject = get_input_in_range("Enter Subject ID: ", 1, count)
+            subject = get_input_in_range("Enter Subject ID: ", 1, len(subject_list))
             if subject == "done":
                 break
                 
