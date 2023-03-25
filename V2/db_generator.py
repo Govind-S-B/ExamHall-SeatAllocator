@@ -65,6 +65,7 @@ def generate_db():
         seating[hall] = interleave(seating[hall])
 
 
+
         for seat_no, student in enumerate(seating[hall]):
             if student:
                 student.hall = hall
@@ -204,17 +205,19 @@ def get_biggest_subject(students_to_be_seated, subjects_to_consider):
 
 def interleave(array):
     midpoint_index = math.ceil(len(array)/2)
-    first = array[:midpoint_index]
-    second = array[midpoint_index:]
+    first = array[midpoint_index:]
+    second = array[:midpoint_index]
 
     separated_array = []
     for _ in range(len(second)):
-        separated_array.append(first.pop())
-        separated_array.append(second.pop())
+        separated_array.append(first.pop(0))
+        separated_array.append(second.pop(0))
     if first:
-        separated_array.append(first.pop())
+        separated_array.append(first.pop(0))
 
     return separated_array
+
+
 
 
 def generate_seating_json(seating):
