@@ -62,13 +62,9 @@ def generate_db():
         while len(seating[hall]) < capacity:
             seating[hall].append(None)
 
-        if hall == "SX212":
-            print(seating[hall]) 
-
         seating[hall] = interleave(seating[hall])
 
-        if hall == "SX212":
-            print(seating[hall]) 
+
 
         for seat_no, student in enumerate(seating[hall]):
             if student:
