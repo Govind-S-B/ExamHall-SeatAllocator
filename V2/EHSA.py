@@ -215,6 +215,7 @@ def generate_report():
 
                 if subject_name == i[2]:
                     roll_list.append(i[3])
+                    roll_list.sort()
 
                 else:
                     roll_ = ranges(roll_list)
@@ -223,6 +224,7 @@ def generate_report():
                     subject_name = i[2]
                     roll_list = []
                     roll_list.append(i[3])
+                    roll_list.sort()
 
             else:
                 roll_ = ranges(roll_list)
@@ -232,6 +234,7 @@ def generate_report():
                 subject_name = i[2]
                 roll_list = []
                 roll_list.append(i[3])
+                roll_list.sort()
 
         else:
             # append , PDF Generate and empty pdf list
