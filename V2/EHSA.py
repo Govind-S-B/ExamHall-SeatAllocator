@@ -340,6 +340,7 @@ def generate_report():
                 else:
                     pdf2.cell(class_w, height, curr_class, align='C', border=True) # Class
                 prev_class=curr_class
+
                 if sub_flag==0:
                     pdf2.multi_cell(65, height, k[1], align='C', border=True) # Subject when subject is one line only
                 else:
@@ -347,10 +348,20 @@ def generate_report():
 
                 pdf2.set_y(y_pos)
                 pdf2.set_x(pdf2.w-(pdf2.w-(18.061+65))+10)
-                if sub_flag==1:
+
+                #
+                if sub_flag==1 and roll_rows>sub_rows:
+                    pdf2.multi_cell(35, 10, temp1, align='C', border=True)
+                elif sub_flag==1:
                     pdf2.multi_cell(35, height, temp1, align='C', border=True) # Roll no range when sub is 2 line and roll range is one line
                 else:
                     pdf2.multi_cell(35, 10, temp1, align='C', border=True) # Roll no range
+                #
+                
+                # if sub_flag==1:
+                #     pdf2.multi_cell(35, height, temp1, align='C', border=True) # Roll no range when sub is 2 line and roll range is one line
+                # else:
+                #     pdf2.multi_cell(35, 10, temp1, align='C', border=True) # Roll no range
                 pdf2.set_y(y_pos)
                 pdf2.set_x(class_w+65+35+10)
 
