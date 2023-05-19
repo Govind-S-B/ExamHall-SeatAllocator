@@ -1,0 +1,1 @@
+D:\Programming\ Projects\Multi\ language\ projects\ExamHall-SeatAllocator\allocator\target\debug\allocator.exe: D:\Programming\ Projects\Multi\ language\ projects\ExamHall-SeatAllocator\allocator\src\main.rs
