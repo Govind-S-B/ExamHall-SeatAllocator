@@ -1,4 +1,4 @@
 
 .vscode/settings.json
 *.pdf
-*.db
+V3/*.db
