@@ -10,13 +10,15 @@ def generate_report():
 
     conn = sq.connect("report.db")
 
-    # with open('Subjects.json', 'r') as JSON:
-    #     MetaInfo = json.load(JSON).pop("meta")
 
-    sessioninfo = "69-69-0420 TEST"
-    sessioninfo = sessioninfo.split()
-    Date = sessioninfo[0]
-    Session = sessioninfo[1]
+    session_info = conn.execute(
+            """SELECT VALUE 
+            FROM metadata 
+            WHERE KEY = "session_name" 
+            """).fetchall()[0][0]
+
+    date, session = session_info.split()
+
 
     # Functions
     def ranges(i):
@@ -137,7 +139,7 @@ def generate_report():
     pdf1.set_y(45)
     pdf1.set_x(57)
     pdf1.write_html(
-        f"Date: <b>{Date}</b> &nbsp;&nbsp;&nbsp;Session: <b>{Session}<b/>")
+        f"Date: <b>{date}</b> &nbsp;&nbsp;&nbsp;Session: <b>{session}<b/>")
     pdf1.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
 
     # Create Table Header
@@ -186,7 +188,7 @@ def generate_report():
         pdf1.multi_cell(0, height/rows, temp, new_x="LMARGIN",
                         new_y="NEXT", border=True, align="L")
 
-    file_name = "Halls "+Date+" "+Session+".pdf"
+    file_name = "Halls "+date+" "+session+".pdf"
     pdf1.output(file_name)
 
     # Packaging List PDF------------------------------------------------------------------------------------------------
@@ -265,7 +267,7 @@ def generate_report():
             pdf2.set_font(font, '', 18)
             pdf2.set_x(30)
             pdf2.write_html(
-                f"<align=\"center\">Hall No: <b>{hall_name}</b> &nbsp;&nbsp;Date: <b>{Date}</b> &nbsp;&nbsp;Session: <b>{Session}<b/>")
+                f"<align=\"center\">Hall No: <b>{hall_name}</b> &nbsp;&nbsp;Date: <b>{date}</b> &nbsp;&nbsp;Session: <b>{session}<b/>")
             pdf2.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
 
             # Create Table Header
@@ -444,7 +446,7 @@ def generate_report():
             pdf2.set_font(font, '', 18)
             pdf2.set_x(30)
             pdf2.write_html(
-                f"<align=\"center\">Hall No: <b>{hall_name}</b> &nbsp;&nbsp;Date: <b>{Date}</b> &nbsp;&nbsp;Session: <b>{Session}<b/>")
+                f"<align=\"center\">Hall No: <b>{hall_name}</b> &nbsp;&nbsp;Date: <b>{date}</b> &nbsp;&nbsp;Session: <b>{session}<b/>")
             pdf2.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
 
             # Create Table Header
@@ -592,7 +594,7 @@ def generate_report():
 
             PDF_list = []
 
-    file_name = "Packaging "+Date+" "+Session+".pdf"
+    file_name = "Packaging "+date+" "+session+".pdf"
     pdf2.output(file_name)
 
     # Seating List PDF------------------------------------------------------------------------------------------------
@@ -665,7 +667,7 @@ def generate_report():
         pdf3.set_font(font, '', 18)
         pdf3.set_x(30)
         pdf3.write_html(
-            f"<align=\"center\">Hall No: <b>{hall}</b> &nbsp;&nbsp;Date: <b>{Date}</b> &nbsp;&nbsp;Session: <b>{Session}<b/>")
+            f"<align=\"center\">Hall No: <b>{hall}</b> &nbsp;&nbsp;Date: <b>{date}</b> &nbsp;&nbsp;Session: <b>{session}<b/>")
         pdf3.cell(0, 15, "", new_x="LMARGIN", new_y="NEXT")
 
         # Class List Table
@@ -717,7 +719,7 @@ def generate_report():
                     pdf3.cell(seat_w, 10, str(counter), border=True, align="C")
                     pdf3.cell(id_w, 10, "-", border=True, align="C",
                               new_x="LMARGIN", new_y="NEXT")
-    file_name = "Seating "+Date+" "+Session+".pdf"
+    file_name = "Seating "+date+" "+session+".pdf"
     pdf3.output(file_name)
 
     print("Done")
