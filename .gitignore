@@ -3,5 +3,5 @@
 *.pdf
 V3/*.db
 V3/allocator.exe
-/target/
+allocator/target/
 
