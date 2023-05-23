@@ -1,5 +1,5 @@
 use crate::student::Student;
-//hi
+
 struct Hall {
     name: String,
     students: Vec<Option<Student>>,
