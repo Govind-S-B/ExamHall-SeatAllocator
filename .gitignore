@@ -2,4 +2,4 @@
 .vscode/settings.json
 *.pdf
 V3/*.db
-V3\allocator.exe
+V3/allocator.exe
