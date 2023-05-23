@@ -1,4 +1,4 @@
-struct Student {
+pub struct Student {
     id: String,
     class: String,
     roll_no: i32,
