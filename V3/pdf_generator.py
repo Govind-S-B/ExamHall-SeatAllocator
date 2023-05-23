@@ -69,9 +69,9 @@ def generate_report():
 
     # Notice Board PDF------------------------------------------------------------------------------------------------
     # Code
-    cmd = """SELECT CLASS,HALL,ROLL
-            FROM REPORT
-            ORDER BY CLASS,HALL"""
+    cmd = """SELECT class,hall,roll_no
+            FROM report
+            ORDER BY class,hall"""
     cursor = conn.execute(cmd)
     Q_list = cursor.fetchall()
 
@@ -194,15 +194,15 @@ def generate_report():
     # Packaging List PDF------------------------------------------------------------------------------------------------
     pdf2.set_auto_page_break(auto=True, margin=15)  # Auto page break
     # code
-    cmd = """SELECT HALL,CLASS,SUBJECT,ROLL
-            FROM REPORT
-            ORDER BY HALL,CLASS, SUBJECT"""
+    cmd = """SELECT hall,class,subject,roll_no
+            FROM report
+            ORDER BY hall,class, subject"""
     cursor = conn.execute(cmd)
     Q_list = cursor.fetchall()
 
-    cmd = """SELECT HALL,COUNT(ROLL)
-            FROM REPORT
-            GROUP BY HALL"""
+    cmd = """SELECT hall,COUNT(roll_no)
+            FROM report
+            GROUP BY hall"""
     cursor = conn.execute(cmd)
     R_list = cursor.fetchall()
 
@@ -600,18 +600,18 @@ def generate_report():
     # Seating List PDF------------------------------------------------------------------------------------------------
     pdf3.set_auto_page_break(auto=True, margin=15)  # Set auto page break
 
-    cmd = """SELECT DISTINCT HALL , CLASS
-            FROM REPORT
-            ORDER BY HALL"""
+    cmd = """SELECT DISTINCT hall , class
+            FROM report
+            ORDER BY hall"""
     cursor = conn.execute(cmd)
     x = cursor.fetchall()
     distinct_class = []
     for subject in x:
         distinct_class.append(list(subject))
 
-    cmd = """SELECT HALL,SEAT_NO,ID
-            FROM REPORT
-            ORDER BY HALL,SEAT_NO"""
+    cmd = """SELECT hall,seat_no,id
+            FROM report
+            ORDER BY hall,seat_no"""
     cursor = conn.execute(cmd)
     x = cursor.fetchall()
     query_list = []
