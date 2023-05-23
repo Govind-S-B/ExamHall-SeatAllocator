@@ -1,5 +1,8 @@
+use db_manager::DatabaseManager;
+
+mod db_manager;
 mod hall;
 mod student;
 fn main() {
-    println!("Hello, world!");
+    let db = DatabaseManager::new();
 }
