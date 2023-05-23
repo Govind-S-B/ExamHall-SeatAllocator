@@ -7,11 +7,26 @@ pub struct DatabaseManager {
 }
 
 impl DatabaseManager {
+    /// Creates a new [`DatabaseManager`].
+    ///
+    /// the connection is made with `report.db`
+    /// # Panics
+    ///
+    /// Panics if `report.db` does not exist
     pub fn new() -> Self {
         Self {
             connection: sqlite::open("report.db").unwrap(),
         }
     }
+    /// Returns a Hashmap whose keys are subjects and values are a
+    /// vector of students that have that subject
+    ///
+    /// # Panics
+    ///
+    /// Panics if the database is not in the right format
+    ///
+    /// the first column should be id and the second column should be subject
+    ///
     pub fn read_students_table(&self) -> HashMap<String, Vec<Student>> {
         let query = "SELECT * FROM students";
         let mut students: HashMap<String, Vec<Student>> = HashMap::new();
