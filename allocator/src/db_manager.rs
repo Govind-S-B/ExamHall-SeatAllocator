@@ -95,27 +95,43 @@ impl DatabaseManager {
             .expect("error dropping report table");
         let query = "
                 CREATE TABLE report 
-                (ID CHAR(15) PRIMARY KEY NOT NULL, 
-                CLASS CHAR(10) NOT NULL, 
-                ROLL INT NOT NULL, 
-                HALL TEXT NOT NULL, 
-                SEAT_NO INT NOT NULL, 
-                SUBJECT CHAR(50) NOT NULL)";
+                (id CHAR(15) PRIMARY KEY NOT NULL, 
+                class CHAR(10) NOT NULL, 
+                roll_no INT NOT NULL, 
+                hall TEXT NOT NULL, 
+                seat_no INT NOT NULL, 
+                subject CHAR(50) NOT NULL)";
 
         self.connection
             .execute(query)
-            .expect("error creating report table")
+            .expect("error creating report table");
 
+        let mut query =
+            "INSERT INTO report (id,class,roll_no,subject,hall,seat_no) VALUES".to_owned();
         for hall in halls {
-            for (seat_no, student) in hall.students().iter().enumerate() {
-                let query = match student {
-                    Some(Student {id, class, roll_no, subject }) => {
-                      format!("INSERT INTO report (id,class,roll_no,subject,hall,seat_no) \
-                VALUES ({id}, {class}, {roll_no},{subject}, {}, {})")  
-                    },
-                    None => todo!(),
+            for (index, student) in hall.students().iter().enumerate() {
+                let Some(student) = student
+                else {
+                    continue;
                 };
+
+                let (id, class, roll_no, subject, hall_name, seat_no) = (
+                    student.id(),
+                    student.class(),
+                    student.roll_no(),
+                    student.subject(),
+                    hall.name(),
+                    index + 1,
+                );
+                query += &format!( 
+                    "(\"{id}\", \"{class}\", {roll_no},\"{subject}\", \"{hall_name}\", {seat_no}),"
+                );
             }
         }
+        query.pop();
+        query += ";";
+        self.connection
+            .execute(query)
+            .expect("error inserting row into report table");
     }
 }

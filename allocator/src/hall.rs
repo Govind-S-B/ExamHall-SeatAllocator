@@ -31,4 +31,12 @@ impl Hall {
             Err(())
         }
     }
+
+    pub fn name(&self) -> &str {
+        self.name.as_ref()
+    }
+
+    pub fn students(&self) -> &[Option<Student>] {
+        self.students.as_ref()
+    }
 }
