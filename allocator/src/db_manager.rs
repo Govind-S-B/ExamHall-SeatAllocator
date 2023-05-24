@@ -63,7 +63,7 @@ impl DatabaseManager {
     }
 
     pub fn read_halls_table(&self) -> Vec<Hall> {
-        let query = "SELECT * FROM halls";
+        let query = "SELECT * FROM halls ORDER BY capacity DESC";
         let mut halls: Vec<Hall> = vec![];
         self.connection
             .iterate(query, |pair| {
@@ -86,5 +86,36 @@ impl DatabaseManager {
             })
             .unwrap();
         halls
+    }
+
+    pub fn write_report_table(&self, halls: &Vec<Hall>) {
+        let query = "DROP TABLE IF EXISTS report";
+        self.connection
+            .execute(query)
+            .expect("error dropping report table");
+        let query = "
+                CREATE TABLE report 
+                (ID CHAR(15) PRIMARY KEY NOT NULL, 
+                CLASS CHAR(10) NOT NULL, 
+                ROLL INT NOT NULL, 
+                HALL TEXT NOT NULL, 
+                SEAT_NO INT NOT NULL, 
+                SUBJECT CHAR(50) NOT NULL)";
+
+        self.connection
+            .execute(query)
+            .expect("error creating report table")
+
+        for hall in halls {
+            for (seat_no, student) in hall.students().iter().enumerate() {
+                let query = match student {
+                    Some(Student {id, class, roll_no, subject }) => {
+                      format!("INSERT INTO report (id,class,roll_no,subject,hall,seat_no) \
+                VALUES ({id}, {class}, {roll_no},{subject}, {}, {})")  
+                    },
+                    None => todo!(),
+                };
+            }
+        }
     }
 }
