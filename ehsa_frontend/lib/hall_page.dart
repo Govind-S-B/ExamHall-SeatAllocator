@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 class HallPage extends StatelessWidget {
@@ -22,8 +23,13 @@ class HallPage extends StatelessWidget {
               Expanded(
                 child: Container(
                   color: Colors.green,
-                  child: const Center(
-                    child: Text('DB Table View', style: TextStyle(fontSize: 24)),
+                  child: Center(
+                    child: Column(
+                      children: [
+                        Text(Directory.current.path),
+                        Text('DB Table View', style: TextStyle(fontSize: 24)),
+                      ],
+                    ),
                   ),
                 ),
               ),
