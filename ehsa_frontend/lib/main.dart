@@ -5,27 +5,29 @@ import 'hall_page.dart';
 import 'students_page.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
-  _MyAppState createState() => _MyAppState();
+  MyAppState createState() => MyAppState();
 }
 
 enum Page {
-  Halls,
-  Students,
-  Generate,
+  halls,
+  students,
+  generate,
 }
 
-class _MyAppState extends State<MyApp> {
-  Page _selectedPage = Page.Halls;
+class MyAppState extends State<MyApp> {
+  Page _selectedPage = Page.halls;
 
   final Map<Page, GlobalKey<NavigatorState>> _navigatorKeys = {
-    Page.Halls: GlobalKey<NavigatorState>(),
-    Page.Students: GlobalKey<NavigatorState>(),
-    Page.Generate: GlobalKey<NavigatorState>(),
+    Page.halls: GlobalKey<NavigatorState>(),
+    Page.students: GlobalKey<NavigatorState>(),
+    Page.generate: GlobalKey<NavigatorState>(),
   };
 
   void _selectPage(Page page) {
@@ -40,16 +42,16 @@ class _MyAppState extends State<MyApp> {
       title: 'EHSA',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           selectedItemColor: Colors.green,
         ),
       ),
       home: Scaffold(
         body: Stack(
           children: [
-            _buildOffstageNavigator(Page.Halls),
-            _buildOffstageNavigator(Page.Students),
-            _buildOffstageNavigator(Page.Generate),
+            _buildOffstageNavigator(Page.halls),
+            _buildOffstageNavigator(Page.students),
+            _buildOffstageNavigator(Page.generate),
           ],
         ),
         bottomNavigationBar: BottomNavigationBar(
@@ -62,7 +64,7 @@ class _MyAppState extends State<MyApp> {
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color: _selectedPage == Page.Halls ? Colors.green : Colors.grey,
+                  color: _selectedPage == Page.halls ? Colors.green : Colors.grey,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -74,7 +76,7 @@ class _MyAppState extends State<MyApp> {
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color: _selectedPage == Page.Students ? Colors.green : Colors.grey,
+                  color: _selectedPage == Page.students ? Colors.green : Colors.grey,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -86,7 +88,7 @@ class _MyAppState extends State<MyApp> {
                 width: 24,
                 height: 24,
                 decoration: BoxDecoration(
-                  color: _selectedPage == Page.Generate ? Colors.green : Colors.grey,
+                  color: _selectedPage == Page.generate ? Colors.green : Colors.grey,
                   shape: BoxShape.circle,
                 ),
               ),
@@ -106,12 +108,12 @@ class _MyAppState extends State<MyApp> {
         onGenerateRoute: (routeSettings) {
           return MaterialPageRoute(builder: (context) {
             switch (page) {
-              case Page.Halls:
-                return HallPage();
-              case Page.Students:
-                return StudentsPage();
-              case Page.Generate:
-                return GeneratePage();
+              case Page.halls:
+                return const HallPage();
+              case Page.students:
+                return const StudentsPage();
+              case Page.generate:
+                return const GeneratePage();
               default:
                 return Container();
             }
