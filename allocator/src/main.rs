@@ -8,20 +8,8 @@ fn main() {
     let db = DatabaseManager::new();
     let students = db.read_students_table();
     let mut halls = db.read_halls_table();
-    let mut students: Vec<Student> = students
-        .into_iter()
-        .map(|(sub, vec)| vec)
-        .flatten()
-        .collect();
 
-    'outer: for hall in &mut halls {
-        while let Ok(()) = hall.add_student(students.pop().unwrap()) {
-            if students.len() == 0 {
-                break 'outer;
-            }
-        }
-    }
+    // TODO: allocate students
 
-    println!("done");
     db.write_report_table(&halls)
 }
