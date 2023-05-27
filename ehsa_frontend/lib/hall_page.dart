@@ -14,6 +14,9 @@ class _HallPageState extends State<HallPage> {
   List<Map<String, dynamic>> _data = [];
   var databaseFactory = databaseFactoryFfi;
 
+  final TextEditingController _formtextController1 = TextEditingController();
+  final TextEditingController _formtextController2 = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -49,11 +52,37 @@ class _HallPageState extends State<HallPage> {
         children: <Widget>[
           Expanded(
             child: Container(
-              color: Colors.blue,
-              child: const Center(
-                child: Text('Halls Entry Card', style: TextStyle(fontSize: 24)),
-              ),
-            ),
+                color: Colors.blue,
+                child: Container(
+                    child: Row(
+                  children: [
+                    Expanded(
+                      child: TextField(
+                        controller: _formtextController1,
+                        decoration: InputDecoration(
+                          labelText: 'Hall Name',
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: TextField(
+                        controller: _formtextController2,
+                        decoration: InputDecoration(
+                          labelText: 'Capacity',
+                        ),
+                      ),
+                    ),
+                    ElevatedButton(
+                      onPressed: () {
+                        _database.insert('HALLS', {"HALL_NAME":_formtextController1.text,"CAPACITY":int.parse(_formtextController2.text)});
+                        _formtextController1.clear();
+                        _formtextController2.clear();
+                        _getData();
+                      },
+                      child: Icon(Icons.arrow_circle_right_sharp),
+                    ),
+                  ],
+                ))),
           ),
           Expanded(
             child: Container(
@@ -99,7 +128,7 @@ class _HallPageState extends State<HallPage> {
                                     onChanged: (value) async {
                                       await _database.update(
                                         'report',
-                                        {'CAPACITY': int.parse(value) },
+                                        {'CAPACITY': int.parse(value)},
                                         where: 'HALL_NAME = ?',
                                         whereArgs: [e['HALL_NAME']],
                                       );
