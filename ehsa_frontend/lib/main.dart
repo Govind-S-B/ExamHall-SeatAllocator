@@ -54,9 +54,15 @@ class MyAppState extends State<MyApp> {
             _buildOffstageNavigator(Page.generate),
           ],
         ),
-        bottomNavigationBar: BottomNavigationBar(
+        bottomNavigationBar: Theme(
+          data: ThemeData(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
+          ),
+          child: BottomNavigationBar(
           currentIndex: _selectedPage.index,
           onTap: (index) => _selectPage(Page.values[index]),
+          
           items: [
             BottomNavigationBarItem(
               backgroundColor: Colors.white,
@@ -97,7 +103,7 @@ class MyAppState extends State<MyApp> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildOffstageNavigator(Page page) {
