@@ -10,9 +10,12 @@ class HallPage extends StatefulWidget {
 }
 
 class _HallPageState extends State<HallPage> {
-  late Database _database;
-  List<Map<String, dynamic>> _data = [];
   var databaseFactory = databaseFactoryFfi;
+  late Database _database;
+
+  List<Map<String, dynamic>> _data = [];
+  Map<int, Map<String, dynamic>> _originalData = {};
+  Map<int, bool> _isEditing = {};
 
   final TextEditingController _formtextController1 = TextEditingController();
   final TextEditingController _formtextController2 = TextEditingController();
@@ -34,10 +37,38 @@ class _HallPageState extends State<HallPage> {
   }
 
   Future<void> _getData() async {
-    final data = await _database.query('HALLS');
+    var data = await _database.query('HALLS');
     setState(() {
       _data = data;
+      _originalData = Map<int, Map<String, dynamic>>.fromIterable(
+        _data.asMap().keys,
+        key: (index) => index,
+        value: (index) => Map<String, dynamic>.from(data[index]),
+      );
+      _isEditing = Map<int, bool>.fromIterable(
+        _data.asMap().keys,
+        key: (index) => index,
+        value: (index) => false,
+      );
     });
+  }
+
+  Future<void> _updateData(int index, String column, dynamic value) async {
+    await _database.update(
+      'HALLS',
+      {column: value},
+      where: 'HALL_NAME = ?',
+      whereArgs: [_data[index]['HALL_NAME']],
+    );
+  }
+
+  Future<void> _deleteData(int index) async {
+    await _database.delete(
+      'HALLS',
+      where: 'HALL_NAME = ?',
+      whereArgs: [_data[index]['HALL_NAME']],
+    );
+    _getData();
   }
 
   @override
@@ -86,7 +117,10 @@ class _HallPageState extends State<HallPage> {
                         padding: const EdgeInsets.all(8.0),
                         child: ElevatedButton(
                           onPressed: () {
-                            _database.insert('HALLS', {"HALL_NAME":_formtextController1.text,"CAPACITY":int.parse(_formtextController2.text)});
+                            _database.insert('HALLS', {
+                              "HALL_NAME": _formtextController1.text,
+                              "CAPACITY": int.parse(_formtextController2.text)
+                            });
                             _formtextController1.clear();
                             _formtextController2.clear();
                             _getData();
@@ -108,51 +142,102 @@ class _HallPageState extends State<HallPage> {
                       columns: [
                         DataColumn(label: Text('Hall')),
                         DataColumn(label: Text('Capacity')),
+                        DataColumn(label: Text('Actions')),
                       ],
                       rows: _data
-                          .map(
-                            (e) => DataRow(
-                              cells: [
-                                DataCell(
-                                  EditableText(
-                                    controller: TextEditingController(
-                                        text: e['HALL_NAME']),
-                                    focusNode: FocusNode(),
-                                    style: TextStyle(),
-                                    cursorColor: Colors.blue,
-                                    backgroundCursorColor: Colors.grey,
-                                    onChanged: (value) async {
-                                      await _database.update(
-                                        'report',
-                                        {'HALL_NAME': value},
-                                        where: 'HALL_NAME = ?',
-                                        whereArgs: [e['HALL_NAME']],
-                                      );
+                .asMap()
+                .entries
+                .map(
+                  (entry) => DataRow(
+                    color: _isEditing[entry.key]!
+                        ? MaterialStateColor.resolveWith(
+                            (states) => Colors.grey.withOpacity(0.8))
+                        : MaterialStateColor.resolveWith(
+                            (states) => Colors.transparent),
+                    cells: [
+                      _isEditing[entry.key]!
+                          ? DataCell(
+                              EditableText(
+                                controller: TextEditingController(
+                                    text: entry.value['HALL_NAME']),
+                                focusNode: FocusNode(),
+                                style: TextStyle(),
+                                cursorColor: Colors.blue,
+                                backgroundCursorColor: Colors.grey,
+                                onSubmitted: (value) async {
+                                  await _updateData(entry.key, 'HALL_NAME', value);
+                                },
+                              ),
+                            )
+                          : DataCell(Text(entry.value['HALL_NAME'])),
+                      _isEditing[entry.key]!
+                          ? DataCell(
+                              EditableText(
+                                controller: TextEditingController(
+                                    text: entry.value['CAPACITY'].toString()),
+                                focusNode: FocusNode(),
+                                style: TextStyle(),
+                                cursorColor: Colors.blue,
+                                backgroundCursorColor: Colors.grey,
+                                onSubmitted: (value) async {
+                                  await _updateData(
+                                      entry.key, 'CAPACITY', int.parse(value));
+                                },
+                              ),
+                            )
+                          : DataCell(Text(entry.value['CAPACITY'].toString())),
+                      DataCell(
+                        Row(
+                          children: [
+                            _isEditing[entry.key]!
+                                ? Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        color: Colors.red,
+                                        onPressed: () {
+                                          setState(() {
+                                            _data[entry.key] =
+                                                Map<String, dynamic>.from(
+                                                    _originalData[entry.key]!);
+                                            _isEditing[entry.key] = false;
+                                          });
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.check),
+                                        color: Colors.green,
+                                        onPressed: () {
+                                          setState(() {
+                                            _getData();
+                                            _isEditing[entry.key] = false;
+                                          });
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                : IconButton(
+                                    icon: Icon(Icons.edit),
+                                    color: Colors.blue,
+                                    onPressed: () {
+                                      setState(() {
+                                        _isEditing[entry.key] = true;
+                                      });
                                     },
                                   ),
-                                ),
-                                DataCell(
-                                  EditableText(
-                                    controller: TextEditingController(
-                                        text: e['CAPACITY'].toString()),
-                                    focusNode: FocusNode(),
-                                    style: TextStyle(),
-                                    cursorColor: Colors.blue,
-                                    backgroundCursorColor: Colors.grey,
-                                    onChanged: (value) async {
-                                      await _database.update(
-                                        'report',
-                                        {'CAPACITY': int.parse(value)},
-                                        where: 'HALL_NAME = ?',
-                                        whereArgs: [e['HALL_NAME']],
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ],
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                _deleteData(entry.key);
+                              },
                             ),
-                          )
-                          .toList(),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+                .toList(),
                     ),
                   ],
                 ),
