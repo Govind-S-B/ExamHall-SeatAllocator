@@ -22,13 +22,16 @@ class _HallPageState extends State<HallPage> {
   }
 
   Future<void> _initDatabase() async {
-    final path = ('${Directory.current.path}/report.db');
+    final path = ('${Directory.current.path}/input.db');
     _database = await databaseFactory.openDatabase(path);
+    _database.execute("""CREATE TABLE IF NOT EXISTS HALLS
+                (HALL_NAME CHAR(8) PRIMARY KEY NOT NULL,
+                CAPACITY INT NOT NULL)""");
     _getData();
   }
 
   Future<void> _getData() async {
-    final data = await _database.query('report');
+    final data = await _database.query('HALLS');
     setState(() {
       _data = data;
     });
@@ -60,12 +63,8 @@ class _HallPageState extends State<HallPage> {
                   children: [
                     DataTable(
                       columns: [
-                        DataColumn(label: Text('ID')),
-                        DataColumn(label: Text('Class')),
-                        DataColumn(label: Text('Roll')),
                         DataColumn(label: Text('Hall')),
-                        DataColumn(label: Text('Seat')),
-                        DataColumn(label: Text('Subject')),
+                        DataColumn(label: Text('Capacity')),
                       ],
                       rows: _data
                           .map(
@@ -74,7 +73,7 @@ class _HallPageState extends State<HallPage> {
                                 DataCell(
                                   EditableText(
                                     controller: TextEditingController(
-                                        text: e['ID']),
+                                        text: e['HALL_NAME']),
                                     focusNode: FocusNode(),
                                     style: TextStyle(),
                                     cursorColor: Colors.blue,
@@ -82,9 +81,9 @@ class _HallPageState extends State<HallPage> {
                                     onChanged: (value) async {
                                       await _database.update(
                                         'report',
-                                        {'ID': value},
-                                        where: 'ID = ?',
-                                        whereArgs: [e['ID']],
+                                        {'HALL_NAME': value},
+                                        where: 'HALL_NAME = ?',
+                                        whereArgs: [e['HALL_NAME']],
                                       );
                                     },
                                   ),
@@ -92,7 +91,7 @@ class _HallPageState extends State<HallPage> {
                                 DataCell(
                                   EditableText(
                                     controller: TextEditingController(
-                                        text: e['CLASS']),
+                                        text: e['CAPACITY'].toString()),
                                     focusNode: FocusNode(),
                                     style: TextStyle(),
                                     cursorColor: Colors.blue,
@@ -100,86 +99,13 @@ class _HallPageState extends State<HallPage> {
                                     onChanged: (value) async {
                                       await _database.update(
                                         'report',
-                                        {'CLASS': value},
-                                        where: 'ID = ?',
-                                        whereArgs: [e['ID']],
+                                        {'CAPACITY': int.parse(value) },
+                                        where: 'HALL_NAME = ?',
+                                        whereArgs: [e['HALL_NAME']],
                                       );
                                     },
                                   ),
                                 ),
-                                DataCell(
-                                  EditableText(
-                                    controller: TextEditingController(
-                                        text: e['ROLL'].toString()),
-                                    focusNode: FocusNode(),
-                                    style: TextStyle(),
-                                    cursorColor: Colors.blue,
-                                    backgroundCursorColor: Colors.grey,
-                                    onChanged: (value) async {
-                                      await _database.update(
-                                        'report',
-                                        {'ROLL': int.parse(value)},
-                                        where: 'ID = ?',
-                                        whereArgs: [e['ID']],
-                                      );
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  EditableText(
-                                    controller: TextEditingController(
-                                        text: e['HALL']),
-                                    focusNode: FocusNode(),
-                                    style: TextStyle(),
-                                    cursorColor: Colors.blue,
-                                    backgroundCursorColor: Colors.grey,
-                                    onChanged: (value) async {
-                                      await _database.update(
-                                        'report',
-                                        {'HALL': value},
-                                        where: 'ID = ?',
-                                        whereArgs: [e['ID']],
-                                      );
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  EditableText(
-                                    controller: TextEditingController(
-                                        text: e['SEAT_NO'].toString()),
-                                    focusNode: FocusNode(),
-                                    style: TextStyle(),
-                                    cursorColor: Colors.blue,
-                                    backgroundCursorColor: Colors.grey,
-                                    onChanged: (value) async {
-                                      await _database.update(
-                                        'report',
-                                        {'SEAT_NO': int.parse(value)},
-                                        where: 'ID = ?',
-                                        whereArgs: [e['ID']],
-                                      );
-                                    },
-                                  ),
-                                ),
-                                DataCell(
-                                  EditableText(
-                                    controller: TextEditingController(
-                                        text: e['SUBJECT']),
-                                    focusNode: FocusNode(),
-                                    style: TextStyle(),
-                                    cursorColor: Colors.blue,
-                                    backgroundCursorColor: Colors.grey,
-                                    onChanged: (value) async {
-                                      await _database.update(
-                                        'report',
-                                        {'SUBJECT': value},
-                                        where: 'ID = ?',
-                                        whereArgs: [e['ID']],
-                                      );
-                                    },
-                                  ),
-                                ),
-
                               ],
                             ),
                           )
