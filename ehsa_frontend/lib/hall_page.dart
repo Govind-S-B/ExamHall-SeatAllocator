@@ -3,12 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class Hall {
-  String hallName;
-  int capacity;
+  final String hallName;
+  final int capacity;
+  String editedHallName; // Added variable to hold edited hallName
+  int editedCapacity; // Added variable to hold edited capacity
 
-  Hall(this.hallName, this.capacity);
+  Hall(this.hallName, this.capacity)
+      : editedHallName = hallName,
+        editedCapacity = capacity; // Initialize editedHallName and editedCapacity
+
+  Map<String, dynamic> toMap() {
+    return {
+      'hall_name': editedHallName, // Use editedHallName in toMap method
+      'capacity': editedCapacity, // Use editedCapacity in toMap method
+    };
+  }
 }
-
 class HallPage extends StatefulWidget {
   const HallPage({super.key});
 
@@ -54,12 +64,12 @@ class _HallPageState extends State<HallPage> {
     });
   }
 
-  Future<void> _updateHall(String hallName, int capacity) async {
+  Future<void> _updateHall(Hall hall) async {
     await _database.update(
       'HALLS',
-      {'HALL_NAME': hallName, 'CAPACITY': capacity},
+      hall.toMap(),
       where: 'HALL_NAME = ?',
-      whereArgs: [hallName],
+      whereArgs: [hall.hallName],
     );
     _fetchHalls();
   }
@@ -84,6 +94,8 @@ class _HallPageState extends State<HallPage> {
   void cancelEdit(Hall hall) {
     if (editedHalls.contains(hall)) {
       setState(() {
+        hall.editedHallName = hall.hallName; // Restore original hallName
+        hall.editedCapacity = hall.capacity; // Restore original capacity
         editedHalls.remove(hall);
       });
     }
@@ -91,7 +103,7 @@ class _HallPageState extends State<HallPage> {
 
   void saveChanges(Hall hall) {
     if (editedHalls.contains(hall)) {
-      _updateHall(hall.hallName, hall.capacity);
+      _updateHall(hall);
       setState(() {
         editedHalls.remove(hall);
       });
@@ -165,91 +177,88 @@ class _HallPageState extends State<HallPage> {
               )),
           Expanded(
             child: Container(
+              width: double.infinity,
               color: Colors.green,
               child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: SingleChildScrollView(
-                  child: DataTable(
-                    columns: [
-                      DataColumn(label: Text('Hall Name')),
-                      DataColumn(label: Text('Capacity')),
-                      DataColumn(label: Text('Actions')),
-                    ],
-                    rows: [
-                      for (var hall in halls)
-                        DataRow(
-                          color: editedHalls.contains(hall)
-                              ? MaterialStateColor.resolveWith(
+                child: DataTable(
+                  columns: [
+                    DataColumn(label: Text('Hall Name')),
+                    DataColumn(label: Text('Capacity')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows: [
+                    for (var hall in halls)
+                      DataRow(
+                        color: editedHalls.contains(hall) ? MaterialStateColor.resolveWith(
                                   (states) => Colors.grey.withOpacity(0.8))
                               : MaterialStateColor.resolveWith(
                                   (states) => Colors.transparent),
-                          cells: [
-                            DataCell(
-                              editedHalls.contains(hall)
-                                  ? TextFormField(
-                                      initialValue: hall.hallName,
-                                      onChanged: (value) {
-                                        setState(() {
-                                          hall.hallName = value;
-                                        });
-                                      },
-                                    )
-                                  : Text(hall.hallName),
-                            ),
-                            DataCell(
-                              editedHalls.contains(hall)
-                                  ? TextFormField(
-                                      initialValue: hall.capacity.toString(),
-                                      onChanged: (value) {
-                                        setState(() {
-                                          hall.capacity =
-                                              int.tryParse(value) ?? 0;
-                                        });
-                                      },
-                                    )
-                                  : Text(hall.capacity.toString()),
-                            ),
-                            DataCell(
-                              editedHalls.contains(hall)
-                                  ? Row(
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(Icons.done),
-                                          onPressed: () {
-                                            saveChanges(hall);
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.cancel),
-                                          onPressed: () {
-                                            cancelEdit(hall);
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                  : Row(
-                                      children: [
-                                        IconButton(
-                                          icon: Icon(Icons.edit),
-                                          onPressed: () {
-                                            updateHall(hall);
-                                          },
-                                        ),
-                                        IconButton(
-                                          icon: Icon(Icons.delete),
-                                          onPressed: () {
-                                            _deleteHall(hall.hallName);
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                            ),
-                          ],
-                        ),
-                    ],
-                  ),
+                        cells: [
+                          DataCell(
+                            editedHalls.contains(hall)
+                                ? TextFormField(
+                                    initialValue: hall.editedHallName,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        hall.editedHallName = value; // Update editedHallName
+                                      });
+                                    },
+                                  )
+                                : Text(hall.hallName),
+                          ),
+                          DataCell(
+                            editedHalls.contains(hall)
+                                ? TextFormField(
+                                    initialValue: hall.editedCapacity.toString(),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        hall.editedCapacity = int.tryParse(value) ?? 0; // Update editedCapacity
+                                      });
+                                    },
+                                  )
+                                : Text(hall.capacity.toString()),
+                          ),
+                          DataCell(
+                            editedHalls.contains(hall)
+                                ? Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.done),
+                                        onPressed: () {
+                                          saveChanges(hall);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        onPressed: () {
+                                          cancelEdit(hall);
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                : Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit),
+                                        onPressed: () {
+                                          updateHall(hall);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () {
+                                          _deleteHall(hall.hallName);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
               ),
+    
             ),
           ),
         ],
