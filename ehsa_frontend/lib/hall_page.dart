@@ -13,9 +13,7 @@ class _HallPageState extends State<HallPage> {
   var databaseFactory = databaseFactoryFfi;
   late Database _database;
 
-  List<Map<String, dynamic>> _data = [];
-  Map<int, Map<String, dynamic>> _originalData = {};
-  Map<int, bool> _isEditing = {};
+  List<Map<String, dynamic>> rows = [];
 
   final TextEditingController _formtextController1 = TextEditingController();
   final TextEditingController _formtextController2 = TextEditingController();
@@ -33,25 +31,17 @@ class _HallPageState extends State<HallPage> {
     _database.execute("""CREATE TABLE IF NOT EXISTS HALLS
                 (HALL_NAME CHAR(8) PRIMARY KEY NOT NULL,
                 CAPACITY INT NOT NULL)""");
-    _getData();
+    _fetchData();
   }
 
-  Future<void> _getData() async {
-    var data = await _database.query('HALLS');
+  Future<void> _fetchData() async {
+    final List<Map<String, dynamic>> fetchedRows = await _database.query('my_table');
     setState(() {
-      _data = data;
-      _originalData = Map<int, Map<String, dynamic>>.fromIterable(
-        _data.asMap().keys,
-        key: (index) => index,
-        value: (index) => Map<String, dynamic>.from(data[index]),
-      );
-      _isEditing = Map<int, bool>.fromIterable(
-        _data.asMap().keys,
-        key: (index) => index,
-        value: (index) => false,
-      );
+      rows = fetchedRows;
     });
   }
+
+  
 
   Future<void> _updateData(int index, String column, dynamic value) async {
     await _database.update(
