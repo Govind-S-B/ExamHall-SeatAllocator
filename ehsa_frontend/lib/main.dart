@@ -1,4 +1,3 @@
-import 'package:ehsa_frontend/test.dart';
 import 'package:flutter/material.dart';
 
 import 'generate_page.dart';
@@ -120,7 +119,7 @@ class MyAppState extends State<MyApp> {
               case Page.students:
                 return const StudentsPage();
               case Page.generate:
-                return MyWidget();
+                return GeneratePage();
               default:
                 return Container();
             }
