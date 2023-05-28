@@ -81,57 +81,55 @@ class _HallPageState extends State<HallPage> {
       ),
       body: Column(
         children: <Widget>[
-          Expanded(
-            child: Container(
-                color: Colors.blue,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Container(
-                      child: Row(
-                    children: [
-                      SizedBox(
-                        width: 200,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextField(
-                            controller: _formtextController1,
-                            decoration: InputDecoration(
-                              labelText: 'Hall Name',
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 150,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextField(
-                            controller: _formtextController2,
-                            decoration: InputDecoration(
-                              labelText: 'Capacity',
-                            ),
-                          ),
-                        ),
-                      ),
-                      Padding(
+          Container(
+              color: Colors.blue,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Container(
+                    child: Row(
+                  children: [
+                    SizedBox(
+                      width: 200,
+                      child: Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: ElevatedButton(
-                          onPressed: () {
-                            _database.insert('HALLS', {
-                              "HALL_NAME": _formtextController1.text,
-                              "CAPACITY": int.parse(_formtextController2.text)
-                            });
-                            _formtextController1.clear();
-                            _formtextController2.clear();
-                            _getData();
-                          },
-                          child: Icon(Icons.arrow_circle_right_sharp),
+                        child: TextField(
+                          controller: _formtextController1,
+                          decoration: InputDecoration(
+                            labelText: 'Hall Name',
+                          ),
                         ),
                       ),
-                    ],
-                  )),
+                    ),
+                    SizedBox(
+                      width: 150,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          controller: _formtextController2,
+                          decoration: InputDecoration(
+                            labelText: 'Capacity',
+                          ),
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _database.insert('HALLS', {
+                            "HALL_NAME": _formtextController1.text,
+                            "CAPACITY": int.parse(_formtextController2.text)
+                          });
+                          _formtextController1.clear();
+                          _formtextController2.clear();
+                          _getData();
+                        },
+                        child: Icon(Icons.arrow_circle_right_sharp),
+                      ),
+                    ),
+                  ],
                 )),
-          ),
+              )),
           Expanded(
             child: Container(
               color: Colors.green,
