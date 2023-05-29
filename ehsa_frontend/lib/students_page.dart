@@ -2,6 +2,24 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
+class TableViewRow {
+  final String student_id;
+  final String subject;
+  String editedStudent_id; // Added variable to hold edited hallName
+  String editedSubject; // Added variable to hold edited capacity
+
+  TableViewRow(this.student_id, this.subject)
+      : editedStudent_id = student_id,
+        editedSubject = subject; // Initialize editedHallName and editedCapacity
+
+  Map<String, dynamic> toMap() {
+    return {
+      'student_id': editedStudent_id, // Use editedHallName in toMap method
+      'subject': editedSubject, // Use editedCapacity in toMap method
+    };
+  }
+}
+
 class StudentsPage extends StatefulWidget {
   const StudentsPage({super.key});
 
@@ -13,7 +31,7 @@ class _StudentsPageState extends State<StudentsPage> {
   var databaseFactory = databaseFactoryFfi;
   late Database _database;
 
-  final List<String> subjects = [];
+  List<String> subjects = [];
 
   List<String> filteredSubjects = [];
   TextEditingController _subjectTextEditingController = TextEditingController();
@@ -22,14 +40,22 @@ class _StudentsPageState extends State<StudentsPage> {
   TextEditingController _classTextEditingController = TextEditingController();
   TextEditingController _rollsTextEditingController = TextEditingController();
 
-
+  List<TableViewRow> tableViewRows = [];
+  List<TableViewRow> editedTableViewRows = [];
 
   @override
-  void initState() {
+  void initState () {
     super.initState();
-    filteredSubjects = subjects;
     sqfliteFfiInit();
     _initDatabase();
+    _subjectListinit();
+  }
+
+  Future<void> _subjectListinit() async{
+    await _initDatabase();
+    var x =  (await _database.query('SUBJECTS',columns: ['SUBJECT'],distinct: true));
+    subjects = x.map((e) => e['SUBJECT'].toString()).toList();
+    filteredSubjects = subjects;
   }
 
   Future<void> _initDatabase() async {
@@ -38,7 +64,65 @@ class _StudentsPageState extends State<StudentsPage> {
     _database.execute("""CREATE TABLE IF NOT EXISTS SUBJECTS
                 (ID CHAR(8) PRIMARY KEY NOT NULL,
                 SUBJECT TEXT NOT NULL)""");
-    // _fetchHalls();
+    _fetchTableViewRows();
+  }
+
+  Future<void> _fetchTableViewRows() async {
+    final List<Map<String, dynamic>> table_data = await _database.query('SUBJECTS');
+    setState(() {
+      tableViewRows = table_data.map((row) {
+        return TableViewRow(
+          row['ID'],
+          row['SUBJECT'],
+        );
+      }).toList();
+    });
+  }
+
+  Future<void> _updateTableViewRow(TableViewRow row) async {
+    await _database.update(
+      'SUBJECTS',
+      row.toMap(),
+      where: 'ID = ?',
+      whereArgs: [row.student_id],
+    );
+    _fetchTableViewRows();
+  }
+
+  Future<void> _deleteTableViewRow(String student_id) async {
+    await _database.delete(
+      'SUBJECTS',
+      where: 'ID = ?',
+      whereArgs: [student_id],
+    );
+    _fetchTableViewRows();
+  }
+
+  void updateTableViewRow(TableViewRow row) {
+    if (!editedTableViewRows.contains(row)) {
+      setState(() {
+        editedTableViewRows.add(row);
+      });
+    }
+  }
+
+  void cancelEdit(TableViewRow row) {
+    if (editedTableViewRows.contains(row)) {
+      setState(() {
+        row.editedStudent_id = row.student_id; // Restore original hallName
+        row.editedSubject = row.subject; // Restore original capacity
+        editedTableViewRows.remove(row);
+      });
+    }
+  }
+
+  void saveChanges(TableViewRow row) {
+    if (editedTableViewRows.contains(row)) {
+      _updateTableViewRow(row);
+      setState(() {
+        editedTableViewRows.remove(row);
+      });
+    }
   }
 
   @override
@@ -156,7 +240,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   _rollsTextEditingController.clear();
                                   _subjectTextEditingController.clear();
                                   filteredSubjects = subjects;
-                                  //_fetchHalls();
+                                  _fetchTableViewRows();
                                   setState(() {});
                                 },
                               ),
@@ -194,10 +278,88 @@ class _StudentsPageState extends State<StudentsPage> {
           ),
           Expanded(
             child: Container(
+              width: double.infinity,
               color: Colors.green,
-              child: const Center(
-                child: Text('DB Table View', style: TextStyle(fontSize: 24)),
+              child: SingleChildScrollView(
+                child: DataTable(
+                  columns: [
+                    DataColumn(label: Text('ID')),
+                    DataColumn(label: Text('Subject')),
+                    DataColumn(label: Text('Actions')),
+                  ],
+                  rows: [
+                    for (var row in tableViewRows)
+                      DataRow(
+                        color: editedTableViewRows.contains(row) ? MaterialStateColor.resolveWith(
+                                  (states) => Colors.grey.withOpacity(0.8))
+                              : MaterialStateColor.resolveWith(
+                                  (states) => Colors.transparent),
+                        cells: [
+                          DataCell(
+                            editedTableViewRows.contains(row)
+                                ? TextFormField(
+                                    initialValue: row.editedStudent_id,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        row.editedStudent_id = value; // Update editedHallName
+                                      });
+                                    },
+                                  )
+                                : Text(row.student_id),
+                          ),
+                          DataCell(
+                            editedTableViewRows.contains(row)
+                                ? TextFormField(
+                                    initialValue: row.editedSubject,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        row.editedSubject = value; // Update editedCapacity
+                                      });
+                                    },
+                                  )
+                                : Text(row.subject),
+                          ),
+                          DataCell(
+                            editedTableViewRows.contains(row)
+                                ? Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.done),
+                                        onPressed: () {
+                                          saveChanges(row);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.cancel),
+                                        onPressed: () {
+                                          cancelEdit(row);
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                : Row(
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.edit),
+                                        onPressed: () {
+                                          updateTableViewRow(row);
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons.delete),
+                                        onPressed: () {
+                                          _deleteTableViewRow(row.student_id);
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ],
+                      ),
+                  ],
+                ),
               ),
+    
             ),
           ),
         ],
