@@ -11,8 +11,13 @@ class _StudentsPageState extends State<StudentsPage> {
   final List<String> subjects = [];
 
   List<String> filteredSubjects = [];
-  TextEditingController _textEditingController = TextEditingController();
+  TextEditingController _subjectTextEditingController = TextEditingController();
   String selectedSubject = '';
+
+  TextEditingController _classTextEditingController = TextEditingController();
+  TextEditingController _rollsTextEditingController = TextEditingController();
+
+
 
   @override
   void initState() {
@@ -22,7 +27,7 @@ class _StudentsPageState extends State<StudentsPage> {
 
   @override
   void dispose() {
-    _textEditingController.dispose();
+    _subjectTextEditingController.dispose();
     super.dispose();
   }
 
@@ -36,44 +41,29 @@ class _StudentsPageState extends State<StudentsPage> {
         children: <Widget>[
           Expanded(
             child: Container(
-                color: Colors.blue,
                 child: Row(
                   children: [
-                    Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Container(
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 250,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: TextField(),
+                    SizedBox(
+                      width: 300,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextField(
+                            controller: _classTextEditingController,
+                            decoration: InputDecoration(
+                                    hintText: 'Enter Class',
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      // add to list of subjects
-                                    },
-                                    child: Icon(Icons.add),
-                                  ),
-                                ),
-                              ],
-                            ),
                           ),
-                        ),
-                        Container(
-                          width: 250,
-                          height: 200,
-                          child: TextField(
+                          TextField(
+                            controller: _rollsTextEditingController,
+                            decoration: InputDecoration(
+                                    hintText: 'Enter Roll List',
+                                  ),
                             maxLines: null,
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                     SizedBox(
                       width: 500,
@@ -83,7 +73,7 @@ class _StudentsPageState extends State<StudentsPage> {
                             children: [
                               Expanded(
                                 child: TextField(
-                                  controller: _textEditingController,
+                                  controller: _subjectTextEditingController,
                                   onChanged: (value) {
                                     setState(() {
                                       filteredSubjects = subjects
@@ -94,7 +84,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                     });
                                   },
                                   decoration: InputDecoration(
-                                    hintText: 'Enter a subject',
+                                    hintText: 'Enter Subject',
                                   ),
                                 ),
                               ),
@@ -102,13 +92,13 @@ class _StudentsPageState extends State<StudentsPage> {
                                 icon: Icon(Icons.add),
                                 onPressed: () {
                                   String newSubject =
-                                      _textEditingController.text.trim();
+                                      _subjectTextEditingController.text.trim();
                                   if (newSubject.isNotEmpty &&
                                       !subjects.contains(newSubject)) {
                                     setState(() {
                                       subjects.add(newSubject);
                                       filteredSubjects = subjects;
-                                      _textEditingController.clear();
+                                      _subjectTextEditingController.clear();
                                     });
                                   }
                                 },
@@ -116,13 +106,19 @@ class _StudentsPageState extends State<StudentsPage> {
                               ElevatedButton(
                                 child: Text('Submit'),
                                 onPressed: () {
-                                  print(selectedSubject);
+                                  print("Class : ${_classTextEditingController.text}");
+                                  print("Rolls : ${_rollsTextEditingController.text}");
+                                  print("Subject : ${selectedSubject}");
+                                  _classTextEditingController.clear();
+                                  _rollsTextEditingController.clear();
+                                  _subjectTextEditingController.clear();
+                                  filteredSubjects = subjects;
+                                  setState(() {});
                                 },
                               ),
                             ],
                           ),
                           SizedBox(height: 10),
-                          if (filteredSubjects.isNotEmpty)
                             SizedBox(
                               height: 150,
                               child: SingleChildScrollView(
@@ -136,7 +132,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                         setState(() {
                                           selectedSubject =
                                               filteredSubjects[index];
-                                          _textEditingController.text =
+                                          _subjectTextEditingController.text =
                                               selectedSubject;
                                           filteredSubjects = [];
                                         });
