@@ -106,9 +106,29 @@ class _StudentsPageState extends State<StudentsPage> {
                               ElevatedButton(
                                 child: Text('Submit'),
                                 onPressed: () {
-                                  print("Class : ${_classTextEditingController.text}");
-                                  print("Rolls : ${_rollsTextEditingController.text}");
-                                  print("Subject : ${selectedSubject}");
+
+                                  var student_class =  _classTextEditingController.text;
+                                  var roll_list = _rollsTextEditingController.text.split(",");
+
+                                  for (var roll in roll_list) {
+                                    if(roll.contains("-")){
+                                      var roll_num_range = roll.split("-");
+
+                                      for (var i = int.parse(roll_num_range[0]); i <= int.parse(roll_num_range[1]); i++) {
+                                        // to write into db
+                                        print(  student_class + "-" + i.toString()); // id
+                                        print( selectedSubject ); // subject
+                                      }
+
+                                    }
+                                    else{
+                                      // to write into db
+                                      print(  student_class + "-" + roll); // id
+                                      print( selectedSubject ); // subject
+                                    }
+                                  }
+
+                                  
                                   _classTextEditingController.clear();
                                   _rollsTextEditingController.clear();
                                   _subjectTextEditingController.clear();
