@@ -1,4 +1,6 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class StudentsPage extends StatefulWidget {
   const StudentsPage({super.key});
@@ -8,6 +10,9 @@ class StudentsPage extends StatefulWidget {
 }
 
 class _StudentsPageState extends State<StudentsPage> {
+  var databaseFactory = databaseFactoryFfi;
+  late Database _database;
+
   final List<String> subjects = [];
 
   List<String> filteredSubjects = [];
@@ -23,11 +28,23 @@ class _StudentsPageState extends State<StudentsPage> {
   void initState() {
     super.initState();
     filteredSubjects = subjects;
+    sqfliteFfiInit();
+    _initDatabase();
+  }
+
+  Future<void> _initDatabase() async {
+    final path = ('${Directory.current.path}/input.db');
+    _database = await databaseFactory.openDatabase(path);
+    _database.execute("""CREATE TABLE IF NOT EXISTS SUBJECTS
+                (ID CHAR(8) PRIMARY KEY NOT NULL,
+                SUBJECT TEXT NOT NULL)""");
+    // _fetchHalls();
   }
 
   @override
   void dispose() {
     _subjectTextEditingController.dispose();
+    _database.close();
     super.dispose();
   }
 
@@ -115,16 +132,22 @@ class _StudentsPageState extends State<StudentsPage> {
                                       var roll_num_range = roll.split("-");
 
                                       for (var i = int.parse(roll_num_range[0]); i <= int.parse(roll_num_range[1]); i++) {
-                                        // to write into db
-                                        print(  student_class + "-" + i.toString()); // id
-                                        print( selectedSubject ); // subject
+
+                                        _database.insert('SUBJECTS', {
+                                        "ID": student_class + "-" + i.toString(),
+                                        "SUBJECT": selectedSubject,
+                                        });
+
                                       }
 
                                     }
                                     else{
-                                      // to write into db
-                                      print(  student_class + "-" + roll); // id
-                                      print( selectedSubject ); // subject
+
+                                      _database.insert('SUBJECTS', {
+                                        "ID": student_class + "-" + roll,
+                                        "SUBJECT": selectedSubject,
+                                        });
+
                                     }
                                   }
 
@@ -133,6 +156,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   _rollsTextEditingController.clear();
                                   _subjectTextEditingController.clear();
                                   filteredSubjects = subjects;
+                                  //_fetchHalls();
                                   setState(() {});
                                 },
                               ),
