@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
@@ -9,7 +8,7 @@ void main() {
 }
 
 class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   MyAppState createState() => MyAppState();
@@ -42,68 +41,59 @@ class MyAppState extends State<MyApp> {
       title: 'EHSA',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          selectedItemColor: Colors.green,
+        navigationRailTheme: const NavigationRailThemeData(
+          minWidth: 56,
+          labelType: NavigationRailLabelType.selected,
+          groupAlignment: 0,
+          unselectedLabelTextStyle: TextStyle(color: Colors.transparent),
+          selectedIconTheme: IconThemeData(color: Colors.green),
+          selectedLabelTextStyle:
+              TextStyle(color: Colors.green, fontSize: 11.5),
         ),
       ),
       home: Scaffold(
-        body: Stack(
+        body: Row(
           children: [
-            _buildOffstageNavigator(Page.halls),
-            _buildOffstageNavigator(Page.students),
-            _buildOffstageNavigator(Page.generate),
-          ],
-        ),
-        bottomNavigationBar: Theme(
-          data: ThemeData(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-          ),
-          child: BottomNavigationBar(
-          currentIndex: _selectedPage.index,
-          onTap: (index) => _selectPage(Page.values[index]),
-          
-          items: [
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: _selectedPage == Page.halls ? Colors.green : Colors.grey,
-                  shape: BoxShape.circle,
+            NavigationRail(
+              minWidth: 56,
+              selectedIndex: _selectedPage.index,
+              onDestinationSelected: (int index) {
+                setState(() {
+                  _selectedPage = Page.values[index];
+                });
+              },
+              labelType: NavigationRailLabelType.all,
+              destinations: const [
+                NavigationRailDestination(
+                  padding: EdgeInsets.only(bottom: 16, top: 16),
+                  icon: Icon(Icons.home),
+                  label: Text('Halls'),
                 ),
-              ),
-              label: 'Halls',
+                NavigationRailDestination(
+                  padding: EdgeInsets.only(bottom: 16, top: 16),
+                  icon: Icon(Icons.person),
+                  label: Text('Students'),
+                ),
+                NavigationRailDestination(
+                  padding: EdgeInsets.only(bottom: 16, top: 16),
+                  icon: Icon(Icons.create),
+                  label: Text('Generate'),
+                ),
+              ],
             ),
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: _selectedPage == Page.students ? Colors.green : Colors.grey,
-                  shape: BoxShape.circle,
-                ),
+            Expanded(
+              child: Stack(
+                children: [
+                  _buildOffstageNavigator(Page.halls),
+                  _buildOffstageNavigator(Page.students),
+                  _buildOffstageNavigator(Page.generate),
+                ],
               ),
-              label: 'Students',
-            ),
-            BottomNavigationBarItem(
-              backgroundColor: Colors.white,
-              icon: Container(
-                width: 24,
-                height: 24,
-                decoration: BoxDecoration(
-                  color: _selectedPage == Page.generate ? Colors.green : Colors.grey,
-                  shape: BoxShape.circle,
-                ),
-              ),
-              label: 'Generate',
             ),
           ],
         ),
       ),
-    ));
+    );
   }
 
   Widget _buildOffstageNavigator(Page page) {
@@ -119,7 +109,7 @@ class MyAppState extends State<MyApp> {
               case Page.students:
                 return const StudentsPage();
               case Page.generate:
-                return GeneratePage();
+                return const GeneratePage();
               default:
                 return Container();
             }
