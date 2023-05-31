@@ -21,10 +21,12 @@ jobs:
         ./build_python_win.bat
         git config user.name github-actions
         git config user.email github-actions@github.com
+        git pull
         git add EHSA_V3/
         git commit -m "generated pdfgen exe"
         git pull --no-edit
         git push
+        git push -f origin dev
         
   Windows_Rust_Build:
     name: Windows Rust Binary Build
@@ -41,10 +43,12 @@ jobs:
         ./build_rust_release.bat   
         git config user.name github-actions
         git config user.email github-actions@github.com
+        git pull
         git add EHSA_V3/
         git commit -m "generated rust allocator exe"
         git pull --no-edit
         git push
+        git push -f origin dev
         
   Windows_Flutter_Build:
     name: Windows Flutter Binary Build
@@ -61,7 +65,9 @@ jobs:
         ./build_flutter_win.bat
         git config user.name github-actions
         git config user.email github-actions@github.com
+        git pull
         git add EHSA_V3/
         git commit -m "generated flutter windows build"
         git pull --no-edit
         git push
+        git push -f origin dev
