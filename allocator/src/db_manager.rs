@@ -99,7 +99,7 @@ impl DatabaseManager {
             .unwrap();
 
 
-        for (sub, students_vec) in students.iter_mut() {
+        for students_vec in students.values_mut() {
             students_vec.sort_by_key(|s| (s.class().to_owned(), -s.roll_no()))
         }
         students

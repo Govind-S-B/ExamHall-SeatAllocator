@@ -1,11 +1,7 @@
 mod db_manager;
 mod hall;
 mod student;
-use std::{
-    collections::{HashMap, HashSet},
-    hash::Hash,
-    io::stdin,
-};
+use std::collections::{HashMap, HashSet};
 
 use db_manager::DatabaseManager;
 use hall::Hall;
@@ -17,7 +13,7 @@ fn main() {
     let mut halls = db.read_halls_table();
 
     let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
-    let total_students: usize = students.iter().map(|(_, s)| s.len()).sum();
+    let total_students: usize = students.values().map(|s| s.len()).sum();
     let mut extra_seats = total_seats - total_students;
 
     let mut placed_subjects = HashSet::new();
@@ -27,10 +23,10 @@ fn main() {
         };
 
         while !hall.is_full() && !students.is_empty() {
-            let next_sub = match get_next_sub(&students, &hall, &placed_subjects) {
+            let next_sub = match get_next_sub(&students, hall, &placed_subjects) {
                 Some(sub) => sub,
                 None => {
-                    if extra_seats <= 0 {
+                    if extra_seats == 0 {
                         todo!();
                     }
                     hall.push_empty().expect("tried to push empty on full hall");
@@ -74,7 +70,7 @@ fn get_next_sub(
     let further_filtered: Vec<(&String, usize)> = filtered
         .clone()
         .into_iter()
-        .filter(|(sub, vec)| placed_subjects.contains(sub.to_owned()))
+        .filter(|(sub, _)| placed_subjects.contains(sub.to_owned()))
         .collect();
 
     let students = if further_filtered.is_empty() {
@@ -86,7 +82,7 @@ fn get_next_sub(
     Some(
         students
             .into_iter()
-            .max_by_key(|(sub, size)| *size)?
+            .max_by_key(|(_, size)| *size)?
             .0
             .clone(),
     )
