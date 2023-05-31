@@ -95,6 +95,11 @@ impl DatabaseManager {
                 true
             })
             .unwrap();
+
+
+        for (sub, students_vec) in students.iter_mut() {
+            students_vec.sort_by_key(|s| -s.roll_no())
+        }
         students
     }
 

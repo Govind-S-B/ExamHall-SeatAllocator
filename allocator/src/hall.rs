@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use crate::student::Student;
 #[derive(Debug)]
 
@@ -25,6 +27,7 @@ pub struct Hall {
     name: String,
     capacity: usize,
     students: Vec<Option<Student>>,
+    subjects: HashSet<String>,
 }
 
 impl Hall {
@@ -33,7 +36,8 @@ impl Hall {
         Self {
             name: name.to_owned(),
             capacity,
-            students: vec![],
+            students: Vec::with_capacity(capacity),
+            subjects: HashSet::new(),
         }
     }
 
@@ -43,7 +47,9 @@ impl Hall {
     ///
     /// This function will return an error if the hall is full
     pub fn push(&mut self, student: Student) -> Result<(), Student> {
+        println!("{:?}", student);
         if !self.is_full() {
+            self.subjects.insert(student.subject().to_owned());
             self.students.push(Some(student));
             Ok(())
         } else {
@@ -69,5 +75,9 @@ impl Hall {
 
     pub fn is_full(&self) -> bool {
         self.students.len() >= self.capacity
+    }
+
+    pub fn subjects(&self) -> &HashSet<String> {
+        &self.subjects
     }
 }

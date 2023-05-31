@@ -1,9 +1,10 @@
 mod db_manager;
 mod hall;
 mod student;
-use std::{collections::HashMap, hash::Hash};
+use std::{collections::HashMap, hash::Hash, io::stdin};
 
 use db_manager::DatabaseManager;
+use hall::Hall;
 use student::Student;
 
 fn main() {
@@ -11,13 +12,20 @@ fn main() {
     let mut students = db.read_students_table();
     let mut halls = db.read_halls_table();
 
-    for hall in &mut halls {
-        let previously_placed_sub: Option<&str> = None;
+    'main: for hall in &mut halls {
+        let mut previously_placed_sub: Option<String> = None;
 
         while !hall.is_full() {
-            let next_sub = get_next_sub(&students, previously_placed_sub);
+            let next_sub = match get_next_sub(&students, previously_placed_sub, &hall) {
+                Some(sub) => sub,
+                None => {
+                    println!("{:#?}", students);
+                    todo!()
+                }
+            };
+
             let students_in_sub = students
-                .get_mut(next_sub)
+                .get_mut(&next_sub)
                 .expect("trying to take a student from subject that doesn't exist");
 
             let next_student = students_in_sub
@@ -25,26 +33,51 @@ fn main() {
                 .expect("trying to take student from empty subject list");
 
             if students_in_sub.is_empty() {
-                students.remove(next_sub);
+                students.remove(&next_sub);
             }
 
             hall.push(next_student)
-                .expect("tried to push student into full hall")
+                .expect("tried to push student into full hall");
+
+            if students.is_empty() {
+                break 'main;
+            }
+
+            previously_placed_sub = Some(next_sub);
         }
     }
 
     db.write_report_table(&halls)
 }
 
-fn get_next_sub<'a>(
-    students: &'a HashMap<String, Vec<Student>>,
-    prev_sub: Option<&str>,
-) -> &'a str {
-    println!("{:#?}", students);
-    let filtered = students
+fn get_next_sub(
+    students: &HashMap<String, Vec<Student>>,
+    prev_sub: Option<String>,
+    hall: &Hall,
+) -> Option<String> {
+    let filtered: Vec<(&String, usize)> = students
         .iter()
-        .filter(|(sub, vec)| Some(sub.as_ref()) == prev_sub)
-        .collect::<HashMap<_, _>>();
-    println!("{:#?}", students);
-    todo!()
+        .map(|(sub, vec)| (sub, vec.len()))
+        .filter(|(sub, size)| Some(*sub) != prev_sub.as_ref() && *size > 0)
+        .collect();
+
+    let further_filtered: Vec<(&String, usize)> = filtered
+        .clone()
+        .into_iter()
+        .filter(|(sub, vec)| hall.subjects().contains(sub.to_owned()))
+        .collect();
+
+    let students = if further_filtered.is_empty() {
+        filtered
+    } else {
+        further_filtered
+    };
+
+    Some(
+        students
+            .into_iter()
+            .max_by_key(|(sub, size)| *size)?
+            .0
+            .clone(),
+    )
 }
