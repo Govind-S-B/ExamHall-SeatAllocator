@@ -23,6 +23,7 @@ fn main() {
         };
 
         while !hall.is_full() && !students.is_empty() {
+            // TODO: write get_next_student() -> Option<Student>
             let next_sub = match get_next_sub(&students, hall, &placed_subjects) {
                 Some(sub) => sub,
                 None => {
