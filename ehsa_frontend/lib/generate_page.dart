@@ -38,6 +38,7 @@ class _GeneratePageState extends State<GeneratePage> {
     //function to check if the metadata table has a key containing SESSION_NAME 
     var val = await _database.query("METADATA");
     _sessionId =  (val.isEmpty ? "Undefined" : val[0]["VALUE"]).toString()  ;
+    setState(() {});
   }
 
   @override
