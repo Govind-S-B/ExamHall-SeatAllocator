@@ -86,7 +86,7 @@ class _GeneratePageState extends State<GeneratePage> {
                       // launch pdf generator
 
                       final result2 =
-                        await Process.run( 'python', [   '${Directory.current.path}\\pdf_generator.py'  ]);
+                        await Process.run( '${Directory.current.path}\\pdf_generator.exe', []);
                       
                     } else {
                       // Executable failed
