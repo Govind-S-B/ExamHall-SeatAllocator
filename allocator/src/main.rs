@@ -16,12 +16,14 @@ fn main() {
         if students.is_empty() {
             break;
         };
-        let mut previously_placed_sub: Option<String> = None;
 
         while !hall.is_full() && !students.is_empty() {
-            let next_sub = match get_next_sub(&students, previously_placed_sub, &hall) {
+            let next_sub = match get_next_sub(&students, hall.prev_sub(), &hall) {
                 Some(sub) => sub,
-                None => todo!(),
+                None => {
+                    hall.push_empty().expect("tried to push empty on full hall");
+                    continue;
+                }
             };
 
             let students_in_sub = students
@@ -38,8 +40,6 @@ fn main() {
 
             hall.push(next_student)
                 .expect("tried to push student into full hall");
-
-            previously_placed_sub = Some(next_sub);
         }
     }
 
@@ -48,13 +48,13 @@ fn main() {
 
 fn get_next_sub(
     students: &HashMap<String, Vec<Student>>,
-    prev_sub: Option<String>,
+    prev_sub: Option<&String>,
     hall: &Hall,
 ) -> Option<String> {
     let filtered: Vec<(&String, usize)> = students
         .iter()
         .map(|(sub, vec)| (sub, vec.len()))
-        .filter(|(sub, size)| Some(*sub) != prev_sub.as_ref() && *size > 0)
+        .filter(|(sub, size)| Some(*sub) != prev_sub && *size > 0)
         .collect();
 
     let further_filtered: Vec<(&String, usize)> = filtered

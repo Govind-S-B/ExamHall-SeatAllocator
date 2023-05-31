@@ -28,6 +28,7 @@ pub struct Hall {
     capacity: usize,
     students: Vec<Option<Student>>,
     subjects: HashSet<String>,
+    previously_placed_subject: Option<String>,
 }
 
 impl Hall {
@@ -38,6 +39,7 @@ impl Hall {
             capacity,
             students: Vec::with_capacity(capacity),
             subjects: HashSet::new(),
+            previously_placed_subject: None,
         }
     }
 
@@ -50,6 +52,7 @@ impl Hall {
         match self.is_full() {
             false => {
                 self.subjects.insert(student.subject().to_owned());
+                self.previously_placed_subject = Some(student.subject().to_owned());
                 self.students.push(Some(student));
                 Ok(())
             }
@@ -59,6 +62,7 @@ impl Hall {
     pub fn push_empty(&mut self) -> Result<(), ()> {
         if !self.is_full() {
             self.students.push(None);
+            self.previously_placed_subject = None;
             Ok(())
         } else {
             Err(())
@@ -79,5 +83,9 @@ impl Hall {
 
     pub fn subjects(&self) -> &HashSet<String> {
         &self.subjects
+    }
+
+    pub fn prev_sub(&self) -> Option<&String> {
+        self.previously_placed_subject.as_ref()
     }
 }
