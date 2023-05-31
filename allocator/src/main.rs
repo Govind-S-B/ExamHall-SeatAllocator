@@ -12,16 +12,16 @@ fn main() {
     let mut students = db.read_students_table();
     let mut halls = db.read_halls_table();
 
-    'main: for hall in &mut halls {
+    for hall in &mut halls {
+        if students.is_empty() {
+            break;
+        };
         let mut previously_placed_sub: Option<String> = None;
 
-        while !hall.is_full() {
+        while !hall.is_full() && !students.is_empty() {
             let next_sub = match get_next_sub(&students, previously_placed_sub, &hall) {
                 Some(sub) => sub,
-                None => {
-                    println!("{:#?}", students);
-                    todo!()
-                }
+                None => todo!(),
             };
 
             let students_in_sub = students
@@ -38,10 +38,6 @@ fn main() {
 
             hall.push(next_student)
                 .expect("tried to push student into full hall");
-
-            if students.is_empty() {
-                break 'main;
-            }
 
             previously_placed_sub = Some(next_sub);
         }

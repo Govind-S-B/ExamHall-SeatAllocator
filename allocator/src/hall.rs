@@ -47,13 +47,13 @@ impl Hall {
     ///
     /// This function will return an error if the hall is full
     pub fn push(&mut self, student: Student) -> Result<(), Student> {
-        println!("{:?}", student);
-        if !self.is_full() {
-            self.subjects.insert(student.subject().to_owned());
-            self.students.push(Some(student));
-            Ok(())
-        } else {
-            Err(student)
+        match self.is_full() {
+            false => {
+                self.subjects.insert(student.subject().to_owned());
+                self.students.push(Some(student));
+                Ok(())
+            }
+            true => Err(student),
         }
     }
     pub fn push_empty(&mut self) -> Result<(), ()> {
