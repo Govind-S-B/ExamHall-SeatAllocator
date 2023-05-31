@@ -7,7 +7,7 @@ use std::{collections::hash_map::HashMap, vec};
 
 /// [`DatabaseManager`] is a struct that represents a connection to a SQLite database.
 ///
-/// [[`DatabaseManager`]] provides methods for interacting with the "report" SQLite database.
+/// [[`DatabaseManager`]] provides methods for interacting with the "report" and "input" SQLite database.
 /// These methods include reading data from the "students" and "halls" tables (`read_students_table`, `read_halls_table`),
 /// and writing data to the "report" table (`write_report_table`).
 ///
@@ -16,24 +16,26 @@ use std::{collections::hash_map::HashMap, vec};
 ///- `connection` - Represents the connection to the SQLite database.
 
 pub struct DatabaseManager {
-    connection: sq::Connection,
+    read_connection: sq::Connection,
+    write_connection: sq::Connection,
 }
 
 impl DatabaseManager {
-    /// Creates a new instance of [`DatabaseManager`] with a connection to the "report.db" SQLite database.
+    /// Creates a new instance of [`DatabaseManager`] with a connection to the "report.db" and "input" SQLite database.
     ///
     /// # Panics
     ///
-    /// This function will panic if it cannot open a connection to "report.db". Ensure that "report.db" exists in the
+    /// This function will panic if it cannot open a connection to "report.db" and "input". Ensure that "report.db" and "input" exists in the
     /// same directory as your binary.
     ///
     /// # Returns
     ///
-    /// Returns a [`DatabaseManager`] instance with an open connection to "report.db".
+    /// Returns a [`DatabaseManager`] instance with an open connection to "report.db" and "input".
     ///
     pub fn new() -> Self {
         Self {
-            connection: sqlite::open("report.db").unwrap(),
+            read_connection: sqlite::open("input.db").expect("Error connecting to input.db"),
+            write_connection: sqlite::open("report.db").expect("Error connecting to report.db"),
         }
     }
 /// `read_students_table` is a method that reads data from a database table named "students".
@@ -69,7 +71,7 @@ impl DatabaseManager {
     pub fn read_students_table(&self) -> HashMap<String, Vec<Student>> {
         let query = "SELECT * FROM students";
         let mut students: HashMap<String, Vec<Student>> = HashMap::new();
-        self.connection
+        self.read_connection
             .iterate(query, |pair| {
                 //pair is an array slice of the columns and the values in the colums
                 //first element of pair is ("id", <the id>)
@@ -98,7 +100,7 @@ impl DatabaseManager {
 
 
         for (sub, students_vec) in students.iter_mut() {
-            students_vec.sort_by_key(|s| -s.roll_no())
+            students_vec.sort_by_key(|s| (s.class().to_owned(), -s.roll_no()))
         }
         students
     }
@@ -132,7 +134,7 @@ impl DatabaseManager {
     pub fn read_halls_table(&self) -> Vec<Hall> {
         let query = "SELECT * FROM halls ORDER BY capacity DESC";
         let mut halls: Vec<Hall> = vec![];
-        self.connection
+        self.read_connection
             .iterate(query, |pair| {
                 //pair is an array slice of the columns and the values in the colums
                 //first element of pair is ("id", <the id>)
@@ -185,10 +187,10 @@ impl DatabaseManager {
 /// - If there is an error inserting rows into the "report" table.
     pub fn write_report_table(&self, halls: &Vec<Hall>) {
         let query = "DROP TABLE IF EXISTS report";
-        self.connection
+        self.write_connection
             .execute(query)
             .expect("error dropping report table");
-        let query = "
+        let command = "
                 CREATE TABLE report 
                 (id CHAR(15) PRIMARY KEY NOT NULL, 
                 class CHAR(10) NOT NULL, 
@@ -197,11 +199,11 @@ impl DatabaseManager {
                 seat_no INT NOT NULL, 
                 subject CHAR(50) NOT NULL)";
 
-        self.connection
-            .execute(query)
+        self.write_connection
+            .execute(command)
             .expect("error creating report table");
 
-        let mut query =
+        let mut command =
             "INSERT INTO report (id,class,roll_no,subject,hall,seat_no) VALUES".to_owned();
         for hall in halls {
             for (index, student) in hall.students().iter().enumerate() {
@@ -218,15 +220,15 @@ impl DatabaseManager {
                     hall.name(),
                     index + 1,
                 );
-                query += &format!( 
+                command += &format!( 
                     "(\"{id}\", \"{class}\", {roll_no},\"{subject}\", \"{hall_name}\", {seat_no}),"
                 );
             }
         }
-        query.pop();
-        query += ";";
-        self.connection
-            .execute(query)
+        command.pop();
+        command += ";";
+        self.write_connection
+            .execute(command)
             .expect("error inserting row into report table");
     }
 }

@@ -9,9 +9,10 @@ from math import ceil
 def generate_report():
 
     conn = sq.connect("report.db")
+    
 
 
-    session_info = conn.execute(
+    session_info = sq.connect("input.db").execute(
             """SELECT VALUE 
             FROM metadata 
             WHERE KEY = "session_name" 

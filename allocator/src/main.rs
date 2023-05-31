@@ -1,7 +1,11 @@
 mod db_manager;
 mod hall;
 mod student;
-use std::{collections::HashMap, hash::Hash, io::stdin};
+use std::{
+    collections::{HashMap, HashSet},
+    hash::Hash,
+    io::stdin,
+};
 
 use db_manager::DatabaseManager;
 use hall::Hall;
@@ -12,17 +16,18 @@ fn main() {
     let mut students = db.read_students_table();
     let mut halls = db.read_halls_table();
 
-    let total_seats: usize = halls.into_iter().map(|h| h.seats_left()).sum();
-    let total_students: usize = students.into_iter().map(|(_, s)| s.len()).sum();
+    let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
+    let total_students: usize = students.iter().map(|(_, s)| s.len()).sum();
     let mut extra_seats = total_seats - total_students;
 
+    let mut placed_subjects = HashSet::new();
     for hall in &mut halls {
         if students.is_empty() {
             break;
         };
 
         while !hall.is_full() && !students.is_empty() {
-            let next_sub = match get_next_sub(&students, &hall) {
+            let next_sub = match get_next_sub(&students, &hall, &placed_subjects) {
                 Some(sub) => sub,
                 None => {
                     if extra_seats <= 0 {
@@ -46,6 +51,7 @@ fn main() {
                 students.remove(&next_sub);
             }
 
+            placed_subjects.insert(next_student.subject().to_owned());
             hall.push(next_student)
                 .expect("tried to push student into full hall");
         }
@@ -54,7 +60,11 @@ fn main() {
     db.write_report_table(&halls)
 }
 
-fn get_next_sub(students: &HashMap<String, Vec<Student>>, hall: &Hall) -> Option<String> {
+fn get_next_sub(
+    students: &HashMap<String, Vec<Student>>,
+    hall: &Hall,
+    placed_subjects: &HashSet<String>,
+) -> Option<String> {
     let filtered: Vec<(&String, usize)> = students
         .iter()
         .map(|(sub, vec)| (sub, vec.len()))
@@ -64,7 +74,7 @@ fn get_next_sub(students: &HashMap<String, Vec<Student>>, hall: &Hall) -> Option
     let further_filtered: Vec<(&String, usize)> = filtered
         .clone()
         .into_iter()
-        .filter(|(sub, vec)| hall.subjects().contains(sub.to_owned()))
+        .filter(|(sub, vec)| placed_subjects.contains(sub.to_owned()))
         .collect();
 
     let students = if further_filtered.is_empty() {
