@@ -88,4 +88,8 @@ impl Hall {
     pub fn prev_sub(&self) -> Option<&String> {
         self.previously_placed_subject.as_ref()
     }
+
+    pub fn seats_left(&self) -> usize {
+        self.capacity - self.students.len()
+    }
 }

@@ -12,6 +12,10 @@ fn main() {
     let mut students = db.read_students_table();
     let mut halls = db.read_halls_table();
 
+    let total_seats: usize = halls.into_iter().map(|h| h.seats_left()).sum();
+    let total_students: usize = students.into_iter().map(|(_, s)| s.len()).sum();
+    let mut extra_seats = total_seats - total_students;
+
     for hall in &mut halls {
         if students.is_empty() {
             break;
@@ -21,7 +25,11 @@ fn main() {
             let next_sub = match get_next_sub(&students, &hall) {
                 Some(sub) => sub,
                 None => {
+                    if extra_seats <= 0 {
+                        todo!();
+                    }
                     hall.push_empty().expect("tried to push empty on full hall");
+                    extra_seats -= 1;
                     continue;
                 }
             };
