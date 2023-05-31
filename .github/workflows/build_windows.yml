@@ -17,7 +17,7 @@ jobs:
         python-version: '3.11'
         cache: 'pip' # caching pip dependencies
     - run: |
-        pip install -r requirements.txt
+        pip install -r pdf_generator/requirements.txt
         ./build_python_win.bat
         git config user.name github-actions
         git config user.email github-actions@github.com
