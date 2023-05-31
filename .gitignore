@@ -5,3 +5,6 @@ V3/*.db
 V3/allocator.exe
 allocator/target/
 venv/
+build.bat
+run.bat
+alloc.bat
