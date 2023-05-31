@@ -18,7 +18,7 @@ fn main() {
         };
 
         while !hall.is_full() && !students.is_empty() {
-            let next_sub = match get_next_sub(&students, hall.prev_sub(), &hall) {
+            let next_sub = match get_next_sub(&students, &hall) {
                 Some(sub) => sub,
                 None => {
                     hall.push_empty().expect("tried to push empty on full hall");
@@ -46,15 +46,11 @@ fn main() {
     db.write_report_table(&halls)
 }
 
-fn get_next_sub(
-    students: &HashMap<String, Vec<Student>>,
-    prev_sub: Option<&String>,
-    hall: &Hall,
-) -> Option<String> {
+fn get_next_sub(students: &HashMap<String, Vec<Student>>, hall: &Hall) -> Option<String> {
     let filtered: Vec<(&String, usize)> = students
         .iter()
         .map(|(sub, vec)| (sub, vec.len()))
-        .filter(|(sub, size)| Some(*sub) != prev_sub && *size > 0)
+        .filter(|(sub, size)| Some(*sub) != hall.prev_sub() && *size > 0)
         .collect();
 
     let further_filtered: Vec<(&String, usize)> = filtered
