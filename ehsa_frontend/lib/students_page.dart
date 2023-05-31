@@ -48,11 +48,10 @@ class _StudentsPageState extends State<StudentsPage> {
     super.initState();
     sqfliteFfiInit();
     _initDatabase();
-    _subjectListinit();
+    
   }
 
   Future<void> _subjectListinit() async{
-    await _initDatabase();
     var x =  (await _database.query('SUBJECTS',columns: ['SUBJECT'],distinct: true));
     subjects = x.map((e) => e['SUBJECT'].toString()).toList();
     filteredSubjects = subjects;
@@ -65,6 +64,7 @@ class _StudentsPageState extends State<StudentsPage> {
                 (ID CHAR(8) PRIMARY KEY NOT NULL,
                 SUBJECT TEXT NOT NULL)""");
     _fetchTableViewRows();
+    _subjectListinit();
   }
 
   Future<void> _fetchTableViewRows() async {
@@ -141,8 +141,11 @@ class _StudentsPageState extends State<StudentsPage> {
       body: Column(
         children: <Widget>[
           Expanded(
+            flex: 2,
             child: Container(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
                       width: 300,
@@ -248,14 +251,18 @@ class _StudentsPageState extends State<StudentsPage> {
                           ),
                           SizedBox(height: 10),
                             SizedBox(
-                              height: 150,
+                              height: 90,
                               child: SingleChildScrollView(
                                 child: ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: filteredSubjects.length,
                                   itemBuilder: (context, index) {
                                     return ListTile(
-                                      title: Text(filteredSubjects[index]),
+                                      visualDensity: VisualDensity(horizontal: 0, vertical: -4 ),
+                                      style: ListTileStyle.list,
+                                      title: Text(filteredSubjects[index],
+                                      style: TextStyle(fontSize: 12),),
+                                      dense: true,
                                       onTap: () {
                                         setState(() {
                                           selectedSubject =
@@ -277,9 +284,9 @@ class _StudentsPageState extends State<StudentsPage> {
                 )),
           ),
           Expanded(
+            flex: 3,
             child: Container(
               width: double.infinity,
-              color: Colors.green,
               child: SingleChildScrollView(
                 child: DataTable(
                   columns: [
