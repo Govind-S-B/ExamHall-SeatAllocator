@@ -28,16 +28,16 @@ class _GeneratePageState extends State<GeneratePage> {
   Future<void> _initDatabase() async {
     final path = ('${Directory.current.path}/input.db');
     _database = await databaseFactory.openDatabase(path);
-     _database.execute("""CREATE TABLE IF NOT EXISTS METADATA
-                (KEY TEXT PRIMARY KEY NOT NULL,
-                VALUE TEXT NOT NULL)""");
+     _database.execute("""CREATE TABLE IF NOT EXISTS metadata
+                (key TEXT PRIMARY KEY NOT NULL,
+                value TEXT NOT NULL)""");
     _setSessionIdValue();
   }
 
   Future<void> _setSessionIdValue() async {
     //function to check if the metadata table has a key containing SESSION_NAME 
-    var val = await _database.query("METADATA");
-    _sessionId =  (val.isEmpty ? "Undefined" : val[0]["VALUE"]).toString()  ;
+    var val = await _database.query("metadata", where: "key = 'session_name'");
+    _sessionId =  (val.isEmpty ? "Undefined" : val[0]["value"]).toString()  ;
     setState(() {});
   }
 
@@ -64,7 +64,7 @@ class _GeneratePageState extends State<GeneratePage> {
                 ElevatedButton(onPressed: (){
                   _sessionId = _sessionIdFieldController.text;
                   // write a function to update the metadata table with the new session name
-                  _database.execute("INSERT OR REPLACE INTO METADATA (KEY, VALUE) VALUES ('SESSION_NAME', '$_sessionId')");
+                  _database.execute("INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')");
                   _sessionIdFieldController.clear();
                   setState(() {});
                 }, child: Icon(Icons.settings)),

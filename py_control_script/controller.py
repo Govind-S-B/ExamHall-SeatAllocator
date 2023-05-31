@@ -8,9 +8,13 @@ print(exe_path)
 # Launch the executable using subprocess.Popen
 process = subprocess.Popen(exe_path)
 
+# Launch API Server using subprocess.Popen
+
 # Continue executing other code while the executable is running
 while process.poll() is None:
     print(process.pid)
+
+# Close API Server
 
 # The executable has been closed
 print("Executable has been closed.")

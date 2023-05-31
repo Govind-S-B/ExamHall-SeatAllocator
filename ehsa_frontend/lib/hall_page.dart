@@ -14,7 +14,7 @@ class Hall {
 
   Map<String, dynamic> toMap() {
     return {
-      'hall_name': editedHallName, // Use editedHallName in toMap method
+      'name': editedHallName, // Use editedHallName in toMap method
       'capacity': editedCapacity, // Use editedCapacity in toMap method
     };
   }
@@ -46,19 +46,19 @@ class _HallPageState extends State<HallPage> {
   Future<void> _initDatabase() async {
     final path = ('${Directory.current.path}/input.db');
     _database = await databaseFactory.openDatabase(path);
-    _database.execute("""CREATE TABLE IF NOT EXISTS HALLS
-                (HALL_NAME CHAR(8) PRIMARY KEY NOT NULL,
-                CAPACITY INT NOT NULL)""");
+    _database.execute("""CREATE TABLE IF NOT EXISTS halls
+                (name CHAR(8) PRIMARY KEY NOT NULL,
+                capacity INT NOT NULL)""");
     _fetchHalls();
   }
 
   Future<void> _fetchHalls() async {
-    final List<Map<String, dynamic>> hallData = await _database.query('HALLS');
+    final List<Map<String, dynamic>> hallData = await _database.query('halls');
     setState(() {
       halls = hallData.map((hall) {
         return Hall(
-          hall['HALL_NAME'],
-          hall['CAPACITY'],
+          hall['name'],
+          hall['capacity'],
         );
       }).toList();
     });
@@ -66,9 +66,9 @@ class _HallPageState extends State<HallPage> {
 
   Future<void> _updateHall(Hall hall) async {
     await _database.update(
-      'HALLS',
+      'halls',
       hall.toMap(),
-      where: 'HALL_NAME = ?',
+      where: 'name = ?',
       whereArgs: [hall.hallName],
     );
     _fetchHalls();
@@ -76,8 +76,8 @@ class _HallPageState extends State<HallPage> {
 
   Future<void> _deleteHall(String hallName) async {
     await _database.delete(
-      'HALLS',
-      where: 'HALL_NAME = ?',
+      'halls',
+      where: 'name = ?',
       whereArgs: [hallName],
     );
     _fetchHalls();
@@ -154,9 +154,9 @@ class _HallPageState extends State<HallPage> {
                     ),
                     ElevatedButton(
                       onPressed: () {
-                        _database.insert('HALLS', {
-                          "HALL_NAME": _formtextController1.text,
-                          "CAPACITY": int.parse(_formtextController2.text)
+                        _database.insert('halls', {
+                          "name": _formtextController1.text,
+                          "capacity": int.parse(_formtextController2.text)
                         });
                         _formtextController1.clear();
                         _formtextController2.clear();

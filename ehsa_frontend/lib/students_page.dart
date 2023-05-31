@@ -14,7 +14,7 @@ class TableViewRow {
 
   Map<String, dynamic> toMap() {
     return {
-      'student_id': editedStudent_id, // Use editedHallName in toMap method
+      'id': editedStudent_id, // Use editedHallName in toMap method
       'subject': editedSubject, // Use editedCapacity in toMap method
     };
   }
@@ -52,28 +52,28 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _subjectListinit() async{
-    var x =  (await _database.query('SUBJECTS',columns: ['SUBJECT'],distinct: true));
-    subjects = x.map((e) => e['SUBJECT'].toString()).toList();
+    var x =  (await _database.query('students',columns: ['subject'],distinct: true));
+    subjects = x.map((e) => e['subject'].toString()).toList();
     filteredSubjects = subjects;
   }
 
   Future<void> _initDatabase() async {
     final path = ('${Directory.current.path}/input.db');
     _database = await databaseFactory.openDatabase(path);
-    _database.execute("""CREATE TABLE IF NOT EXISTS SUBJECTS
-                (ID CHAR(8) PRIMARY KEY NOT NULL,
-                SUBJECT TEXT NOT NULL)""");
+    _database.execute("""CREATE TABLE IF NOT EXISTS students
+                (id CHAR(8) PRIMARY KEY NOT NULL,
+                subject TEXT NOT NULL)""");
     _fetchTableViewRows();
     _subjectListinit();
   }
 
   Future<void> _fetchTableViewRows() async {
-    final List<Map<String, dynamic>> table_data = await _database.query('SUBJECTS');
+    final List<Map<String, dynamic>> table_data = await _database.query('students');
     setState(() {
       tableViewRows = table_data.map((row) {
         return TableViewRow(
-          row['ID'],
-          row['SUBJECT'],
+          row['id'],
+          row['subject'],
         );
       }).toList();
     });
@@ -81,9 +81,9 @@ class _StudentsPageState extends State<StudentsPage> {
 
   Future<void> _updateTableViewRow(TableViewRow row) async {
     await _database.update(
-      'SUBJECTS',
+      'students',
       row.toMap(),
-      where: 'ID = ?',
+      where: 'id = ?',
       whereArgs: [row.student_id],
     );
     _fetchTableViewRows();
@@ -91,8 +91,8 @@ class _StudentsPageState extends State<StudentsPage> {
 
   Future<void> _deleteTableViewRow(String student_id) async {
     await _database.delete(
-      'SUBJECTS',
-      where: 'ID = ?',
+      'students',
+      where: 'id = ?',
       whereArgs: [student_id],
     );
     _fetchTableViewRows();
@@ -220,9 +220,9 @@ class _StudentsPageState extends State<StudentsPage> {
 
                                       for (var i = int.parse(roll_num_range[0]); i <= int.parse(roll_num_range[1]); i++) {
 
-                                        _database.insert('SUBJECTS', {
-                                        "ID": student_class + "-" + i.toString(),
-                                        "SUBJECT": selectedSubject,
+                                        _database.insert('students', {
+                                        "id": student_class + "-" + i.toString(),
+                                        "subject": selectedSubject,
                                         });
 
                                       }
@@ -230,9 +230,9 @@ class _StudentsPageState extends State<StudentsPage> {
                                     }
                                     else{
 
-                                      _database.insert('SUBJECTS', {
-                                        "ID": student_class + "-" + roll,
-                                        "SUBJECT": selectedSubject,
+                                      _database.insert('students', {
+                                        "id": student_class + "-" + roll,
+                                        "subject": selectedSubject,
                                         });
 
                                     }
