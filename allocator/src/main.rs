@@ -75,7 +75,7 @@ fn main() {
             .collect::<Vec<Student>>();
 
         for hall in &mut halls {
-            while !hall.is_full() && students.is_empty() {
+            while !hall.is_full() && !students.is_empty() {
                 hall.push(students.pop().unwrap())
                     .expect("tried to push student into full hall");
             }
