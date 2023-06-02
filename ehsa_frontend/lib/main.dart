@@ -21,7 +21,22 @@ enum Page {
 }
 
 class MyAppState extends State<MyApp> {
+  String _getPageTitle(Page page) {
+    switch (page) {
+      case Page.halls:
+        return 'Halls Page';
+      case Page.students:
+        return 'Students Page';
+      case Page.generate:
+        return 'Generate Page';
+      default:
+        return '';
+    }
+  }
+
   Page _selectedPage = Page.halls;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final Map<Page, GlobalKey<NavigatorState>> _navigatorKeys = {
     Page.halls: GlobalKey<NavigatorState>(),
@@ -41,56 +56,74 @@ class MyAppState extends State<MyApp> {
       title: 'EHSA',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        navigationRailTheme: const NavigationRailThemeData(
-          minWidth: 56,
-          labelType: NavigationRailLabelType.selected,
-          groupAlignment: 0,
-          unselectedLabelTextStyle: TextStyle(color: Colors.transparent),
-          selectedIconTheme: IconThemeData(color: Colors.green),
-          selectedLabelTextStyle:
-              TextStyle(color: Colors.green, fontSize: 11.5),
-        ),
       ),
       home: Scaffold(
-        body: Row(
-          children: [
-            NavigationRail(
-              minWidth: 56,
-              selectedIndex: _selectedPage.index,
-              onDestinationSelected: (int index) {
-                setState(() {
-                  _selectedPage = Page.values[index];
-                });
-              },
-              labelType: NavigationRailLabelType.all,
-              destinations: const [
-                NavigationRailDestination(
-                  padding: EdgeInsets.only(bottom: 16, top: 16),
-                  icon: Icon(Icons.home),
-                  label: Text('Halls'),
+        key: _scaffoldKey,
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          title: Text(_getPageTitle(_selectedPage)),
+        ),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              DrawerHeader(
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
                 ),
-                NavigationRailDestination(
-                  padding: EdgeInsets.only(bottom: 16, top: 16),
-                  icon: Icon(Icons.person),
-                  label: Text('Students'),
+                child: GestureDetector(
+                  onTap: () {
+                    _scaffoldKey.currentState?.closeDrawer();
+                  },
+                  child: const Text(
+                    'EHSA',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 24,
+                    ),
+                  ),
                 ),
-                NavigationRailDestination(
-                  padding: EdgeInsets.only(bottom: 16, top: 16),
-                  icon: Icon(Icons.create),
-                  label: Text('Generate'),
-                ),
-              ],
-            ),
-            Expanded(
-              child: Stack(
-                children: [
-                  _buildOffstageNavigator(Page.halls),
-                  _buildOffstageNavigator(Page.students),
-                  _buildOffstageNavigator(Page.generate),
-                ],
               ),
-            ),
-          ],
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Halls'),
+                selected: _selectedPage == Page.halls,
+                onTap: () {
+                  _selectPage(Page.halls);
+                  _scaffoldKey.currentState?.closeDrawer();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: const Text('Students'),
+                selected: _selectedPage == Page.students,
+                onTap: () {
+                  _selectPage(Page.students);
+                  _scaffoldKey.currentState?.closeDrawer();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.create),
+                title: const Text('Generate'),
+                selected: _selectedPage == Page.generate,
+                onTap: () {
+                  _selectPage(Page.generate);
+                  _scaffoldKey.currentState?.closeDrawer();
+                },
+              ),
+            ],
+          ),
+        ),
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height - kToolbarHeight - 24,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            children: [
+              _buildOffstageNavigator(Page.halls),
+              _buildOffstageNavigator(Page.students),
+              _buildOffstageNavigator(Page.generate),
+            ],
+          ),
         ),
       ),
     );

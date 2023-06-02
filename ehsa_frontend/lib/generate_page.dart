@@ -42,63 +42,57 @@ class _GeneratePageState extends State<GeneratePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Generate Page'),
-        ),
         body: Container(
             child: Column(
+      children: [
+        Row(
           children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: _sessionIdFieldController,
-                    decoration: InputDecoration(
-                      labelText: 'Session : ' + _sessionId,
-                    ),
-                  ),
-                ), // enter session name
-                ElevatedButton(
-                    onPressed: () {
-                      _sessionId = _sessionIdFieldController.text;
-                      // write a function to update the metadata table with the new session name
-                      _database.execute(
-                          "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')");
-                      _sessionIdFieldController.clear();
-                      setState(() {});
-                    },
-                    child: Icon(Icons.settings)),
-              ],
-            ), // set session name
+            SizedBox(
+              width: 300,
+              child: TextField(
+                controller: _sessionIdFieldController,
+                decoration: InputDecoration(
+                  labelText: 'Session : ' + _sessionId,
+                ),
+              ),
+            ), // enter session name
             ElevatedButton(
-                onPressed: () async {
-                  // async function to launch rust allocator and wait for its response exit code
-                  // if exit code is 0 then show a success message
-                  // else show an error message
-
-                  try {
-                    final result =
-                        await Process.run( '${Directory.current.path}\\allocator.exe', []);
-
-                    if (result.exitCode == 0) {
-                      // Executable executed successfully
-                      // launch pdf generator
-
-                      final result2 =
-                        await Process.run( '${Directory.current.path}\\pdf_generator.exe', []);
-                      
-                    } else {
-                      // Executable failed
-                      
-                    }
-                  } catch (e) {
-                    // Handle any exceptions here
-                    
-                  }
+                onPressed: () {
+                  _sessionId = _sessionIdFieldController.text;
+                  // write a function to update the metadata table with the new session name
+                  _database.execute(
+                      "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')");
+                  _sessionIdFieldController.clear();
+                  setState(() {});
                 },
-                child: Text("Generate")) // generate button
+                child: Icon(Icons.settings)),
           ],
-        )));
+        ), // set session name
+        ElevatedButton(
+            onPressed: () async {
+              // async function to launch rust allocator and wait for its response exit code
+              // if exit code is 0 then show a success message
+              // else show an error message
+
+              try {
+                final result = await Process.run(
+                    '${Directory.current.path}\\allocator.exe', []);
+
+                if (result.exitCode == 0) {
+                  // Executable executed successfully
+                  // launch pdf generator
+
+                  final result2 = await Process.run(
+                      '${Directory.current.path}\\pdf_generator.exe', []);
+                } else {
+                  // Executable failed
+                }
+              } catch (e) {
+                // Handle any exceptions here
+              }
+            },
+            child: Text("Generate")) // generate button
+      ],
+    )));
   }
 }

@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-class TableViewRow { // Table View Row refers to Students View
+class TableViewRow {
+  // Table View Row refers to Students View
   final String student_id;
   final String subject;
   String editedStudent_id; // Added variable to hold edited Student_id
@@ -24,7 +25,7 @@ class SubjectViewRow {
   final String subject;
   String editedSubject; // hold edited Subject
 
-  SubjectViewRow(this.subject):editedSubject=subject;
+  SubjectViewRow(this.subject) : editedSubject = subject;
 
   Map<String, dynamic> toMap() {
     return {
@@ -59,7 +60,6 @@ class _StudentsPageState extends State<StudentsPage> {
   List<SubjectViewRow> subjectViewRows = [];
   List<SubjectViewRow> editedSubjectViewRows = [];
 
-
   List<TableViewRow> tableViewRows = [];
   List<TableViewRow> editedTableViewRows = [];
 
@@ -83,13 +83,15 @@ class _StudentsPageState extends State<StudentsPage> {
   Future<void> _subjectListinit() async {
     var x = (await _database.query('students',
         columns: ['subject'], distinct: true));
-    subjects = x.map((e) => e['subject'].toString()).toList(); // subjects only needs to be updated from the database once when we initialise the tables
+    subjects = x
+        .map((e) => e['subject'].toString())
+        .toList(); // subjects only needs to be updated from the database once when we initialise the tables
     filteredSubjects = subjects;
     subjectViewRows = x.map((e) {
-        return SubjectViewRow(
-          e['subject'].toString(),
-        );
-      }).toList(); // but the rows need to be updated every time the db is changed
+      return SubjectViewRow(
+        e['subject'].toString(),
+      );
+    }).toList(); // but the rows need to be updated every time the db is changed
   }
 
   Future<void> _fetchSubjectViewRows() async {
@@ -133,8 +135,7 @@ class _StudentsPageState extends State<StudentsPage> {
 
   Future<void> _updateSubjectViewRow(SubjectViewRow row) async {
     await _database.execute(
-        "UPDATE students SET subject = '${row.editedSubject}' WHERE subject = '${row.subject}'"
-    );
+        "UPDATE students SET subject = '${row.editedSubject}' WHERE subject = '${row.subject}'");
     if (row.subject != row.editedSubject) {
       subjects.add(row.editedSubject);
     }
@@ -326,7 +327,8 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     if (editedSubjectViewRows.contains(row)) {
                                       setState(() {
-                                        row.editedSubject = row.subject; // Restore original hallName
+                                        row.editedSubject = row
+                                            .subject; // Restore original hallName
                                         editedSubjectViewRows.remove(row);
                                       });
                                     }
@@ -375,9 +377,6 @@ class _StudentsPageState extends State<StudentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Students Page'),
-      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -522,21 +521,21 @@ class _StudentsPageState extends State<StudentsPage> {
             )),
           ),
           ToggleButtons(
-                    children: [
-                      Text('1'), // Students
-                      Text('2'), // Subjects
-                      Text('3'), // Classes
-                    ],
-                    isSelected: isSelected,
-                    onPressed: (index) {
-                      setState(() {
-                        for (int i = 0; i < isSelected.length; i++) {
-                          isSelected[i] = i == index;
-                        }
-                        selectedOption = index + 1;
-                      });
-                    },
-                  ),
+            children: [
+              Text('1'), // Students
+              Text('2'), // Subjects
+              Text('3'), // Classes
+            ],
+            isSelected: isSelected,
+            onPressed: (index) {
+              setState(() {
+                for (int i = 0; i < isSelected.length; i++) {
+                  isSelected[i] = i == index;
+                }
+                selectedOption = index + 1;
+              });
+            },
+          ),
           Expanded(
             flex: 3,
             child: SingleChildScrollView(

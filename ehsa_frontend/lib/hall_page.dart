@@ -10,7 +10,8 @@ class Hall {
 
   Hall(this.hallName, this.capacity)
       : editedHallName = hallName,
-        editedCapacity = capacity; // Initialize editedHallName and editedCapacity
+        editedCapacity =
+            capacity; // Initialize editedHallName and editedCapacity
 
   Map<String, dynamic> toMap() {
     return {
@@ -19,6 +20,7 @@ class Hall {
     };
   }
 }
+
 class HallPage extends StatefulWidget {
   const HallPage({super.key});
 
@@ -121,9 +123,6 @@ class _HallPageState extends State<HallPage> {
     BuildContext context,
   ) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Halls Page'),
-      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -131,41 +130,41 @@ class _HallPageState extends State<HallPage> {
             child: Container(
                 child: Container(
                     child: Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 200,
-                      child: TextField(
-                        controller: _formtextController1,
-                        decoration: InputDecoration(
-                          labelText: 'Hall Name',
-                        ),
-                      ),
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _formtextController1,
+                    decoration: InputDecoration(
+                      labelText: 'Hall Name',
                     ),
-                    SizedBox(
-                      width: 150,
-                      child: TextField(
-                        controller: _formtextController2,
-                        decoration: InputDecoration(
-                          labelText: 'Capacity',
-                        ),
-                      ),
+                  ),
+                ),
+                SizedBox(
+                  width: 150,
+                  child: TextField(
+                    controller: _formtextController2,
+                    decoration: InputDecoration(
+                      labelText: 'Capacity',
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        _database.insert('halls', {
-                          "name": _formtextController1.text,
-                          "capacity": int.parse(_formtextController2.text)
-                        });
-                        _formtextController1.clear();
-                        _formtextController2.clear();
-                        _fetchHalls();
-                      },
-                      child: Icon(Icons.arrow_circle_right_sharp),
-                    ),
-                  ],
-                ))),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    _database.insert('halls', {
+                      "name": _formtextController1.text,
+                      "capacity": int.parse(_formtextController2.text)
+                    });
+                    _formtextController1.clear();
+                    _formtextController2.clear();
+                    _fetchHalls();
+                  },
+                  child: Icon(Icons.arrow_circle_right_sharp),
+                ),
+              ],
+            ))),
           ),
           Expanded(
             flex: 3,
@@ -181,10 +180,11 @@ class _HallPageState extends State<HallPage> {
                   rows: [
                     for (var hall in halls)
                       DataRow(
-                        color: editedHalls.contains(hall) ? MaterialStateColor.resolveWith(
-                                  (states) => Colors.grey.withOpacity(0.8))
-                              : MaterialStateColor.resolveWith(
-                                  (states) => Colors.transparent),
+                        color: editedHalls.contains(hall)
+                            ? MaterialStateColor.resolveWith(
+                                (states) => Colors.grey.withOpacity(0.8))
+                            : MaterialStateColor.resolveWith(
+                                (states) => Colors.transparent),
                         cells: [
                           DataCell(
                             editedHalls.contains(hall)
@@ -192,7 +192,8 @@ class _HallPageState extends State<HallPage> {
                                     initialValue: hall.editedHallName,
                                     onChanged: (value) {
                                       setState(() {
-                                        hall.editedHallName = value; // Update editedHallName
+                                        hall.editedHallName =
+                                            value; // Update editedHallName
                                       });
                                     },
                                   )
@@ -201,10 +202,13 @@ class _HallPageState extends State<HallPage> {
                           DataCell(
                             editedHalls.contains(hall)
                                 ? TextFormField(
-                                    initialValue: hall.editedCapacity.toString(),
+                                    initialValue:
+                                        hall.editedCapacity.toString(),
                                     onChanged: (value) {
                                       setState(() {
-                                        hall.editedCapacity = int.tryParse(value) ?? 0; // Update editedCapacity
+                                        hall.editedCapacity =
+                                            int.tryParse(value) ??
+                                                0; // Update editedCapacity
                                       });
                                     },
                                   )
@@ -250,7 +254,6 @@ class _HallPageState extends State<HallPage> {
                   ],
                 ),
               ),
-    
             ),
           ),
         ],
