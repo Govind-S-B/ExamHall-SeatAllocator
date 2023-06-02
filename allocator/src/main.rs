@@ -55,10 +55,10 @@ fn main() {
                         SeperateClass => break 'main,
                         Any => panic!("ERROR:this should never happen"),
                     };
-                continue;
-                };
-                hall.push_empty().expect("tried to push empty on full hall (error should never happer)");
-                extra_seats -= 1;
+                } else {
+                    hall.push_empty().expect("tried to push empty on full hall (error should never happer)");
+                    extra_seats -= 1;
+                }
                 continue;
             };
 
@@ -75,7 +75,7 @@ fn main() {
             .collect::<Vec<Student>>();
 
         for hall in &mut halls {
-            while !hall.is_full() && !students.is_empty() {
+            while !hall.is_full() && students.is_empty() {
                 hall.push(students.pop().unwrap())
                     .expect("tried to push student into full hall");
             }
