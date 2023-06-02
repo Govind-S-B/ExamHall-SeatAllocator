@@ -1,7 +1,10 @@
 mod db_manager;
 mod hall;
 mod student;
-use std::{collections::{HashMap, HashSet}, hash::Hash};
+use std::{
+    collections::{HashMap, HashSet},
+    hash::Hash,
+};
 
 use db_manager::DatabaseManager;
 use hall::Hall;
@@ -26,14 +29,12 @@ fn main() {
     };
     let mut allocation_mode = AllocationMode::SeperateSubject;
     let mut placed_keys = HashSet::new();
-    for hall in &mut halls {
+    'main: for hall in &mut halls {
         if students.is_empty() {
             break;
         };
 
         while !hall.is_full() && !students.is_empty() {
-            
-
             let Some(next_student) = get_next_student(&mut students, hall, &mut placed_keys)
             else {
                 use AllocationMode::*;
@@ -41,8 +42,7 @@ fn main() {
                     allocation_mode = match allocation_mode {
                         SeperateSubject => {
                             placed_keys.clear();
-                            students =  
-                                students
+                            students = students
                                 .into_iter()
                                 .map(|(_, vec)| vec)
                                 .flatten()
@@ -52,7 +52,7 @@ fn main() {
                                 });
                             SeperateClass
                         },
-                        SeperateClass => Any,
+                        SeperateClass => break 'main,
                         Any => panic!("ERROR:this should never happen"),
                     };
                 continue;
@@ -67,6 +67,20 @@ fn main() {
         }
     }
 
+    if let AllocationMode::Any = allocation_mode {
+        let mut students = students
+            .into_iter()
+            .map(|(_, vec)| vec)
+            .flatten()
+            .collect::<Vec<Student>>();
+
+        for hall in &mut halls {
+            while !hall.is_full() && !students.is_empty() {
+                hall.push(students.pop().unwrap())
+                    .expect("tried to push student into full hall");
+            }
+        }
+    }
     db.write_report_table(&halls)
 }
 
