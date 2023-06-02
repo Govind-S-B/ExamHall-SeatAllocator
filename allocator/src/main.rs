@@ -1,7 +1,7 @@
 mod db_manager;
 mod hall;
 mod student;
-use std::collections::{HashMap, HashSet};
+use std::{collections::{HashMap, HashSet}, hash::Hash};
 
 use db_manager::DatabaseManager;
 use hall::Hall;
@@ -25,31 +25,35 @@ fn main() {
         false => panic!("ERROR: more students than seats"),
     };
     let mut allocation_mode = AllocationMode::SeperateSubject;
-    let mut placed_subjects = HashSet::new();
+    let mut placed_keys = HashSet::new();
     for hall in &mut halls {
         if students.is_empty() {
             break;
         };
 
         while !hall.is_full() && !students.is_empty() {
-            // TODO: write get_next_student() -> Option<Student>
-            /*
-            if extra_seats == 0 {
-                todo!();
-            }
-            hall.push_empty().expect("tried to push empty on full hall");
-            extra_seats -= 1;
-            continue;
-                         */
+            
 
-            let Some(next_student) = get_next_student(&mut students, hall, &placed_subjects, &allocation_mode)
+            let Some(next_student) = get_next_student(&mut students, hall, &mut placed_keys)
             else {
                 use AllocationMode::*;
                 if extra_seats == 0 {
                     allocation_mode = match allocation_mode {
-                        SeperateSubject => SeperateClass,
+                        SeperateSubject => {
+                            placed_keys.clear();
+                            students =  
+                                students
+                                .into_iter()
+                                .map(|(_, vec)| vec)
+                                .flatten()
+                                .fold(HashMap::new(), |mut map, student| {
+                                    map.entry(student.class().to_owned()).or_default().push(student);
+                                    map
+                                });
+                            SeperateClass
+                        },
                         SeperateClass => Any,
-                        Any => panic!("ERROR:tried to push empty in 'Any' mode"),
+                        Any => panic!("ERROR:this should never happen"),
                     };
                 continue;
                 };
@@ -58,7 +62,6 @@ fn main() {
                 continue;
             };
 
-            placed_subjects.insert(next_student.subject().to_owned());
             hall.push(next_student)
                 .expect("tried to push student into full hall");
         }
@@ -70,42 +73,40 @@ fn main() {
 fn get_next_student(
     students: &mut HashMap<String, Vec<Student>>,
     hall: &mut Hall,
-    placed_subjects: &HashSet<String>,
-    allocation_mode: &AllocationMode,
+    placed_keys: &mut HashSet<String>,
 ) -> Option<Student> {
-    let next_sub = match get_next_sub(students, hall, placed_subjects) {
-        Some(sub) => sub,
-        None => todo!(),
-    };
+    let next_key = get_next_key(students, hall, placed_keys)?;
 
-    let students_in_sub = students
-        .get_mut(&next_sub)
+    let students_in_key = students
+        .get_mut(&next_key)
         .expect("trying to take a student from subject that doesn't exist");
 
-    let next_student = students_in_sub
+    let next_student = students_in_key
         .pop()
         .expect("trying to take student from empty subject list");
 
-    if students_in_sub.is_empty() {
-        students.remove(&next_sub);
+    if students_in_key.is_empty() {
+        students.remove(&next_key);
     }
+
+    placed_keys.insert(next_student.subject().to_owned());
 
     Some(next_student)
 }
 
-fn get_next_sub(
+fn get_next_key(
     students: &HashMap<String, Vec<Student>>,
     hall: &Hall,
     placed_subjects: &HashSet<String>,
 ) -> Option<String> {
     let filtered = students
         .iter()
-        .map(|(sub, vec)| (sub, vec.len()))
-        .filter(|(sub, size)| Some(*sub) != hall.prev_sub() && *size > 0);
+        .map(|(key, vec)| (key, vec.len()))
+        .filter(|(key, size)| Some(*key) != hall.prev_sub() && *size > 0);
 
     let further_filtered: Vec<(&String, usize)> = filtered
         .clone()
-        .filter(|(sub, _)| placed_subjects.contains(sub.to_owned()))
+        .filter(|(key, _)| placed_subjects.contains(key.to_owned()))
         .collect();
 
     let students = if further_filtered.is_empty() {
