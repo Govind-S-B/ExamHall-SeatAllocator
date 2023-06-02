@@ -14,7 +14,10 @@ fn main() {
 
     let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
     let total_students: usize = students.values().map(|s| s.len()).sum();
-    let mut extra_seats = total_seats - total_students;
+    let mut extra_seats = match total_seats > total_students {
+        true => total_seats - total_students,
+        false => panic!("ERROR: more students than seats"),
+    };
 
     let mut placed_subjects = HashSet::new();
     for hall in &mut halls {
