@@ -62,20 +62,18 @@ fn get_next_sub(
     hall: &Hall,
     placed_subjects: &HashSet<String>,
 ) -> Option<String> {
-    let filtered: Vec<(&String, usize)> = students
+    let filtered = students
         .iter()
         .map(|(sub, vec)| (sub, vec.len()))
-        .filter(|(sub, size)| Some(*sub) != hall.prev_sub() && *size > 0)
-        .collect();
+        .filter(|(sub, size)| Some(*sub) != hall.prev_sub() && *size > 0);
 
     let further_filtered: Vec<(&String, usize)> = filtered
         .clone()
-        .into_iter()
         .filter(|(sub, _)| placed_subjects.contains(sub.to_owned()))
         .collect();
 
     let students = if further_filtered.is_empty() {
-        filtered
+        filtered.collect()
     } else {
         further_filtered
     };
