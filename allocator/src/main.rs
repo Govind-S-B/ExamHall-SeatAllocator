@@ -45,8 +45,7 @@ fn main() {
                                 .map(|s| s.class().to_owned())
                                 .collect();
                             students = students
-                                .into_iter()
-                                .map(|(_, vec)| vec)
+                                .into_values()
                                 .flatten()
                                 .fold(HashMap::new(), |mut map, student| {
                                     map.entry(student.class().to_owned()).or_default().push(student);
@@ -70,11 +69,7 @@ fn main() {
 
     // ANY mode
     if !students.is_empty() {
-        let mut students = students
-            .into_iter()
-            .map(|(_, vec)| vec)
-            .flatten()
-            .collect::<Vec<Student>>();
+        let mut students = students.into_values().flatten().collect::<Vec<Student>>();
 
         for hall in &mut halls {
             while !hall.is_full() && !students.is_empty() {
