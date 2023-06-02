@@ -1,10 +1,7 @@
 mod db_manager;
 mod hall;
 mod student;
-use std::{
-    collections::{HashMap, HashSet},
-    hash::Hash,
-};
+use std::collections::{HashMap, HashSet};
 
 use db_manager::DatabaseManager;
 use hall::Hall;
@@ -14,7 +11,6 @@ use student::Student;
 enum AllocationMode {
     SeperateSubject,
     SeperateClass,
-    Any,
 }
 fn main() {
     let db = DatabaseManager::new();
@@ -23,7 +19,7 @@ fn main() {
 
     let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
     let total_students: usize = students.values().map(|s| s.len()).sum();
-    let mut extra_seats = match total_seats > total_students {
+    let mut extra_seats = match total_seats >= total_students {
         true => total_seats - total_students,
         false => panic!("ERROR: more students than seats"),
     };
@@ -53,7 +49,6 @@ fn main() {
                             SeperateClass
                         },
                         SeperateClass => break 'main,
-                        Any => panic!("ERROR:this should never happen"),
                     };
                 } else {
                     hall.push_empty().expect("tried to push empty on full hall (error should never happer)");
@@ -67,7 +62,8 @@ fn main() {
         }
     }
 
-    if let AllocationMode::Any = allocation_mode {
+    // ANY mode
+    if !students.is_empty() {
         let mut students = students
             .into_iter()
             .map(|(_, vec)| vec)
