@@ -28,7 +28,6 @@ fn main() {
     let mut placed_keys = HashSet::new();
     let seated_students: Vec<&Student> = Vec::with_capacity(total_students);
     'main: for hall in &mut halls {
-        println!("Hall: {}", hall.name());
         if students.is_empty() {
             break;
         };
@@ -119,9 +118,6 @@ fn get_next_key(
         .clone()
         .filter(|(key, _)| placed_keys.contains(key.to_owned()))
         .collect();
-
-    println!("placed: {:#?}", placed_keys);
-    println!("empty: {:#?}", further_filtered.is_empty());
 
     let students = if further_filtered.is_empty() {
         filtered.collect()

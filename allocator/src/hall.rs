@@ -45,7 +45,6 @@ impl Hall {
     ///
     /// This function will return an error if the hall is full
     pub fn push(&mut self, student: Student) -> Result<(), Student> {
-        println!("Student: {:#?}", student);
         match self.is_full() {
             false => {
                 self.students.push(Some(student));
