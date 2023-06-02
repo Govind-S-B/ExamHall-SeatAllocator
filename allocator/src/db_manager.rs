@@ -1,7 +1,4 @@
-use crate::{
-    hall::Hall,
-    student::Student,
-};
+use crate::{hall::Hall, student::Student};
 use sqlite as sq;
 use std::{collections::hash_map::HashMap, vec};
 
@@ -38,36 +35,36 @@ impl DatabaseManager {
             write_connection: sqlite::open("report.db").expect("Error connecting to report.db"),
         }
     }
-/// `read_students_table` is a method that reads data from a database table named "students".
-///
-/// This method queries all rows from the "students" table. 
-/// It then iterates through each returned row, creating a new [`Student`] struct from the data 
-/// and adding it to a HashMap keyed by the "subject".
-///
-/// # Arguments
-///
-//// - [`&self`] - A reference to the instance of the struct that this method is being called on. 
-///
-/// # Returns
-///
-/// A [`HashMap<String, Vec<Student>>`] - A HashMap where each key is a "subject" and the value is a 
-/// vector of [`Student`] structs that belong to that subject.
-///
-/// # Schema
-///
-/// The "students" table is assumed to have at least the following schema:
-///
-//// - `id` - A TEXT field.
-//// - `subject` - A TEXT field.
-///
-/// The order of columns in the table must be ("id", "subject").
-///
-/// # Panics
-///
-/// This method will panic under the following conditions:
-///
-/// - If there is an error iterating over the rows returned by the query.
-/// - If the database does not match the expected schema, specifically if a row does not have an "id" or "subject" field.
+    /// `read_students_table` is a method that reads data from a database table named "students".
+    ///
+    /// This method queries all rows from the "students" table.
+    /// It then iterates through each returned row, creating a new [`Student`] struct from the data
+    /// and adding it to a HashMap keyed by the "subject".
+    ///
+    /// # Arguments
+    ///
+    //// - [`&self`] - A reference to the instance of the struct that this method is being called on.
+    ///
+    /// # Returns
+    ///
+    /// A [`HashMap<String, Vec<Student>>`] - A HashMap where each key is a "subject" and the value is a
+    /// vector of [`Student`] structs that belong to that subject.
+    ///
+    /// # Schema
+    ///
+    /// The "students" table is assumed to have at least the following schema:
+    ///
+    //// - `id` - A TEXT field.
+    //// - `subject` - A TEXT field.
+    ///
+    /// The order of columns in the table must be ("id", "subject").
+    ///
+    /// # Panics
+    ///
+    /// This method will panic under the following conditions:
+    ///
+    /// - If there is an error iterating over the rows returned by the query.
+    /// - If the database does not match the expected schema, specifically if a row does not have an "id" or "subject" field.
     pub fn read_students_table(&self) -> HashMap<String, Vec<Student>> {
         let query = "SELECT * FROM students";
         let mut students: HashMap<String, Vec<Student>> = HashMap::new();
@@ -98,39 +95,38 @@ impl DatabaseManager {
             })
             .unwrap();
 
-
         for students_vec in students.values_mut() {
             students_vec.sort_by_key(|s| (s.class().to_owned(), -s.roll_no()))
         }
         students
     }
 
-/// ``read_halls_table`` is a method that reads data from a database table named "halls".
-///
-/// This method queries all rows from the "halls" table, ordered by the "capacity" field in descending order.
-/// It then iterates through each returned row, creating a new [`Hall`] struct from the data and adding it to a vector.
-///
-/// # Returns
-///
-/// A `Vec<Hall>` - A vector of `Hall` structs, where each `Hall` corresponds to a row in the "halls" table.
-///
-/// # Schema
-///
-/// The "halls" table is assumed to have at least the following schema:
-///
-/// - [`hall_name`] - A TEXT field.
-/// - `capacity` - An INT field.
-///
-/// The order of columns in the table must be ("hall_name", "capacity").
-///
-/// # Panics
-///
-/// This method will panic under the following conditions:
-///
-/// - If there is an error iterating over the rows returned by the query.
-/// - If the database does not match the expected schema, specifically if a row does not have a "hall_name" or "capacity" field.
-/// - If the "capacity" field cannot be parsed into an integer.
-///
+    /// ``read_halls_table`` is a method that reads data from a database table named "halls".
+    ///
+    /// This method queries all rows from the "halls" table, ordered by the "capacity" field in descending order.
+    /// It then iterates through each returned row, creating a new [`Hall`] struct from the data and adding it to a vector.
+    ///
+    /// # Returns
+    ///
+    /// A `Vec<Hall>` - A vector of `Hall` structs, where each `Hall` corresponds to a row in the "halls" table.
+    ///
+    /// # Schema
+    ///
+    /// The "halls" table is assumed to have at least the following schema:
+    ///
+    /// - [`hall_name`] - A TEXT field.
+    /// - `capacity` - An INT field.
+    ///
+    /// The order of columns in the table must be ("hall_name", "capacity").
+    ///
+    /// # Panics
+    ///
+    /// This method will panic under the following conditions:
+    ///
+    /// - If there is an error iterating over the rows returned by the query.
+    /// - If the database does not match the expected schema, specifically if a row does not have a "hall_name" or "capacity" field.
+    /// - If the "capacity" field cannot be parsed into an integer.
+    ///
     pub fn read_halls_table(&self) -> Vec<Hall> {
         let query = "SELECT * FROM halls ORDER BY capacity DESC";
         let mut halls: Vec<Hall> = vec![];
@@ -157,34 +153,34 @@ impl DatabaseManager {
         halls
     }
 
-/// `write_report_table` is a method that handles the creation and population of a database table called "report".
-///
-/// This method drops the existing "report" table if it exists, then creates a new one with the specified schema.
-/// The table is then populated with student data from a provided list of [`Hall`] structs.
-/// Each student's data is inserted as a new row in the table.
-///
-/// # Arguments
-///
-/// - `halls` - A reference to a vector of `Hall` structs, each containing student data to be inserted into the table.
-///
-/// # Schema
-///
-/// The "report" table has the following schema:
-///
-/// - `id` - A CHAR(15) that serves as the primary key. It cannot be NULL.
-/// - `class` - A CHAR(10) that cannot be NULL.
-/// - `roll_no` - An INT that cannot be NULL.
-/// - `hall` - A TEXT field that cannot be NULL.
-/// - `seat_no` - An INT that cannot be NULL.
-/// - `subject` - A CHAR(50) that cannot be NULL.
-///
-/// # Panics
-///
-/// This method will panic under the following conditions:
-///
-/// - If there is an error dropping the existing "report" table.
-/// - If there is an error creating the new "report" table.
-/// - If there is an error inserting rows into the "report" table.
+    /// `write_report_table` is a method that handles the creation and population of a database table called "report".
+    ///
+    /// This method drops the existing "report" table if it exists, then creates a new one with the specified schema.
+    /// The table is then populated with student data from a provided list of [`Hall`] structs.
+    /// Each student's data is inserted as a new row in the table.
+    ///
+    /// # Arguments
+    ///
+    /// - `halls` - A reference to a vector of `Hall` structs, each containing student data to be inserted into the table.
+    ///
+    /// # Schema
+    ///
+    /// The "report" table has the following schema:
+    ///
+    /// - `id` - A CHAR(15) that serves as the primary key. It cannot be NULL.
+    /// - `class` - A CHAR(10) that cannot be NULL.
+    /// - `roll_no` - An INT that cannot be NULL.
+    /// - `hall` - A TEXT field that cannot be NULL.
+    /// - `seat_no` - An INT that cannot be NULL.
+    /// - `subject` - A CHAR(50) that cannot be NULL.
+    ///
+    /// # Panics
+    ///
+    /// This method will panic under the following conditions:
+    ///
+    /// - If there is an error dropping the existing "report" table.
+    /// - If there is an error creating the new "report" table.
+    /// - If there is an error inserting rows into the "report" table.
     pub fn write_report_table(&self, halls: &Vec<Hall>) {
         let query = "DROP TABLE IF EXISTS report";
         self.write_connection
@@ -220,7 +216,7 @@ impl DatabaseManager {
                     hall.name(),
                     index + 1,
                 );
-                command += &format!( 
+                command += &format!(
                     "(\"{id}\", \"{class}\", {roll_no},\"{subject}\", \"{hall_name}\", {seat_no}),"
                 );
             }
