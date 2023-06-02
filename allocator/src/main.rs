@@ -15,6 +15,7 @@ enum AllocationMode {
 fn main() {
     let db = DatabaseManager::new();
     let mut students: HashMap<String, Vec<Student>> = db.read_students_table();
+
     let mut halls: Vec<Hall> = db.read_halls_table();
 
     let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
@@ -25,7 +26,9 @@ fn main() {
     };
     let mut allocation_mode = AllocationMode::SeperateSubject;
     let mut placed_keys = HashSet::new();
+    let seated_students: Vec<&Student> = Vec::with_capacity(total_students);
     'main: for hall in &mut halls {
+        println!("Hall: {}", hall.name());
         if students.is_empty() {
             break;
         };
@@ -37,7 +40,10 @@ fn main() {
                 if extra_seats == 0 {
                     allocation_mode = match allocation_mode {
                         SeperateSubject => {
-                            placed_keys.clear();
+                            placed_keys = seated_students
+                                .iter()
+                                .map(|s| s.class().to_owned())
+                                .collect();
                             students = students
                                 .into_iter()
                                 .map(|(_, vec)| vec)
@@ -98,8 +104,8 @@ fn get_next_student(
     if students_in_key.is_empty() {
         students.remove(&next_key);
     }
-
-    placed_keys.insert(next_student.subject().to_owned());
+    hall.previously_placed_key = Some(next_key.clone());
+    placed_keys.insert(next_key);
 
     Some(next_student)
 }
@@ -107,17 +113,20 @@ fn get_next_student(
 fn get_next_key(
     students: &HashMap<String, Vec<Student>>,
     hall: &Hall,
-    placed_subjects: &HashSet<String>,
+    placed_keys: &HashSet<String>,
 ) -> Option<String> {
     let filtered = students
         .iter()
         .map(|(key, vec)| (key, vec.len()))
-        .filter(|(key, size)| Some(*key) != hall.prev_sub() && *size > 0);
+        .filter(|(key, size)| Some(*key) != hall.previously_placed_key.as_ref() && *size > 0);
 
     let further_filtered: Vec<(&String, usize)> = filtered
         .clone()
-        .filter(|(key, _)| placed_subjects.contains(key.to_owned()))
+        .filter(|(key, _)| placed_keys.contains(key.to_owned()))
         .collect();
+
+    println!("placed: {:#?}", placed_keys);
+    println!("empty: {:#?}", further_filtered.is_empty());
 
     let students = if further_filtered.is_empty() {
         filtered.collect()
