@@ -723,7 +723,6 @@ def generate_report():
     file_name = "Seating "+date+" "+session+".pdf"
     pdf3.output(file_name)
 
-    print("Done")
 
 
 generate_report()

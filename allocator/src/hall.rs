@@ -25,7 +25,7 @@ pub struct Hall {
     name: String,
     capacity: usize,
     students: Vec<Option<Student>>,
-    previously_placed_subject: Option<String>,
+    pub previously_placed_key: Option<String>,
 }
 
 impl Hall {
@@ -35,7 +35,7 @@ impl Hall {
             name: name.to_owned(),
             capacity,
             students: Vec::with_capacity(capacity),
-            previously_placed_subject: None,
+            previously_placed_key: None,
         }
     }
 
@@ -47,7 +47,6 @@ impl Hall {
     pub fn push(&mut self, student: Student) -> Result<(), Student> {
         match self.is_full() {
             false => {
-                self.previously_placed_subject = Some(student.subject().to_owned());
                 self.students.push(Some(student));
                 Ok(())
             }
@@ -57,7 +56,7 @@ impl Hall {
     pub fn push_empty(&mut self) -> Result<(), ()> {
         if !self.is_full() {
             self.students.push(None);
-            self.previously_placed_subject = None;
+            self.previously_placed_key = None;
             Ok(())
         } else {
             Err(())
@@ -74,10 +73,6 @@ impl Hall {
 
     pub fn is_full(&self) -> bool {
         self.students.len() >= self.capacity
-    }
-
-    pub fn prev_sub(&self) -> Option<&String> {
-        self.previously_placed_subject.as_ref()
     }
 
     pub fn seats_left(&self) -> usize {
