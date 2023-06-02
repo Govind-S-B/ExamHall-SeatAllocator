@@ -124,6 +124,9 @@ class _StudentsPageState extends State<StudentsPage> {
       where: 'id = ?',
       whereArgs: [row.student_id],
     );
+    if (row.subject != row.editedSubject) {
+      subjects.add(row.editedSubject);
+    }
     _fetchTableViewRows();
     _fetchSubjectViewRows();
   }
@@ -132,6 +135,9 @@ class _StudentsPageState extends State<StudentsPage> {
     await _database.execute(
         "UPDATE students SET subject = '${row.editedSubject}' WHERE subject = '${row.subject}'"
     );
+    if (row.subject != row.editedSubject) {
+      subjects.add(row.editedSubject);
+    }
     _fetchTableViewRows();
     _fetchSubjectViewRows();
   }
