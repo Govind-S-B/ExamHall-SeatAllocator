@@ -48,11 +48,11 @@ class _StudentsPageState extends State<StudentsPage> {
   List<String> subjects = [];
   List<String> filteredSubjects = [];
 
-  TextEditingController _subjectTextEditingController = TextEditingController();
+  final TextEditingController _subjectTextEditingController = TextEditingController();
   String selectedSubject = '';
 
-  TextEditingController _classTextEditingController = TextEditingController();
-  TextEditingController _rollsTextEditingController = TextEditingController();
+  final TextEditingController _classTextEditingController = TextEditingController();
+  final TextEditingController _rollsTextEditingController = TextEditingController();
 
   List<bool> isSelected = [true, false, false];
   int selectedOption = 1;
@@ -107,10 +107,10 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _fetchTableViewRows() async {
-    final List<Map<String, dynamic>> table_data =
+    final List<Map<String, dynamic>> tableData =
         await _database.query('students');
     setState(() {
-      tableViewRows = table_data.map((row) {
+      tableViewRows = tableData.map((row) {
         return TableViewRow(
           row['id'],
           row['subject'],
@@ -143,11 +143,11 @@ class _StudentsPageState extends State<StudentsPage> {
     _fetchSubjectViewRows();
   }
 
-  Future<void> _deleteTableViewRow(String student_id) async {
+  Future<void> _deleteTableViewRow(String studentId) async {
     await _database.delete(
       'students',
       where: 'id = ?',
-      whereArgs: [student_id],
+      whereArgs: [studentId],
     );
     _fetchTableViewRows();
     _fetchSubjectViewRows();
@@ -199,10 +199,10 @@ class _StudentsPageState extends State<StudentsPage> {
   Widget buildOptionContainer(int option) {
     switch (option) {
       case 1:
-        return Container(
+        return SizedBox(
           width: double.infinity,
           child: DataTable(
-            columns: [
+            columns: const [
               DataColumn(label: Text('ID')),
               DataColumn(label: Text('Subject')),
               DataColumn(label: Text('Actions')),
@@ -247,13 +247,13 @@ class _StudentsPageState extends State<StudentsPage> {
                           ? Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.done),
+                                  icon: const Icon(Icons.done),
                                   onPressed: () {
                                     saveChanges(row);
                                   },
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.cancel),
+                                  icon: const Icon(Icons.cancel),
                                   onPressed: () {
                                     cancelEdit(row);
                                   },
@@ -263,13 +263,13 @@ class _StudentsPageState extends State<StudentsPage> {
                           : Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.edit),
+                                  icon: const Icon(Icons.edit),
                                   onPressed: () {
                                     updateTableViewRow(row);
                                   },
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.delete),
+                                  icon: const Icon(Icons.delete),
                                   onPressed: () {
                                     _deleteTableViewRow(row.student_id);
                                   },
@@ -283,10 +283,10 @@ class _StudentsPageState extends State<StudentsPage> {
           ),
         );
       case 2:
-        return Container(
+        return SizedBox(
           width: double.infinity,
           child: DataTable(
-            columns: [
+            columns: const [
               DataColumn(label: Text('Subject')),
               DataColumn(label: Text('Actions')),
             ],
@@ -317,13 +317,13 @@ class _StudentsPageState extends State<StudentsPage> {
                           ? Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.done),
+                                  icon: const Icon(Icons.done),
                                   onPressed: () {
                                     saveSubjectChanges(row);
                                   },
                                 ),
                                 IconButton(
-                                  icon: Icon(Icons.cancel),
+                                  icon: const Icon(Icons.cancel),
                                   onPressed: () {
                                     if (editedSubjectViewRows.contains(row)) {
                                       setState(() {
@@ -339,7 +339,7 @@ class _StudentsPageState extends State<StudentsPage> {
                           : Row(
                               children: [
                                 IconButton(
-                                  icon: Icon(Icons.edit),
+                                  icon: const Icon(Icons.edit),
                                   onPressed: () {
                                     // updateTableViewRow(row); -> updateSubjectViewRow(row); make a function later ig
                                     if (!editedSubjectViewRows.contains(row)) {
@@ -362,7 +362,7 @@ class _StudentsPageState extends State<StudentsPage> {
           height: 200,
           width: 200,
           color: Colors.blue,
-          child: Center(
+          child: const Center(
             child: Text(
               'Option 3',
               style: TextStyle(fontSize: 48, color: Colors.white),
@@ -394,13 +394,13 @@ class _StudentsPageState extends State<StudentsPage> {
                     children: [
                       TextField(
                         controller: _classTextEditingController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Enter Class',
                         ),
                       ),
                       TextField(
                         controller: _rollsTextEditingController,
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           hintText: 'Enter Roll List',
                         ),
                         maxLines: null,
@@ -426,13 +426,13 @@ class _StudentsPageState extends State<StudentsPage> {
                                       .toList();
                                 });
                               },
-                              decoration: InputDecoration(
+                              decoration: const InputDecoration(
                                 hintText: 'Enter Subject',
                               ),
                             ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.add),
+                            icon: const Icon(Icons.add),
                             onPressed: () {
                               String newSubject =
                                   _subjectTextEditingController.text.trim();
@@ -447,28 +447,28 @@ class _StudentsPageState extends State<StudentsPage> {
                             },
                           ),
                           ElevatedButton(
-                            child: Text('Submit'),
+                            child: const Text('Submit'),
                             onPressed: () {
-                              var student_class =
+                              var studentClass =
                                   _classTextEditingController.text;
-                              var roll_list =
+                              var rollList =
                                   _rollsTextEditingController.text.split(",");
 
-                              for (var roll in roll_list) {
+                              for (var roll in rollList) {
                                 if (roll.contains("-")) {
-                                  var roll_num_range = roll.split("-");
+                                  var rollNumRange = roll.split("-");
 
-                                  for (var i = int.parse(roll_num_range[0]);
-                                      i <= int.parse(roll_num_range[1]);
+                                  for (var i = int.parse(rollNumRange[0]);
+                                      i <= int.parse(rollNumRange[1]);
                                       i++) {
                                     _database.insert('students', {
-                                      "id": student_class + "-" + i.toString(),
+                                      "id": "$studentClass-$i",
                                       "subject": selectedSubject,
                                     });
                                   }
                                 } else {
                                   _database.insert('students', {
-                                    "id": student_class + "-" + roll,
+                                    "id": "$studentClass-$roll",
                                     "subject": selectedSubject,
                                   });
                                 }
@@ -484,7 +484,7 @@ class _StudentsPageState extends State<StudentsPage> {
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       SizedBox(
                         height: 90,
                         child: SingleChildScrollView(
@@ -494,11 +494,11 @@ class _StudentsPageState extends State<StudentsPage> {
                             itemBuilder: (context, index) {
                               return ListTile(
                                 visualDensity:
-                                    VisualDensity(horizontal: 0, vertical: -4),
+                                    const VisualDensity(horizontal: 0, vertical: -4),
                                 style: ListTileStyle.list,
                                 title: Text(
                                   filteredSubjects[index],
-                                  style: TextStyle(fontSize: 12),
+                                  style: const TextStyle(fontSize: 12),
                                 ),
                                 dense: true,
                                 onTap: () {
@@ -521,11 +521,6 @@ class _StudentsPageState extends State<StudentsPage> {
             )),
           ),
           ToggleButtons(
-            children: [
-              Text('1'), // Students
-              Text('2'), // Subjects
-              Text('3'), // Classes
-            ],
             isSelected: isSelected,
             onPressed: (index) {
               setState(() {
@@ -535,6 +530,11 @@ class _StudentsPageState extends State<StudentsPage> {
                 selectedOption = index + 1;
               });
             },
+            children: const [
+              Text('1'), // Students
+              Text('2'), // Subjects
+              Text('3'), // Classes
+            ],
           ),
           Expanded(
             flex: 3,

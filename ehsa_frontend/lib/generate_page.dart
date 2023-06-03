@@ -10,7 +10,7 @@ class GeneratePage extends StatefulWidget {
 }
 
 class _GeneratePageState extends State<GeneratePage> {
-  TextEditingController _sessionIdFieldController = TextEditingController();
+  final TextEditingController _sessionIdFieldController = TextEditingController();
   String _sessionId = "";
 
   var databaseFactory = databaseFactoryFfi;
@@ -52,7 +52,7 @@ class _GeneratePageState extends State<GeneratePage> {
               child: TextField(
                 controller: _sessionIdFieldController,
                 decoration: InputDecoration(
-                  labelText: 'Session : ' + _sessionId,
+                  labelText: 'Session : $_sessionId',
                 ),
               ),
             ), // enter session name
@@ -65,7 +65,7 @@ class _GeneratePageState extends State<GeneratePage> {
                   _sessionIdFieldController.clear();
                   setState(() {});
                 },
-                child: Icon(Icons.settings)),
+                child: const Icon(Icons.settings)),
           ],
         ), // set session name
         ElevatedButton(
@@ -91,7 +91,7 @@ class _GeneratePageState extends State<GeneratePage> {
                 // Handle any exceptions here
               }
             },
-            child: Text("Generate")) // generate button
+            child: const Text("Generate")) // generate button
       ],
     )));
   }

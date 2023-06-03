@@ -137,7 +137,7 @@ class _HallPageState extends State<HallPage> {
                   width: 200,
                   child: TextField(
                     controller: _formtextController1,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Hall Name',
                     ),
                   ),
@@ -146,7 +146,7 @@ class _HallPageState extends State<HallPage> {
                   width: 150,
                   child: TextField(
                     controller: _formtextController2,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Capacity',
                     ),
                   ),
@@ -161,18 +161,18 @@ class _HallPageState extends State<HallPage> {
                     _formtextController2.clear();
                     _fetchHalls();
                   },
-                  child: Icon(Icons.arrow_circle_right_sharp),
+                  child: const Icon(Icons.arrow_circle_right_sharp),
                 ),
               ],
             ))),
           ),
           Expanded(
             flex: 3,
-            child: Container(
+            child: SizedBox(
               width: double.infinity,
               child: SingleChildScrollView(
                 child: DataTable(
-                  columns: [
+                  columns: const [
                     DataColumn(label: Text('Hall Name')),
                     DataColumn(label: Text('Capacity')),
                     DataColumn(label: Text('Actions')),
@@ -219,13 +219,13 @@ class _HallPageState extends State<HallPage> {
                                 ? Row(
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.done),
+                                        icon: const Icon(Icons.done),
                                         onPressed: () {
                                           saveChanges(hall);
                                         },
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.cancel),
+                                        icon: const Icon(Icons.cancel),
                                         onPressed: () {
                                           cancelEdit(hall);
                                         },
@@ -235,13 +235,13 @@ class _HallPageState extends State<HallPage> {
                                 : Row(
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.edit),
+                                        icon: const Icon(Icons.edit),
                                         onPressed: () {
                                           updateHall(hall);
                                         },
                                       ),
                                       IconButton(
-                                        icon: Icon(Icons.delete),
+                                        icon: const Icon(Icons.delete),
                                         onPressed: () {
                                           _deleteHall(hall.hallName);
                                         },

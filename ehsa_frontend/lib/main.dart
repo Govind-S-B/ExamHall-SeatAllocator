@@ -55,6 +55,11 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'EHSA',
       theme: ThemeData(
+        listTileTheme: ListTileThemeData(
+          selectedTileColor: Colors.blue.withAlpha(50),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16))),
+        ),
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
@@ -64,54 +69,110 @@ class MyAppState extends State<MyApp> {
           centerTitle: true,
           title: Text(_getPageTitle(_selectedPage)),
         ),
-        drawer: Drawer(
-          child: ListView(
-            children: [
-              DrawerHeader(
-                decoration: const BoxDecoration(
-                  color: Colors.blue,
-                ),
-                child: GestureDetector(
-                  onTap: () {
-                    _scaffoldKey.currentState?.closeDrawer();
-                  },
-                  child: const Text(
-                    'EHSA',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 24,
+        drawer: Padding(
+          padding: const EdgeInsets.only(
+            bottom: 14,
+            top: 14,
+          ),
+          child: Drawer(
+            elevation: 0,
+            width: 275,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(16),
+                  topRight: Radius.circular(16)),
+            ),
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 8,
+                    right: 8,
+                    left: 8,
+                  ),
+                  child: SizedBox(
+                    height: 145,
+                    child: DrawerHeader(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        color: Colors.blue,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          _scaffoldKey.currentState?.closeDrawer();
+                        },
+                        child: const Center(
+                          child: Text(
+                            'EHSA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              ListTile(
-                leading: const Icon(Icons.home),
-                title: const Text('Halls'),
-                selected: _selectedPage == Page.halls,
-                onTap: () {
-                  _selectPage(Page.halls);
-                  _scaffoldKey.currentState?.closeDrawer();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.person),
-                title: const Text('Students'),
-                selected: _selectedPage == Page.students,
-                onTap: () {
-                  _selectPage(Page.students);
-                  _scaffoldKey.currentState?.closeDrawer();
-                },
-              ),
-              ListTile(
-                leading: const Icon(Icons.create),
-                title: const Text('Generate'),
-                selected: _selectedPage == Page.generate,
-                onTap: () {
-                  _selectPage(Page.generate);
-                  _scaffoldKey.currentState?.closeDrawer();
-                },
-              ),
-            ],
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                    top: 1,
+                    bottom: 4,
+                  ),
+                  child: ListTile(
+                    leading: _selectedPage == Page.halls
+                        ? const Icon(Icons.add_home_rounded)
+                        : const Icon(Icons.add_home_outlined),
+                    title: const Text('Halls'),
+                    selected: _selectedPage == Page.halls,
+                    onTap: () {
+                      _selectPage(Page.halls);
+                      _scaffoldKey.currentState?.closeDrawer();
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                    top: 4,
+                    bottom: 4,
+                  ),
+                  child: ListTile(
+                    leading: _selectedPage == Page.students
+                        ? const Icon(Icons.person_add_alt_1_rounded)
+                        : const Icon(Icons.person_add_alt_1_outlined),
+                    title: const Text('Students'),
+                    selected: _selectedPage == Page.students,
+                    onTap: () {
+                      _selectPage(Page.students);
+                      _scaffoldKey.currentState?.closeDrawer();
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                    top: 4,
+                    bottom: 4,
+                  ),
+                  child: ListTile(
+                    leading: _selectedPage == Page.generate
+                        ? const Icon(Icons.create_rounded)
+                        : const Icon(Icons.create_outlined),
+                    title: const Text('Generate'),
+                    selected: _selectedPage == Page.generate,
+                    onTap: () {
+                      _selectPage(Page.generate);
+                      _scaffoldKey.currentState?.closeDrawer();
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
         body: SizedBox(
