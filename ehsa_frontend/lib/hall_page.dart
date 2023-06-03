@@ -127,11 +127,9 @@ class _HallPageState extends State<HallPage> {
         children: <Widget>[
           Expanded(
             flex: 2,
-            child: Container(
-                child: Container(
-                    child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(
                   width: 200,
@@ -142,6 +140,9 @@ class _HallPageState extends State<HallPage> {
                     ),
                   ),
                 ),
+                const SizedBox(
+                  width: 40,
+                ),
                 SizedBox(
                   width: 150,
                   child: TextField(
@@ -150,6 +151,9 @@ class _HallPageState extends State<HallPage> {
                       labelText: 'Capacity',
                     ),
                   ),
+                ),
+                const SizedBox(
+                  width: 40,
                 ),
                 ElevatedButton(
                   onPressed: () {
@@ -161,10 +165,19 @@ class _HallPageState extends State<HallPage> {
                     _formtextController2.clear();
                     _fetchHalls();
                   },
-                  child: const Icon(Icons.arrow_circle_right_sharp),
+                  child: const Padding(
+                    padding: EdgeInsets.all(4),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("GO"),
+                        Icon(Icons.keyboard_arrow_right_rounded),
+                      ],
+                    ),
+                  ),
                 ),
               ],
-            ))),
+            ),
           ),
           Expanded(
             flex: 3,
