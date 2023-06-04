@@ -48,11 +48,14 @@ class _StudentsPageState extends State<StudentsPage> {
   List<String> subjects = [];
   List<String> filteredSubjects = [];
 
-  final TextEditingController _subjectTextEditingController = TextEditingController();
+  final TextEditingController _subjectTextEditingController =
+      TextEditingController();
   String selectedSubject = '';
 
-  final TextEditingController _classTextEditingController = TextEditingController();
-  final TextEditingController _rollsTextEditingController = TextEditingController();
+  final TextEditingController _classTextEditingController =
+      TextEditingController();
+  final TextEditingController _rollsTextEditingController =
+      TextEditingController();
 
   List<bool> isSelected = [true, false, false];
   int selectedOption = 1;
@@ -381,144 +384,162 @@ class _StudentsPageState extends State<StudentsPage> {
         children: <Widget>[
           Expanded(
             flex: 2,
-            child: Container(
-                child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 300,
-                  child: Column(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16), bottom: Radius.circular(16)),
+                  color: Colors.blue.shade300.withAlpha(50),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
-                        controller: _classTextEditingController,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter Class',
+                      SizedBox(
+                        width: 300,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            TextField(
+                              controller: _classTextEditingController,
+                              decoration: const InputDecoration(
+                                hintText: 'Enter Class',
+                              ),
+                            ),
+                            TextField(
+                              controller: _rollsTextEditingController,
+                              decoration: const InputDecoration(
+                                hintText: 'Enter Roll List',
+                              ),
+                              maxLines: null,
+                            )
+                          ],
                         ),
                       ),
-                      TextField(
-                        controller: _rollsTextEditingController,
-                        decoration: const InputDecoration(
-                          hintText: 'Enter Roll List',
+                      const SizedBox(
+                        width: 30,
+                      ),
+                      SizedBox(
+                        width: 500,
+                        child: Column(
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: TextField(
+                                    controller: _subjectTextEditingController,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        filteredSubjects = subjects
+                                            .where((subject) => subject
+                                                .toLowerCase()
+                                                .contains(value.toLowerCase()))
+                                            .toList();
+                                      });
+                                    },
+                                    decoration: const InputDecoration(
+                                      hintText: 'Enter Subject',
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.add),
+                                  onPressed: () {
+                                    String newSubject =
+                                        _subjectTextEditingController.text
+                                            .trim();
+                                    if (newSubject.isNotEmpty &&
+                                        !subjects.contains(newSubject)) {
+                                      setState(() {
+                                        subjects.add(newSubject);
+                                        filteredSubjects = subjects;
+                                        _subjectTextEditingController.clear();
+                                      });
+                                    }
+                                  },
+                                ),
+                                ElevatedButton(
+                                  child: const Text('Submit'),
+                                  onPressed: () {
+                                    var studentClass =
+                                        _classTextEditingController.text;
+                                    var rollList = _rollsTextEditingController
+                                        .text
+                                        .split(",");
+
+                                    for (var roll in rollList) {
+                                      if (roll.contains("-")) {
+                                        var rollNumRange = roll.split("-");
+
+                                        for (var i = int.parse(rollNumRange[0]);
+                                            i <= int.parse(rollNumRange[1]);
+                                            i++) {
+                                          _database.insert('students', {
+                                            "id": "$studentClass-$i",
+                                            "subject": selectedSubject,
+                                          });
+                                        }
+                                      } else {
+                                        _database.insert('students', {
+                                          "id": "$studentClass-$roll",
+                                          "subject": selectedSubject,
+                                        });
+                                      }
+                                    }
+
+                                    _classTextEditingController.clear();
+                                    _rollsTextEditingController.clear();
+                                    _subjectTextEditingController.clear();
+                                    filteredSubjects = subjects;
+                                    _fetchTableViewRows();
+                                    setState(() {});
+                                  },
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              height: 90,
+                              child: SingleChildScrollView(
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  itemCount: filteredSubjects.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      visualDensity: const VisualDensity(
+                                          horizontal: 0, vertical: -4),
+                                      style: ListTileStyle.list,
+                                      title: Text(
+                                        filteredSubjects[index],
+                                        style: const TextStyle(fontSize: 12),
+                                      ),
+                                      dense: true,
+                                      onTap: () {
+                                        setState(() {
+                                          selectedSubject =
+                                              filteredSubjects[index];
+                                          _subjectTextEditingController.text =
+                                              selectedSubject;
+                                          filteredSubjects = [];
+                                        });
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        maxLines: null,
                       )
                     ],
                   ),
                 ),
-                SizedBox(
-                  width: 500,
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: TextField(
-                              controller: _subjectTextEditingController,
-                              onChanged: (value) {
-                                setState(() {
-                                  filteredSubjects = subjects
-                                      .where((subject) => subject
-                                          .toLowerCase()
-                                          .contains(value.toLowerCase()))
-                                      .toList();
-                                });
-                              },
-                              decoration: const InputDecoration(
-                                hintText: 'Enter Subject',
-                              ),
-                            ),
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.add),
-                            onPressed: () {
-                              String newSubject =
-                                  _subjectTextEditingController.text.trim();
-                              if (newSubject.isNotEmpty &&
-                                  !subjects.contains(newSubject)) {
-                                setState(() {
-                                  subjects.add(newSubject);
-                                  filteredSubjects = subjects;
-                                  _subjectTextEditingController.clear();
-                                });
-                              }
-                            },
-                          ),
-                          ElevatedButton(
-                            child: const Text('Submit'),
-                            onPressed: () {
-                              var studentClass =
-                                  _classTextEditingController.text;
-                              var rollList =
-                                  _rollsTextEditingController.text.split(",");
-
-                              for (var roll in rollList) {
-                                if (roll.contains("-")) {
-                                  var rollNumRange = roll.split("-");
-
-                                  for (var i = int.parse(rollNumRange[0]);
-                                      i <= int.parse(rollNumRange[1]);
-                                      i++) {
-                                    _database.insert('students', {
-                                      "id": "$studentClass-$i",
-                                      "subject": selectedSubject,
-                                    });
-                                  }
-                                } else {
-                                  _database.insert('students', {
-                                    "id": "$studentClass-$roll",
-                                    "subject": selectedSubject,
-                                  });
-                                }
-                              }
-
-                              _classTextEditingController.clear();
-                              _rollsTextEditingController.clear();
-                              _subjectTextEditingController.clear();
-                              filteredSubjects = subjects;
-                              _fetchTableViewRows();
-                              setState(() {});
-                            },
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10),
-                      SizedBox(
-                        height: 90,
-                        child: SingleChildScrollView(
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            itemCount: filteredSubjects.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                visualDensity:
-                                    const VisualDensity(horizontal: 0, vertical: -4),
-                                style: ListTileStyle.list,
-                                title: Text(
-                                  filteredSubjects[index],
-                                  style: const TextStyle(fontSize: 12),
-                                ),
-                                dense: true,
-                                onTap: () {
-                                  setState(() {
-                                    selectedSubject = filteredSubjects[index];
-                                    _subjectTextEditingController.text =
-                                        selectedSubject;
-                                    filteredSubjects = [];
-                                  });
-                                },
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                )
-              ],
-            )),
+              ),
+            ),
           ),
           ToggleButtons(
             isSelected: isSelected,
@@ -538,8 +559,18 @@ class _StudentsPageState extends State<StudentsPage> {
           ),
           Expanded(
             flex: 3,
-            child: SingleChildScrollView(
-              child: buildOptionContainer(selectedOption),
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                      top: Radius.circular(16), bottom: Radius.circular(16)),
+                  color: Colors.blue.shade300.withAlpha(50),
+                ),
+                child: SingleChildScrollView(
+                  child: buildOptionContainer(selectedOption),
+                ),
+              ),
             ),
           ),
         ],

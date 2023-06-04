@@ -43,74 +43,85 @@ class _GeneratePageState extends State<GeneratePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Container(
-            child: Column(
-      children: [
-        SizedBox(
-          height: 200,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: 300,
-                decoration: BoxDecoration(
-                  border: Border.all(),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  controller: _sessionIdFieldController,
-                  decoration: InputDecoration(
-                    labelText: 'Session : $_sessionId',
-                    border: InputBorder.none,
-                    contentPadding: const EdgeInsets.all(10),
-                  ),
-                ),
-              ), // enter session name
-              Padding(
-                padding: const EdgeInsets.all(10),
-                child: ElevatedButton(
-                  onPressed: () {
-                    _sessionId = _sessionIdFieldController.text;
-                    // write a function to update the metadata table with the new session name
-                    _database.execute(
-                      "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
-                    );
-                    _sessionIdFieldController.clear();
-                    setState(() {});
-                  },
-                  child: const Icon(Icons.settings),
-                ),
-              )
-            ],
+        body: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16), bottom: Radius.circular(16)),
+            color: Colors.blue.shade300.withAlpha(50),
           ),
-        ), // set session name
+          child: Column(
+            children: [
+              SizedBox(
+                height: 200,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Container(
+                        width: 300,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue.shade300),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextField(
+                          controller: _sessionIdFieldController,
+                          decoration: InputDecoration(
+                            labelText: 'Session : $_sessionId',
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(10),
+                          ),
+                        ),
+                      ),
+                    ), // enter session name
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _sessionId = _sessionIdFieldController.text;
+                          // write a function to update the metadata table with the new session name
+                          _database.execute(
+                            "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
+                          );
+                          _sessionIdFieldController.clear();
+                          setState(() {});
+                        },
+                        child: const Icon(Icons.settings),
+                      ),
+                    )
+                  ],
+                ),
+              ), // set session name
 
-        ElevatedButton(
-            onPressed: () async {
-              // async function to launch rust allocator and wait for its response exit code
-              // if exit code is 0 then show a success message
-              // else show an error message
+              ElevatedButton(
+                  onPressed: () async {
+                    // async function to launch rust allocator and wait for its response exit code
+                    // if exit code is 0 then show a success message
+                    // else show an error message
 
-              try {
-                final result = await Process.run(
-                    '${Directory.current.path}\\allocator.exe', []);
+                    try {
+                      final result = await Process.run(
+                          '${Directory.current.path}\\allocator.exe', []);
 
-                if (result.exitCode == 0) {
-                  // Executable executed successfully
-                  // launch pdf generator
+                      if (result.exitCode == 0) {
+                        // Executable executed successfully
+                        // launch pdf generator
 
-                  final result2 = await Process.run(
-                      '${Directory.current.path}\\pdf_generator.exe', []);
-                } else {
-                  // Executable failed
-                }
-              } catch (e) {
-                // Handle any exceptions here
-              }
-            },
-            child: const Text("Generate")) // generate button
-      ],
-    )));
+                        final result2 = await Process.run(
+                            '${Directory.current.path}\\pdf_generator.exe', []);
+                      } else {
+                        // Executable failed
+                      }
+                    } catch (e) {
+                      // Handle any exceptions here
+                    }
+                  },
+                  child: const Text("Generate")) // generate button
+            ],
+          )),
+    ));
   }
 }
