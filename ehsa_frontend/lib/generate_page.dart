@@ -10,7 +10,8 @@ class GeneratePage extends StatefulWidget {
 }
 
 class _GeneratePageState extends State<GeneratePage> {
-  final TextEditingController _sessionIdFieldController = TextEditingController();
+  final TextEditingController _sessionIdFieldController =
+      TextEditingController();
   String _sessionId = "";
 
   var databaseFactory = databaseFactoryFfi;
@@ -45,29 +46,46 @@ class _GeneratePageState extends State<GeneratePage> {
         body: Container(
             child: Column(
       children: [
-        Row(
-          children: [
-            SizedBox(
-              width: 300,
-              child: TextField(
-                controller: _sessionIdFieldController,
-                decoration: InputDecoration(
-                  labelText: 'Session : $_sessionId',
+        SizedBox(
+          height: 200,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 300,
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.circular(10),
                 ),
-              ),
-            ), // enter session name
-            ElevatedButton(
-                onPressed: () {
-                  _sessionId = _sessionIdFieldController.text;
-                  // write a function to update the metadata table with the new session name
-                  _database.execute(
-                      "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')");
-                  _sessionIdFieldController.clear();
-                  setState(() {});
-                },
-                child: const Icon(Icons.settings)),
-          ],
+                child: TextField(
+                  controller: _sessionIdFieldController,
+                  decoration: InputDecoration(
+                    labelText: 'Session : $_sessionId',
+                    border: InputBorder.none,
+                    contentPadding: const EdgeInsets.all(10),
+                  ),
+                ),
+              ), // enter session name
+              Padding(
+                padding: const EdgeInsets.all(10),
+                child: ElevatedButton(
+                  onPressed: () {
+                    _sessionId = _sessionIdFieldController.text;
+                    // write a function to update the metadata table with the new session name
+                    _database.execute(
+                      "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
+                    );
+                    _sessionIdFieldController.clear();
+                    setState(() {});
+                  },
+                  child: const Icon(Icons.settings),
+                ),
+              )
+            ],
+          ),
         ), // set session name
+
         ElevatedButton(
             onPressed: () async {
               // async function to launch rust allocator and wait for its response exit code

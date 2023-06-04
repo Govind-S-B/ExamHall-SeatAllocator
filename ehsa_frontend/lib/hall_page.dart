@@ -165,7 +165,7 @@ class _HallPageState extends State<HallPage> {
                     _formtextController2.clear();
                     _fetchHalls();
                   },
-                  child: const Padding(
+                  child:const Padding(
                     padding: EdgeInsets.all(4),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
