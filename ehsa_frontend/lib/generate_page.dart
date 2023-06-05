@@ -81,7 +81,11 @@ class _GeneratePageState extends State<GeneratePage> {
                       padding: const EdgeInsets.all(10),
                       child: ElevatedButton(
                         onPressed: () {
-                          _sessionId = _sessionIdFieldController.text;
+                          var input = _sessionIdFieldController.text.trim();
+                          _sessionId = RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N')
+                                  .hasMatch(input)
+                              ? input
+                              : "INVALID SESSION ID";
                           // write a function to update the metadata table with the new session name
                           _database.execute(
                             "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
