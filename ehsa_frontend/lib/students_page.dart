@@ -57,7 +57,7 @@ class _StudentsPageState extends State<StudentsPage> {
   final TextEditingController _rollsTextEditingController =
       TextEditingController();
 
-  List<bool> isSelected = [true, false, false];
+  List<bool> isSelected = [true, false];
   int selectedOption = 1;
 
   List<SubjectViewRow> subjectViewRows = [];
@@ -360,18 +360,6 @@ class _StudentsPageState extends State<StudentsPage> {
             ],
           ),
         );
-      case 3:
-        return Container(
-          height: 200,
-          width: 200,
-          color: Colors.blue,
-          child: const Center(
-            child: Text(
-              'Option 3',
-              style: TextStyle(fontSize: 48, color: Colors.white),
-            ),
-          ),
-        );
       default:
         return Container();
     }
@@ -557,7 +545,6 @@ class _StudentsPageState extends State<StudentsPage> {
               children: const [
                 Text('1'), // Students
                 Text('2'), // Subjects
-                Text('3'), // Classes
               ],
             ),
           ),
