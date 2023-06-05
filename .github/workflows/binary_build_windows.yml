@@ -1,9 +1,5 @@
 name: Windows Binary Build Workflow
-on:
-  workflow_dispatch:
-  push:
-    branches:
-    - dev
+on: [workflow_dispatch]
     
 jobs:
   Windows_Python_Build:
