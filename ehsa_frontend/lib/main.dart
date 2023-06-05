@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
-
-//URL launcher
 import 'package:url_launcher/url_launcher.dart';
 
 void main() {
@@ -62,6 +60,8 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final Uri url = Uri.parse("https://github.com/Govind-S-B");
+
     return MaterialApp(
       title: 'EHSA',
       theme: ThemeData(
@@ -204,34 +204,32 @@ class MyAppState extends State<MyApp> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(5),
+                      child: Padding(
+                        padding: const EdgeInsets.all(5),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text(
+                            const Text(
                               'EHSA',
                               style: TextStyle(
                                 fontSize: 50,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            Text(
+                            const Text(
                               "by protoRes",
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            SizedBox(height: 25),
-                            //use textbutton here, dont forget to add separate textbutton for each member
-                            Text(
-                              'Your credits information goes here.',
-                              style: TextStyle(fontSize: 16),
-                              textAlign: TextAlign.left,
-                            ),
-                            //also try adding a sizedbox like in line 223 if the space between the names are small
-                            //also dlt the comments after the edits :)
+                            const SizedBox(height: 25),
+                            TextButton(
+                                onPressed: () {
+                                  launchUrl(url);
+                                },
+                                child:const Text("Govind.S.B"))
+                            
                           ],
                         ),
                       ),
