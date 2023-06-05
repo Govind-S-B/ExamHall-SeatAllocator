@@ -541,26 +541,31 @@ class _StudentsPageState extends State<StudentsPage> {
               ),
             ),
           ),
-          ToggleButtons(
-            isSelected: isSelected,
-            onPressed: (index) {
-              setState(() {
-                for (int i = 0; i < isSelected.length; i++) {
-                  isSelected[i] = i == index;
-                }
-                selectedOption = index + 1;
-              });
-            },
-            children: const [
-              Text('1'), // Students
-              Text('2'), // Subjects
-              Text('3'), // Classes
-            ],
+          SizedBox(
+            width: 150,
+            height: 40,
+            child: ToggleButtons(
+              isSelected: isSelected,
+              onPressed: (index) {
+                setState(() {
+                  for (int i = 0; i < isSelected.length; i++) {
+                    isSelected[i] = i == index;
+                  }
+                  selectedOption = index + 1;
+                });
+              },
+              children: const [
+                Text('1'), // Students
+                Text('2'), // Subjects
+                Text('3'), // Classes
+              ],
+            ),
           ),
           Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.all(16.0),
+              padding: const EdgeInsets.only(
+                  left: 16, right: 16, top: 16, bottom: 8),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.vertical(

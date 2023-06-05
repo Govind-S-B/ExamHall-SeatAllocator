@@ -179,7 +179,7 @@ class _HallPageState extends State<HallPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("GO"),
+                          Text("Add"),
                           Icon(Icons.keyboard_arrow_right_rounded),
                         ],
                       ),
