@@ -69,7 +69,6 @@ class MyAppState extends State<MyApp> {
     final Uri url7 = Uri.parse("https://github.com/tsuAquila");
     final Uri url8 = Uri.parse("https://github.com/Ameer-Al-Hisham");
 
-
     return MaterialApp(
       title: 'EHSA',
       theme: ThemeData(
@@ -205,18 +204,19 @@ class MyAppState extends State<MyApp> {
                   color: Colors.black.withOpacity(0.5),
                   child: Center(
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.6,
-                      width: MediaQuery.of(context).size.width * 0.6,
-                      
+                      height: 430,
+                      width: 800,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(5),
+                        padding: const EdgeInsets.only(top: 20),
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
                           children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
                             const Text(
                               'EHSA',
                               style: TextStyle(
@@ -225,58 +225,89 @@ class MyAppState extends State<MyApp> {
                               ),
                             ),
                             const Text(
-                              
                               "by protoRes",
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
+                            const SizedBox(height: 50),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const SizedBox(height: 25),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url1);
-                                    },
-                                    child:const Text("Govind.S.B")),
-                                 TextButton(
-                                    onPressed: () {
-                                      launchUrl(url2);
-                                    },
-                                    child:const Text("Arjun Pratap")),
-                                    TextButton(
-                                    onPressed: () {
-                                      launchUrl(url3);
-                                    },
-                                    child:const Text("Siby C.R")),
-                                    TextButton(
-                                    onPressed: () {
-                                      launchUrl(url4);
-                                    },
-                                    child:const Text("Jayadev B.S")),
-                                    TextButton(
-                                    onPressed: () {
-                                      launchUrl(url5);
-                                    },
-                                    child:const Text("Karthik Kumar")),
-                                    TextButton(
-                                    onPressed: () {
-                                      launchUrl(url6);
-                                    },
-                                    child:const Text("Amina Fayaz")),TextButton(
-                                    onPressed: () {
-                                      launchUrl(url7);
-                                    },
-                                    child:const Text("Aashish")),TextButton(
-                                    onPressed: () {
-                                      launchUrl(url8);
-                                    },
-                                    child:const Text("Ameer Al Hisham")),
+                                SizedBox(
+                                  width: 200,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url4);
+                                          },
+                                          child: const Text("Jayadev B.S")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url5);
+                                          },
+                                          child: const Text("Karthik Kumar")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url6);
+                                          },
+                                          child: const Text("Amina Fayaz")),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 200,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url1);
+                                          },
+                                          child: const Text("Govind.S.B")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url2);
+                                          },
+                                          child: const Text("Arjun Pratap")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url3);
+                                          },
+                                          child: const Text("Siby C.R")),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 200,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url7);
+                                          },
+                                          child: const Text("Aashish")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url8);
+                                          },
+                                          child: const Text("Ameer Al Hisham")),
+                                    ],
+                                  ),
+                                ),
                               ],
                             ),
-
-
                           ],
                         ),
                       ),
