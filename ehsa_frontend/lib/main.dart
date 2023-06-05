@@ -21,7 +21,22 @@ enum Page {
 }
 
 class MyAppState extends State<MyApp> {
+  String _getPageTitle(Page page) {
+    switch (page) {
+      case Page.halls:
+        return 'Halls Page';
+      case Page.students:
+        return 'Students Page';
+      case Page.generate:
+        return 'Generate Page';
+      default:
+        return '';
+    }
+  }
+
   Page _selectedPage = Page.halls;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final Map<Page, GlobalKey<NavigatorState>> _navigatorKeys = {
     Page.halls: GlobalKey<NavigatorState>(),
@@ -40,57 +55,136 @@ class MyAppState extends State<MyApp> {
     return MaterialApp(
       title: 'EHSA',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
-        navigationRailTheme: const NavigationRailThemeData(
-          minWidth: 56,
-          labelType: NavigationRailLabelType.selected,
-          groupAlignment: 0,
-          unselectedLabelTextStyle: TextStyle(color: Colors.transparent),
-          selectedIconTheme: IconThemeData(color: Colors.green),
-          selectedLabelTextStyle:
-              TextStyle(color: Colors.green, fontSize: 11.5),
+        listTileTheme: ListTileThemeData(
+          selectedTileColor: Colors.blue.withAlpha(50),
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(Radius.circular(16))),
         ),
+        primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        body: Row(
-          children: [
-            NavigationRail(
-              minWidth: 56,
-              selectedIndex: _selectedPage.index,
-              onDestinationSelected: (int index) {
-                setState(() {
-                  _selectedPage = Page.values[index];
-                });
-              },
-              labelType: NavigationRailLabelType.all,
-              destinations: const [
-                NavigationRailDestination(
-                  padding: EdgeInsets.only(bottom: 16, top: 16),
-                  icon: Icon(Icons.home),
-                  label: Text('Halls'),
+        key: _scaffoldKey,
+        appBar: AppBar(
+          elevation: 0,
+          centerTitle: true,
+          title: Text(_getPageTitle(_selectedPage)),
+        ),
+        drawer: Padding(
+          padding: const EdgeInsets.only(
+            bottom: 14,
+            top: 14,
+          ),
+          child: Drawer(
+            elevation: 0,
+            width: 275,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                  bottomRight: Radius.circular(16),
+                  topRight: Radius.circular(16)),
+            ),
+            child: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(
+                    top: 8,
+                    right: 8,
+                    left: 8,
+                  ),
+                  child: SizedBox(
+                    height: 145,
+                    child: DrawerHeader(
+                      decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(16)),
+                        color: Colors.blue,
+                      ),
+                      child: GestureDetector(
+                        onTap: () {
+                          _scaffoldKey.currentState?.closeDrawer();
+                        },
+                        child: const Center(
+                          child: Text(
+                            'EHSA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-                NavigationRailDestination(
-                  padding: EdgeInsets.only(bottom: 16, top: 16),
-                  icon: Icon(Icons.person),
-                  label: Text('Students'),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                    top: 1,
+                    bottom: 4,
+                  ),
+                  child: ListTile(
+                    leading: _selectedPage == Page.halls
+                        ? const Icon(Icons.add_home_rounded)
+                        : const Icon(Icons.add_home_outlined),
+                    title: const Text('Halls'),
+                    selected: _selectedPage == Page.halls,
+                    onTap: () {
+                      _selectPage(Page.halls);
+                      _scaffoldKey.currentState?.closeDrawer();
+                    },
+                  ),
                 ),
-                NavigationRailDestination(
-                  padding: EdgeInsets.only(bottom: 16, top: 16),
-                  icon: Icon(Icons.create),
-                  label: Text('Generate'),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                    top: 4,
+                    bottom: 4,
+                  ),
+                  child: ListTile(
+                    leading: _selectedPage == Page.students
+                        ? const Icon(Icons.person_add_alt_1_rounded)
+                        : const Icon(Icons.person_add_alt_1_outlined),
+                    title: const Text('Students'),
+                    selected: _selectedPage == Page.students,
+                    onTap: () {
+                      _selectPage(Page.students);
+                      _scaffoldKey.currentState?.closeDrawer();
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(
+                    left: 8,
+                    right: 8,
+                    top: 4,
+                    bottom: 4,
+                  ),
+                  child: ListTile(
+                    leading: _selectedPage == Page.generate
+                        ? const Icon(Icons.create_rounded)
+                        : const Icon(Icons.create_outlined),
+                    title: const Text('Generate'),
+                    selected: _selectedPage == Page.generate,
+                    onTap: () {
+                      _selectPage(Page.generate);
+                      _scaffoldKey.currentState?.closeDrawer();
+                    },
+                  ),
                 ),
               ],
             ),
-            Expanded(
-              child: Stack(
-                children: [
-                  _buildOffstageNavigator(Page.halls),
-                  _buildOffstageNavigator(Page.students),
-                  _buildOffstageNavigator(Page.generate),
-                ],
-              ),
-            ),
-          ],
+          ),
+        ),
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height - kToolbarHeight - 24,
+          width: MediaQuery.of(context).size.width,
+          child: Stack(
+            children: [
+              _buildOffstageNavigator(Page.halls),
+              _buildOffstageNavigator(Page.students),
+              _buildOffstageNavigator(Page.generate),
+            ],
+          ),
         ),
       ),
     );

@@ -10,7 +10,8 @@ class GeneratePage extends StatefulWidget {
 }
 
 class _GeneratePageState extends State<GeneratePage> {
-  TextEditingController _sessionIdFieldController = TextEditingController();
+  final TextEditingController _sessionIdFieldController =
+      TextEditingController();
   String _sessionId = "";
 
   var databaseFactory = databaseFactoryFfi;
@@ -42,63 +43,85 @@ class _GeneratePageState extends State<GeneratePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('Generate Page'),
-        ),
-        body: Container(
-            child: Column(
-          children: [
-            Row(
-              children: [
-                SizedBox(
-                  width: 300,
-                  child: TextField(
-                    controller: _sessionIdFieldController,
-                    decoration: InputDecoration(
-                      labelText: 'Session : ' + _sessionId,
-                    ),
-                  ),
-                ), // enter session name
-                ElevatedButton(
-                    onPressed: () {
-                      _sessionId = _sessionIdFieldController.text;
-                      // write a function to update the metadata table with the new session name
-                      _database.execute(
-                          "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')");
-                      _sessionIdFieldController.clear();
-                      setState(() {});
-                    },
-                    child: Icon(Icons.settings)),
-              ],
-            ), // set session name
-            ElevatedButton(
-                onPressed: () async {
-                  // async function to launch rust allocator and wait for its response exit code
-                  // if exit code is 0 then show a success message
-                  // else show an error message
+        body: Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: Container(
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(16), bottom: Radius.circular(16)),
+            color: Colors.blue.shade300.withAlpha(50),
+          ),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 200,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Container(
+                        width: 300,
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.blue.shade300),
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: TextField(
+                          controller: _sessionIdFieldController,
+                          decoration: InputDecoration(
+                            labelText: 'Session : $_sessionId',
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.all(10),
+                          ),
+                        ),
+                      ),
+                    ), // enter session name
+                    Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: ElevatedButton(
+                        onPressed: () {
+                          _sessionId = _sessionIdFieldController.text;
+                          // write a function to update the metadata table with the new session name
+                          _database.execute(
+                            "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
+                          );
+                          _sessionIdFieldController.clear();
+                          setState(() {});
+                        },
+                        child: const Icon(Icons.settings),
+                      ),
+                    )
+                  ],
+                ),
+              ), // set session name
 
-                  try {
-                    final result =
-                        await Process.run( '${Directory.current.path}\\allocator.exe', []);
+              ElevatedButton(
+                  onPressed: () async {
+                    // async function to launch rust allocator and wait for its response exit code
+                    // if exit code is 0 then show a success message
+                    // else show an error message
 
-                    if (result.exitCode == 0) {
-                      // Executable executed successfully
-                      // launch pdf generator
+                    try {
+                      final result = await Process.run(
+                          '${Directory.current.path}\\allocator.exe', []);
 
-                      final result2 =
-                        await Process.run( '${Directory.current.path}\\pdf_generator.exe', []);
-                      
-                    } else {
-                      // Executable failed
-                      
+                      if (result.exitCode == 0) {
+                        // Executable executed successfully
+                        // launch pdf generator
+
+                        final result2 = await Process.run(
+                            '${Directory.current.path}\\pdf_generator.exe', []);
+                      } else {
+                        // Executable failed
+                      }
+                    } catch (e) {
+                      // Handle any exceptions here
                     }
-                  } catch (e) {
-                    // Handle any exceptions here
-                    
-                  }
-                },
-                child: Text("Generate")) // generate button
-          ],
-        )));
+                  },
+                  child: const Text("Generate")) // generate button
+            ],
+          )),
+    ));
   }
 }
