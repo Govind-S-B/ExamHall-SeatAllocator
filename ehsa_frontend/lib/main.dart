@@ -3,6 +3,9 @@ import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
 
+//URL launcher
+import 'package:url_launcher/url_launcher.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -35,6 +38,7 @@ class MyAppState extends State<MyApp> {
   }
 
   Page _selectedPage = Page.halls;
+  bool _showCreditsOverlay = true;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -47,6 +51,12 @@ class MyAppState extends State<MyApp> {
   void _selectPage(Page page) {
     setState(() {
       _selectedPage = page;
+    });
+  }
+
+  void _closeCreditsOverlay() {
+    setState(() {
+      _showCreditsOverlay = false;
     });
   }
 
@@ -175,16 +185,61 @@ class MyAppState extends State<MyApp> {
             ),
           ),
         ),
-        body: SizedBox(
-          height: MediaQuery.of(context).size.height - kToolbarHeight - 24,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              _buildOffstageNavigator(Page.halls),
-              _buildOffstageNavigator(Page.students),
-              _buildOffstageNavigator(Page.generate),
-            ],
-          ),
+        body: Stack(
+          children: [
+            _buildOffstageNavigator(Page.halls),
+            _buildOffstageNavigator(Page.students),
+            _buildOffstageNavigator(Page.generate),
+            if (_showCreditsOverlay)
+              GestureDetector(
+                onTap: _closeCreditsOverlay,
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: Center(
+                    child: Container(
+                      height: MediaQuery.of(context).size.height * 0.6,
+                      width: MediaQuery.of(context).size.width * 0.6,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Padding(
+                        padding: EdgeInsets.all(5),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              'EHSA',
+                              style: TextStyle(
+                                fontSize: 50,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              "by protoRes",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 25),
+                            //use textbutton here, dont forget to add separate textbutton for each member
+                            Text(
+                              'Your credits information goes here.',
+                              style: TextStyle(fontSize: 16),
+                              textAlign: TextAlign.left,
+                            ),
+                            //also try adding a sizedbox like in line 223 if the space between the names are small
+                            //also dlt the comments after the edits :)
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
