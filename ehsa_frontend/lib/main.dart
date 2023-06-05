@@ -60,7 +60,15 @@ class MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final Uri url = Uri.parse("https://github.com/Govind-S-B");
+    final Uri url1 = Uri.parse("https://github.com/Govind-S-B");
+    final Uri url2 = Uri.parse("https://github.com/officiallyaninja");
+    final Uri url3 = Uri.parse("https://github.com/sibycr18");
+    final Uri url4 = Uri.parse("https://github.com/jydv402");
+    final Uri url5 = Uri.parse("https://github.com/Karthi-R-K");
+    final Uri url6 = Uri.parse("https://github.com/aminafayaz");
+    final Uri url7 = Uri.parse("https://github.com/tsuAquila");
+    final Uri url8 = Uri.parse("https://github.com/Ameer-Al-Hisham");
+
 
     return MaterialApp(
       title: 'EHSA',
@@ -199,7 +207,7 @@ class MyAppState extends State<MyApp> {
                     child: Container(
                       height: MediaQuery.of(context).size.height * 0.6,
                       width: MediaQuery.of(context).size.width * 0.6,
-                      padding: const EdgeInsets.all(16),
+                      
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
@@ -217,19 +225,58 @@ class MyAppState extends State<MyApp> {
                               ),
                             ),
                             const Text(
+                              
                               "by protoRes",
                               style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            const SizedBox(height: 25),
-                            TextButton(
-                                onPressed: () {
-                                  launchUrl(url);
-                                },
-                                child:const Text("Govind.S.B"))
-                            
+                            Row(
+                              children: [
+                                const SizedBox(height: 25),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url1);
+                                    },
+                                    child:const Text("Govind.S.B")),
+                                 TextButton(
+                                    onPressed: () {
+                                      launchUrl(url2);
+                                    },
+                                    child:const Text("Arjun Pratap")),
+                                    TextButton(
+                                    onPressed: () {
+                                      launchUrl(url3);
+                                    },
+                                    child:const Text("Siby C.R")),
+                                    TextButton(
+                                    onPressed: () {
+                                      launchUrl(url4);
+                                    },
+                                    child:const Text("Jayadev B.S")),
+                                    TextButton(
+                                    onPressed: () {
+                                      launchUrl(url5);
+                                    },
+                                    child:const Text("Karthik Kumar")),
+                                    TextButton(
+                                    onPressed: () {
+                                      launchUrl(url6);
+                                    },
+                                    child:const Text("Amina Fayaz")),TextButton(
+                                    onPressed: () {
+                                      launchUrl(url7);
+                                    },
+                                    child:const Text("Aashish")),TextButton(
+                                    onPressed: () {
+                                      launchUrl(url8);
+                                    },
+                                    child:const Text("Ameer Al Hisham")),
+                              ],
+                            ),
+
+
                           ],
                         ),
                       ),
