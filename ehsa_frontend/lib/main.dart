@@ -118,12 +118,18 @@ class MyAppState extends State<MyApp> {
                         onTap: () {
                           _scaffoldKey.currentState?.closeDrawer();
                         },
-                        child: const Center(
-                          child: Text(
-                            'EHSA',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 40,
+                        child: Center(
+                          child: TextButton(
+                            onPressed: (){
+                              _showCreditsOverlay = true;
+                              setState(() {});
+                            },
+                            child: Text(
+                              'EHSA',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 40,
+                              ),
                             ),
                           ),
                         ),
