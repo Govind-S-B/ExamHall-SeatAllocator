@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class GeneratePage extends StatefulWidget {
   const GeneratePage({super.key});
@@ -100,30 +101,48 @@ class _GeneratePageState extends State<GeneratePage> {
                 ),
               ), // set session name
 
-              ElevatedButton(
-                  onPressed: () async {
-                    // async function to launch rust allocator and wait for its response exit code
-                    // if exit code is 0 then show a success message
-                    // else show an error message
-
-                    try {
-                      final result = await Process.run(
-                          '${Directory.current.path}\\allocator.exe', []);
-
-                      if (result.exitCode == 0) {
-                        // Executable executed successfully
-                        // launch pdf generator
-
-                        final result2 = await Process.run(
-                            '${Directory.current.path}\\pdf_generator.exe', []);
-                      } else {
-                        // Executable failed
-                      }
-                    } catch (e) {
-                      // Handle any exceptions here
-                    }
-                  },
-                  child: const Text("Generate")) // generate button
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                        onPressed: () async {
+                          // async function to launch rust allocator and wait for its response exit code
+                          // if exit code is 0 then show a success message
+                          // else show an error message
+                  
+                          try {
+                            final result = await Process.run(
+                                '${Directory.current.path}\\allocator.exe', []);
+                  
+                            if (result.exitCode == 0) {
+                              // Executable executed successfully
+                              // launch pdf generator
+                  
+                              final result2 = await Process.run(
+                                  '${Directory.current.path}\\pdf_generator.exe',
+                                  []);
+                            } else {
+                              // Executable failed
+                            }
+                          } catch (e) {
+                            // Handle any exceptions here
+                          }
+                        },
+                        child: const Text("Generate")),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                        onPressed: () {
+                          final Uri fileLocation = Uri.parse("file:" '${Directory.current.path}/../output/' );
+                          launchUrl(fileLocation);
+                        },
+                        child: const Icon(Icons.folder_open)),
+                  )
+                ],
+              ) // generate button
             ],
           )),
     ));

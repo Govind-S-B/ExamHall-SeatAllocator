@@ -575,7 +575,7 @@ class _StudentsPageState extends State<StudentsPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: ElevatedButton(
-                                onPressed: _dropTable, child: Text('Clear Table')),
+                                onPressed: _dropTable, child: const Text('Clear Table')),
                           )),
                     ],
                   ),

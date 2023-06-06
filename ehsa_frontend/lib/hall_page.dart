@@ -298,7 +298,7 @@ class _HallPageState extends State<HallPage> {
                           padding: const EdgeInsets.all(10.0),
                           child: ElevatedButton(
                               onPressed: _dropTable,
-                              child: Text('Clear Table')),
+                              child: const Text('Clear Table')),
                         )),
                   ],
                 ),

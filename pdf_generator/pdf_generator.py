@@ -190,7 +190,7 @@ def generate_report():
                         new_y="NEXT", border=True, align="L")
 
     file_name = "Halls "+date+" "+session+".pdf"
-    pdf1.output(file_name)
+    pdf1.output("../output/"+file_name)
 
     # Packaging List PDF------------------------------------------------------------------------------------------------
     pdf2.set_auto_page_break(auto=True, margin=15)  # Auto page break
@@ -596,7 +596,7 @@ def generate_report():
             PDF_list = []
 
     file_name = "Packaging "+date+" "+session+".pdf"
-    pdf2.output(file_name)
+    pdf2.output("../output/"+file_name)
 
     # Seating List PDF------------------------------------------------------------------------------------------------
     pdf3.set_auto_page_break(auto=True, margin=15)  # Set auto page break
@@ -721,7 +721,7 @@ def generate_report():
                     pdf3.cell(id_w, 10, "-", border=True, align="C",
                               new_x="LMARGIN", new_y="NEXT")
     file_name = "Seating "+date+" "+session+".pdf"
-    pdf3.output(file_name)
+    pdf3.output("../output/"+file_name)
 
 
 
