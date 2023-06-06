@@ -17,21 +17,13 @@ SectionEnd
 ; Add the files and directories to the installer
 Section
   SetOutPath $INSTDIR
-  File "allocator.exe"
-  File "ehsa_frontend.exe"
-  File "flutter_windows.dll"
-  File "pdf_generator.exe"
-  File "sqlite3.dll"
-  SetOutPath "$INSTDIR\data"
-  File /r "data\*.*"
-  SetOutPath "$INSTDIR\Fonts"
-  File /r "Fonts\*.*"
+  File /r "EHSA_V3\*.*"
 SectionEnd
 
 ; Create a shortcut for ehsa_frontend.exe on the desktop
 Section
   SetOutPath "$DESKTOP"
-  CreateShortCut "$DESKTOP\ehsa_frontend.lnk" "$INSTDIR\ehsa_frontend.exe"
+  CreateShortCut "$DESKTOP\EHSA.lnk" "$INSTDIR\bin\ehsa_frontend.exe"
 SectionEnd
 
 ; Call the CheckVCRedist function
