@@ -490,6 +490,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                     _rollsTextEditingController.clear();
                                     _subjectTextEditingController.clear();
                                     filteredSubjects = subjects;
+                                    _fetchSubjectViewRows();
                                     _fetchTableViewRows();
                                     setState(() {});
                                   },
