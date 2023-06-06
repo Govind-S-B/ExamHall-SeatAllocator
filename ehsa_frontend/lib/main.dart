@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 void main() {
   runApp(const MyApp());
@@ -35,6 +36,7 @@ class MyAppState extends State<MyApp> {
   }
 
   Page _selectedPage = Page.halls;
+  bool _showCreditsOverlay = true;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -50,8 +52,23 @@ class MyAppState extends State<MyApp> {
     });
   }
 
+  void _closeCreditsOverlay() {
+    setState(() {
+      _showCreditsOverlay = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final Uri url1 = Uri.parse("https://github.com/Govind-S-B");
+    final Uri url2 = Uri.parse("https://github.com/officiallyaninja");
+    final Uri url3 = Uri.parse("https://github.com/sibycr18");
+    final Uri url4 = Uri.parse("https://github.com/jydv402");
+    final Uri url5 = Uri.parse("https://github.com/Karthi-R-K");
+    final Uri url6 = Uri.parse("https://github.com/aminafayaz");
+    final Uri url7 = Uri.parse("https://github.com/tsuAquila");
+    final Uri url8 = Uri.parse("https://github.com/Ameer-Al-Hisham");
+
     return MaterialApp(
       title: 'EHSA',
       theme: ThemeData(
@@ -175,16 +192,130 @@ class MyAppState extends State<MyApp> {
             ),
           ),
         ),
-        body: SizedBox(
-          height: MediaQuery.of(context).size.height - kToolbarHeight - 24,
-          width: MediaQuery.of(context).size.width,
-          child: Stack(
-            children: [
-              _buildOffstageNavigator(Page.halls),
-              _buildOffstageNavigator(Page.students),
-              _buildOffstageNavigator(Page.generate),
-            ],
-          ),
+        body: Stack(
+          children: [
+            _buildOffstageNavigator(Page.halls),
+            _buildOffstageNavigator(Page.students),
+            _buildOffstageNavigator(Page.generate),
+            if (_showCreditsOverlay)
+              GestureDetector(
+                onTap: _closeCreditsOverlay,
+                child: Container(
+                  color: Colors.black.withOpacity(0.5),
+                  child: Center(
+                    child: Container(
+                      height: 430,
+                      width: 800,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.only(top: 20),
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Text(
+                              'EHSA',
+                              style: TextStyle(
+                                fontSize: 50,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const Text(
+                              "by protoRes",
+                              style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 50),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 200,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url4);
+                                          },
+                                          child: const Text("Jayadev B.S")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url5);
+                                          },
+                                          child: const Text("Karthik Kumar")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url6);
+                                          },
+                                          child: const Text("Amina Fayaz")),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 200,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url1);
+                                          },
+                                          child: const Text("Govind.S.B")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url2);
+                                          },
+                                          child: const Text("Arjun Pratap")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url3);
+                                          },
+                                          child: const Text("Siby C.R")),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 200,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url7);
+                                          },
+                                          child: const Text("Aashish")),
+                                      TextButton(
+                                          onPressed: () {
+                                            launchUrl(url8);
+                                          },
+                                          child: const Text("Ameer Al Hisham")),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );
