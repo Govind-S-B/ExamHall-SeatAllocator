@@ -204,8 +204,8 @@ class MyAppState extends State<MyApp> {
                   color: Colors.black.withOpacity(0.5),
                   child: Center(
                     child: Container(
-                      height: 430,
-                      width: 800,
+                      height: MediaQuery.of(context).size.height * 0.4,
+                      width: MediaQuery.of(context).size.width * 0.4,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(16),
@@ -215,7 +215,7 @@ class MyAppState extends State<MyApp> {
                         child: Column(
                           children: [
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             const Text(
                               'EHSA',
@@ -232,80 +232,48 @@ class MyAppState extends State<MyApp> {
                               ),
                             ),
                             const SizedBox(height: 50),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
+                            Wrap(
                               children: [
-                                SizedBox(
-                                  width: 200,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {
-                                            launchUrl(url4);
-                                          },
-                                          child: const Text("Jayadev B.S")),
-                                      TextButton(
-                                          onPressed: () {
-                                            launchUrl(url5);
-                                          },
-                                          child: const Text("Karthik Kumar")),
-                                      TextButton(
-                                          onPressed: () {
-                                            launchUrl(url6);
-                                          },
-                                          child: const Text("Amina Fayaz")),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 200,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {
-                                            launchUrl(url1);
-                                          },
-                                          child: const Text("Govind.S.B")),
-                                      TextButton(
-                                          onPressed: () {
-                                            launchUrl(url2);
-                                          },
-                                          child: const Text("Arjun Pratap")),
-                                      TextButton(
-                                          onPressed: () {
-                                            launchUrl(url3);
-                                          },
-                                          child: const Text("Siby C.R")),
-                                    ],
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 200,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      TextButton(
-                                          onPressed: () {
-                                            launchUrl(url7);
-                                          },
-                                          child: const Text("Aashish")),
-                                      TextButton(
-                                          onPressed: () {
-                                            launchUrl(url8);
-                                          },
-                                          child: const Text("Ameer Al Hisham")),
-                                    ],
-                                  ),
-                                ),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url1);
+                                    },
+                                    child: const Text("Govind.S.B")),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url2);
+                                    },
+                                    child: const Text("Arjun Pratap")),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url3);
+                                    },
+                                    child: const Text("Siby C.R")),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url4);
+                                    },
+                                    child: const Text("Jayadev B.S")),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url5);
+                                    },
+                                    child: const Text("Karthik Kumar")),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url6);
+                                    },
+                                    child: const Text("Amina Fayaz")),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url8);
+                                    },
+                                    child: const Text("Ameer Al Hisham")),
+                                TextButton(
+                                    onPressed: () {
+                                      launchUrl(url7);
+                                    },
+                                    child: const Text("Aashish")),
                               ],
                             ),
                           ],
