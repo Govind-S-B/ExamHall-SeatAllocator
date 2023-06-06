@@ -1,3 +1,5 @@
+Unicode False
+!addplugindir "${NSISDIR}\Plugins"
 !include LogicLib.nsh
 
 ; The name of the installer
@@ -22,8 +24,9 @@ SectionEnd
 
 ; Create a shortcut for ehsa_frontend.exe on the desktop
 Section
-  SetOutPath "$DESKTOP"
+  SetOutPath "$INSTDIR\bin"
   CreateShortCut "$DESKTOP\EHSA.lnk" "$INSTDIR\bin\ehsa_frontend.exe"
+  ShellLink::SetRunAsAdministrator $DESKTOP\EHSA.lnk
 SectionEnd
 
 ; Call the CheckVCRedist function
