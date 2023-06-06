@@ -146,6 +146,13 @@ class _StudentsPageState extends State<StudentsPage> {
     _fetchSubjectViewRows();
   }
 
+  Future<void> _dropTable() async {
+    await _database.execute(
+        "DELETE FROM students");
+    _fetchTableViewRows();
+    _subjectListinit();
+  }
+
   Future<void> _deleteTableViewRow(String studentId) async {
     await _database.delete(
       'students',
@@ -560,7 +567,18 @@ class _StudentsPageState extends State<StudentsPage> {
                   color: Colors.blue.shade300.withAlpha(50),
                 ),
                 child: SingleChildScrollView(
-                  child: buildOptionContainer(selectedOption),
+                  child: Stack(
+                    children: [
+                      buildOptionContainer(selectedOption),
+                      Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: ElevatedButton(
+                                onPressed: _dropTable, child: Text('Clear Table')),
+                          )),
+                    ],
+                  ),
                 ),
               ),
             ),

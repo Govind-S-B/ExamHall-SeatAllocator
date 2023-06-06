@@ -238,7 +238,7 @@ class MyAppState extends State<MyApp> {
                                     onPressed: () {
                                       launchUrl(url1);
                                     },
-                                    child: const Text("Govind.S.B")),
+                                    child: const Text("Govind S B")),
                                 TextButton(
                                     onPressed: () {
                                       launchUrl(url2);
@@ -273,7 +273,7 @@ class MyAppState extends State<MyApp> {
                                     onPressed: () {
                                       launchUrl(url7);
                                     },
-                                    child: const Text("Aashish")),
+                                    child: const Text("Aasish R R")),
                               ],
                             ),
                           ],

@@ -76,6 +76,11 @@ class _HallPageState extends State<HallPage> {
     _fetchHalls();
   }
 
+  Future<void> _dropTable() async {
+    await _database.execute("DELETE FROM halls");
+    _fetchHalls();
+  }
+
   Future<void> _deleteHall(String hallName) async {
     await _database.delete(
       'halls',
@@ -190,7 +195,6 @@ class _HallPageState extends State<HallPage> {
             ),
           ),
           Expanded(
-            flex: 3,
             child: Padding(
               padding: const EdgeInsets.only(left: 16, right: 16),
               child: Container(
@@ -199,92 +203,104 @@ class _HallPageState extends State<HallPage> {
                       top: Radius.circular(16), bottom: Radius.circular(16)),
                   color: Colors.blue.shade300.withAlpha(50),
                 ),
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SingleChildScrollView(
-                    child: DataTable(
-                      columns: const [
-                        DataColumn(label: Text('Hall Name')),
-                        DataColumn(label: Text('Capacity')),
-                        DataColumn(label: Text('Actions')),
-                      ],
-                      rows: [
-                        for (var hall in halls)
-                          DataRow(
-                            color: editedHalls.contains(hall)
-                                ? MaterialStateColor.resolveWith(
-                                    (states) => Colors.grey.withOpacity(0.8))
-                                : MaterialStateColor.resolveWith(
-                                    (states) => Colors.transparent),
-                            cells: [
-                              DataCell(
-                                editedHalls.contains(hall)
-                                    ? TextFormField(
-                                        initialValue: hall.editedHallName,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            hall.editedHallName =
-                                                value; // Update editedHallName
-                                          });
-                                        },
-                                      )
-                                    : Text(hall.hallName),
-                              ),
-                              DataCell(
-                                editedHalls.contains(hall)
-                                    ? TextFormField(
-                                        initialValue:
-                                            hall.editedCapacity.toString(),
-                                        onChanged: (value) {
-                                          setState(() {
-                                            hall.editedCapacity =
-                                                int.tryParse(value) ??
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: SingleChildScrollView(
+                        child: DataTable(
+                          columns: const [
+                            DataColumn(label: Text('Hall Name')),
+                            DataColumn(label: Text('Capacity')),
+                            DataColumn(label: Text('Actions')),
+                          ],
+                          rows: [
+                            for (var hall in halls)
+                              DataRow(
+                                color: editedHalls.contains(hall)
+                                    ? MaterialStateColor.resolveWith((states) =>
+                                        Colors.grey.withOpacity(0.8))
+                                    : MaterialStateColor.resolveWith(
+                                        (states) => Colors.transparent),
+                                cells: [
+                                  DataCell(
+                                    editedHalls.contains(hall)
+                                        ? TextFormField(
+                                            initialValue: hall.editedHallName,
+                                            onChanged: (value) {
+                                              setState(() {
+                                                hall.editedHallName =
+                                                    value; // Update editedHallName
+                                              });
+                                            },
+                                          )
+                                        : Text(hall.hallName),
+                                  ),
+                                  DataCell(
+                                    editedHalls.contains(hall)
+                                        ? TextFormField(
+                                            initialValue:
+                                                hall.editedCapacity.toString(),
+                                            onChanged: (value) {
+                                              setState(() {
+                                                hall.editedCapacity = int
+                                                        .tryParse(value) ??
                                                     0; // Update editedCapacity
-                                          });
-                                        },
-                                      )
-                                    : Text(hall.capacity.toString()),
+                                              });
+                                            },
+                                          )
+                                        : Text(hall.capacity.toString()),
+                                  ),
+                                  DataCell(
+                                    editedHalls.contains(hall)
+                                        ? Row(
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(Icons.done),
+                                                onPressed: () {
+                                                  saveChanges(hall);
+                                                },
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(Icons.cancel),
+                                                onPressed: () {
+                                                  cancelEdit(hall);
+                                                },
+                                              ),
+                                            ],
+                                          )
+                                        : Row(
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(Icons.edit),
+                                                onPressed: () {
+                                                  updateHall(hall);
+                                                },
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(Icons.delete),
+                                                onPressed: () {
+                                                  _deleteHall(hall.hallName);
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                  ),
+                                ],
                               ),
-                              DataCell(
-                                editedHalls.contains(hall)
-                                    ? Row(
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(Icons.done),
-                                            onPressed: () {
-                                              saveChanges(hall);
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.cancel),
-                                            onPressed: () {
-                                              cancelEdit(hall);
-                                            },
-                                          ),
-                                        ],
-                                      )
-                                    : Row(
-                                        children: [
-                                          IconButton(
-                                            icon: const Icon(Icons.edit),
-                                            onPressed: () {
-                                              updateHall(hall);
-                                            },
-                                          ),
-                                          IconButton(
-                                            icon: const Icon(Icons.delete),
-                                            onPressed: () {
-                                              _deleteHall(hall.hallName);
-                                            },
-                                          ),
-                                        ],
-                                      ),
-                              ),
-                            ],
-                          ),
-                      ],
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
+                    Align(
+                        alignment: Alignment.topRight,
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: ElevatedButton(
+                              onPressed: _dropTable,
+                              child: Text('Clear Table')),
+                        )),
+                  ],
                 ),
               ),
             ),
