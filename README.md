@@ -6,17 +6,19 @@ Windows 10 and above
 MSVC++ Redist. ( packaged with installer )
 
 # Algorithm
-the seat assignment algorithm has 3 modes
+the seat assignment algorithm has 3 modes: `subject`, `class` and, `any`
 1. seperate students by subject
    - students are seperated by subjects
    - first priority is given to subjects that have already placed students (if they're not empty) 
    - second priority is given to the subject with the greatest number of students
    - if there is only one subject left, seats are left intentionally empty between students
-   - if there are no extra seats left to leave intentionnally empty, start seperating student by class instead
+   - if there are no extra seats left to leave intentionnally empty, start seperating student by `class` instead
 2. seperate students by class
    - first priority is given to classes that have already placed students (if they're not empty) 
    - second priority is given to the classes with the greatest number of students
-   - if there is only one class left, the remaining students are assigned seats in roll no. order
+   - if there is only one class left, switch to `any` mode
+3. Any
+   - the remaining students are assigned seats in roll no. order
 ### additional notes
 * lower roll numbers are always given higher priority
 * halls are assigned students from highest seating capacity to lowest
