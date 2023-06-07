@@ -12,7 +12,7 @@ the seat assignment algorithm has 3 modes: `subject`, `class`, and `any`
    - first priority is given to subjects that have already placed students (if they're not empty) 
    - second priority is given to the subject with the greatest number of students
    - if there is only one subject left, seats are left intentionally empty between students
-   - if there are no extra seats left to leave intentionnally empty, start seperating student by `class` instead
+   - if there are no extra seats left to leave intentionally empty, start seperating student by `class` instead
 2. seperate students by class
    - first priority is given to classes that have already placed students (if they're not empty) 
    - second priority is given to the classes with the greatest number of students
