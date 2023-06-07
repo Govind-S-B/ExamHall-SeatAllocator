@@ -10,9 +10,9 @@ def generate_report():
 
     # Config
     config = configparser.ConfigParser()
-    config.read("config.ini")
-    name = config.get("config.txt", "name")
-    title = config.get("config.txt", "title")
+    config.read("config.txt")
+    name = config.get("exam info","name")
+    title = config.get("exam info","title")
 
     conn = sq.connect("report.db")
     
