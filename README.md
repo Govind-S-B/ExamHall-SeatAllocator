@@ -6,7 +6,7 @@ Windows 10 and above
 MSVC++ Redist. ( packaged with installer )
 
 # Algorithm
-the seat assignment algorithm has 3 modes: `subject`, `class` and, `any`
+the seat assignment algorithm has 3 modes: `subject`, `class`, and `any`
 1. seperate students by subject
    - students are seperated by subjects
    - first priority is given to subjects that have already placed students (if they're not empty) 
