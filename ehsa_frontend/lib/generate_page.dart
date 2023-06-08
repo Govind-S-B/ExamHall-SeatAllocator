@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 class GeneratePage extends StatefulWidget {
   const GeneratePage({super.key});
@@ -83,10 +84,30 @@ class _GeneratePageState extends State<GeneratePage> {
                       child: ElevatedButton(
                         onPressed: () {
                           var input = _sessionIdFieldController.text.trim();
-                          _sessionId = RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N')
-                                  .hasMatch(input)
-                              ? input
-                              : "INVALID SESSION ID";
+                          if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N')
+                              .hasMatch(input)) {
+                            _sessionId = input;
+                          } else {
+                            final snackBar = SnackBar(
+                              /// need to set following properties for best effect of awesome_snackbar_content
+                              elevation: 0,
+                              behavior: SnackBarBehavior.floating,
+                              backgroundColor: Colors.transparent,
+                              content: AwesomeSnackbarContent(
+                                title: 'Invalid Session ID',
+                                message:
+                                    'Please Recheck the Session ID entered if of proper format and try again.',
+
+                                /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                                contentType: ContentType.failure,
+                              ),
+                            );
+
+                            ScaffoldMessenger.of(context)
+                              ..hideCurrentSnackBar()
+                              ..showSnackBar(snackBar);
+                          }
+
                           // write a function to update the metadata table with the new session name
                           _database.execute(
                             "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
@@ -111,18 +132,43 @@ class _GeneratePageState extends State<GeneratePage> {
                           // async function to launch rust allocator and wait for its response exit code
                           // if exit code is 0 then show a success message
                           // else show an error message
-                  
+
                           try {
                             final result = await Process.run(
                                 '${Directory.current.path}\\allocator.exe', []);
-                  
+
                             if (result.exitCode == 0) {
                               // Executable executed successfully
                               // launch pdf generator
-                  
+
                               final result2 = await Process.run(
                                   '${Directory.current.path}\\pdf_generator.exe',
                                   []);
+
+                              if (result2.exitCode == 0) {
+                                // pdf generated successfully
+
+                                final snackBar = SnackBar(
+                                  /// need to set following properties for best effect of awesome_snackbar_content
+                                  elevation: 0,
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.transparent,
+                                  content: AwesomeSnackbarContent(
+                                    title: 'PDF Generated',
+                                    message:
+                                        'PDF Generated , please check the output folder.',
+
+                                    /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
+                                    contentType: ContentType.success,
+                                  ),
+                                );
+
+                                ScaffoldMessenger.of(context)
+                                  ..hideCurrentSnackBar()
+                                  ..showSnackBar(snackBar);
+                              } else {
+                                // pdf generation failed
+                              }
                             } else {
                               // Executable failed
                             }
@@ -136,7 +182,8 @@ class _GeneratePageState extends State<GeneratePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                         onPressed: () {
-                          final Uri fileLocation = Uri.parse("file:" '${Directory.current.path}/../output/' );
+                          final Uri fileLocation = Uri.parse(
+                              "file:" '${Directory.current.path}/../output/');
                           launchUrl(fileLocation);
                         },
                         child: const Icon(Icons.folder_open)),
