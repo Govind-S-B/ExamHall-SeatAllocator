@@ -19,7 +19,7 @@ use crate::student::Student;
 ///
 /// // Add a student to the Hall.
 /// let student = Student::new("12345", "Math");
-/// hall.add_student(student);
+/// hall.push(student);
 /// ```
 pub struct Hall {
     name: String,
