@@ -133,6 +133,11 @@ class _GeneratePageState extends State<GeneratePage> {
                           // if exit code is 0 then show a success message
                           // else show an error message
 
+                          // by default show failure message
+                          var content_type = ContentType.failure;
+                          var title = "PDF Generation Failed";
+                          var msg = "PDF Generation Failed";
+
                           try {
                             final result = await Process.run(
                                 '${Directory.current.path}\\allocator.exe', []);
@@ -148,24 +153,10 @@ class _GeneratePageState extends State<GeneratePage> {
                               if (result2.exitCode == 0) {
                                 // pdf generated successfully
 
-                                final snackBar = SnackBar(
-                                  /// need to set following properties for best effect of awesome_snackbar_content
-                                  elevation: 0,
-                                  behavior: SnackBarBehavior.floating,
-                                  backgroundColor: Colors.transparent,
-                                  content: AwesomeSnackbarContent(
-                                    title: 'PDF Generated',
-                                    message:
-                                        'PDF Generated , please check the output folder.',
-
-                                    /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-                                    contentType: ContentType.success,
-                                  ),
-                                );
-
-                                ScaffoldMessenger.of(context)
-                                  ..hideCurrentSnackBar()
-                                  ..showSnackBar(snackBar);
+                                content_type = ContentType.success;
+                                title = "PDF Generated";
+                                msg =
+                                    "PDF Generated , please check the output folder.";
                               } else {
                                 // pdf generation failed
                               }
@@ -175,6 +166,22 @@ class _GeneratePageState extends State<GeneratePage> {
                           } catch (e) {
                             // Handle any exceptions here
                           }
+
+                          final snackBar = SnackBar(
+                            elevation: 0,
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            content: AwesomeSnackbarContent(
+                              title: title,
+                              message: msg,
+                              contentType: content_type,
+                            ),
+                          );
+
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(snackBar);
+                            
                         },
                         child: const Text("Generate")),
                   ),
