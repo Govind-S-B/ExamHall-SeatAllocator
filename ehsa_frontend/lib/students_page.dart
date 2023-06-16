@@ -147,8 +147,7 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _dropTable() async {
-    await _database.execute(
-        "DELETE FROM students");
+    await _database.execute("DELETE FROM students");
     _fetchTableViewRows();
     _subjectListinit();
   }
@@ -539,8 +538,9 @@ class _StudentsPageState extends State<StudentsPage> {
           ),
           SizedBox(
             width: 150,
-            height: 40,
+            height: 25,
             child: ToggleButtons(
+              borderRadius: const BorderRadius.all(Radius.elliptical(8, 8)),
               isSelected: isSelected,
               onPressed: (index) {
                 setState(() {
@@ -551,16 +551,16 @@ class _StudentsPageState extends State<StudentsPage> {
                 });
               },
               children: const [
-                Text('1'), // Students
-                Text('2'), // Subjects
+                Text('1', style: TextStyle(fontSize: 11)), // Students
+                Text('2', style: TextStyle(fontSize: 11)), // Subjects
               ],
             ),
           ),
           Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 16, right: 16, top: 16, bottom: 8),
+              padding:
+                  const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.vertical(
@@ -576,7 +576,8 @@ class _StudentsPageState extends State<StudentsPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: ElevatedButton(
-                                onPressed: _dropTable, child: const Text('Clear Table')),
+                                onPressed: _dropTable,
+                                child: const Text('Clear Table')),
                           )),
                     ],
                   ),
