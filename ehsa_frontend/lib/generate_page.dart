@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
+import 'package:neumorphic_ui/neumorphic_ui.dart';
 
 class GeneratePage extends StatefulWidget {
-  const GeneratePage({super.key});
+  const GeneratePage({Key? key}) : super(key: key);
 
   @override
   State<GeneratePage> createState() => _GeneratePageState();
@@ -36,7 +37,6 @@ class _GeneratePageState extends State<GeneratePage> {
   }
 
   Future<void> _setSessionIdValue() async {
-    //function to check if the metadata table has a key containing SESSION_NAME
     var val = await _database.query("metadata", where: "key = 'session_name'");
     _sessionId = (val.isEmpty ? "Undefined" : val[0]["value"]).toString();
     setState(() {});
@@ -45,12 +45,14 @@ class _GeneratePageState extends State<GeneratePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16), bottom: Radius.circular(16)),
+              top: Radius.circular(16),
+              bottom: Radius.circular(16),
+            ),
             color: Colors.blue.shade300.withAlpha(50),
           ),
           child: Column(
@@ -78,10 +80,10 @@ class _GeneratePageState extends State<GeneratePage> {
                           ),
                         ),
                       ),
-                    ), // enter session name
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: ElevatedButton(
+                      child: NeumorphicButton(
                         onPressed: () {
                           var input = _sessionIdFieldController.text.trim();
                           if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N')
@@ -89,7 +91,6 @@ class _GeneratePageState extends State<GeneratePage> {
                             _sessionId = input;
                           } else {
                             final snackBar = SnackBar(
-                              /// need to set following properties for best effect of awesome_snackbar_content
                               elevation: 0,
                               behavior: SnackBarBehavior.floating,
                               backgroundColor: Colors.transparent,
@@ -97,8 +98,6 @@ class _GeneratePageState extends State<GeneratePage> {
                                 title: 'Invalid Session ID',
                                 message:
                                     'Please Recheck the Session ID entered if of proper format and try again.',
-
-                                /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
                                 contentType: ContentType.failure,
                               ),
                             );
@@ -108,97 +107,106 @@ class _GeneratePageState extends State<GeneratePage> {
                               ..showSnackBar(snackBar);
                           }
 
-                          // write a function to update the metadata table with the new session name
                           _database.execute(
                             "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
                           );
                           _sessionIdFieldController.clear();
                           setState(() {});
                         },
+                        style: NeumorphicStyle(
+                          boxShape: NeumorphicBoxShape.roundRect(
+                            BorderRadius.circular(8),
+                          ),
+                        ),
                         child: const Icon(Icons.settings),
                       ),
-                    )
+                    ),
                   ],
                 ),
-              ), // set session name
-
+              ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                        onPressed: () async {
-                          // async function to launch rust allocator and wait for its response exit code
-                          // if exit code is 0 then show a success message
-                          // else show an error message
+                    child: NeumorphicButton(
+                      onPressed: () async {
+                        var content_type = ContentType.failure;
+                        var title = "PDF Generation Failed";
+                        var msg = "PDF Generation Failed";
 
-                          // by default show failure message
-                          var content_type = ContentType.failure;
-                          var title = "PDF Generation Failed";
-                          var msg = "PDF Generation Failed";
-
-                          try {
-                            final result = await Process.run(
-                                '${Directory.current.path}\\allocator.exe', []);
-
-                            if (result.exitCode == 0) {
-                              // Executable executed successfully
-                              // launch pdf generator
-
-                              final result2 = await Process.run(
-                                  '${Directory.current.path}\\pdf_generator.exe',
-                                  []);
-
-                              if (result2.exitCode == 0) {
-                                // pdf generated successfully
-
-                                content_type = ContentType.success;
-                                title = "PDF Generated";
-                                msg =
-                                    "PDF Generated , please check the output folder.";
-                              } else {
-                                // pdf generation failed
-                              }
-                            } else {
-                              // Executable failed
-                            }
-                          } catch (e) {
-                            // Handle any exceptions here
-                          }
-
-                          final snackBar = SnackBar(
-                            elevation: 0,
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.transparent,
-                            content: AwesomeSnackbarContent(
-                              title: title,
-                              message: msg,
-                              contentType: content_type,
-                            ),
+                        try {
+                          final result = await Process.run(
+                            '${Directory.current.path}\\allocator.exe',
+                            [],
                           );
 
-                          ScaffoldMessenger.of(context)
-                            ..hideCurrentSnackBar()
-                            ..showSnackBar(snackBar);
-                            
-                        },
-                        child: const Text("Generate")),
+                          if (result.exitCode == 0) {
+                            final result2 = await Process.run(
+                              '${Directory.current.path}\\pdf_generator.exe',
+                              [],
+                            );
+
+                            if (result2.exitCode == 0) {
+                              content_type = ContentType.success;
+                              title = "PDF Generated";
+                              msg =
+                                  "PDF Generated, please check the output folder.";
+                            } else {
+                              // pdf generation failed
+                            }
+                          } else {
+                            // Executable failed
+                          }
+                        } catch (e) {
+                          // Handle any exceptions here
+                        }
+
+                        final snackBar = SnackBar(
+                          elevation: 0,
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.transparent,
+                          content: AwesomeSnackbarContent(
+                            title: title,
+                            message: msg,
+                            contentType: content_type,
+                          ),
+                        );
+
+                        ScaffoldMessenger.of(context)
+                          ..hideCurrentSnackBar()
+                          ..showSnackBar(snackBar);
+                      },
+                      style: NeumorphicStyle(
+                        boxShape: NeumorphicBoxShape.roundRect(
+                          BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text("Generate"),
+                    ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          final Uri fileLocation = Uri.parse(
-                              "file:" '${Directory.current.path}/../output/');
-                          launchUrl(fileLocation);
-                        },
-                        child: const Icon(Icons.folder_open)),
-                  )
+                    child: NeumorphicButton(
+                      onPressed: () {
+                        final Uri fileLocation = Uri.parse(
+                            "file:" '${Directory.current.path}/../output/');
+                        launchUrl(fileLocation);
+                      },
+                      style: NeumorphicStyle(
+                        boxShape: NeumorphicBoxShape.roundRect(
+                          BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Icon(Icons.folder_open),
+                    ),
+                  ),
                 ],
-              ) // generate button
+              ),
             ],
-          )),
-    ));
+          ),
+        ),
+      ),
+    );
   }
 }
