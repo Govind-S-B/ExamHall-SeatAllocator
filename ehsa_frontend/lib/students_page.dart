@@ -374,7 +374,7 @@ class _StudentsPageState extends State<StudentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Column( 
         children: <Widget>[
           Expanded(
             flex: 2,
@@ -389,8 +389,8 @@ class _StudentsPageState extends State<StudentsPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 8),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
                         width: 300,
