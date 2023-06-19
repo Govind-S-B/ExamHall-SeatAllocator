@@ -1,10 +1,18 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:window_manager/window_manager.dart'; 
 
-void main() {
+void main() async { 
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  if (Platform.isWindows) {
+    WindowManager.instance.setMinimumSize(const Size(950, 700));
+    
+  }
   runApp(const MyApp());
 }
 
