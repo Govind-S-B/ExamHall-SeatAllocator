@@ -38,8 +38,13 @@ fn main() {
                 if extra_seats == 0 {
                     allocation_mode = match allocation_mode {
                         SeperateSubject => {
-
                             placed_keys.clear();
+                            hall.previously_placed_key = hall
+                                .students()
+                                .last()
+                                .unwrap_or(&None)
+                                .as_ref()
+                                .map(|s| s.class().to_owned());
                             students = students
                                 .into_values()
                                 .flatten()
