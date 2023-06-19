@@ -38,6 +38,8 @@ fn main() {
                 if extra_seats == 0 {
                     allocation_mode = match allocation_mode {
                         SeperateSubject => {
+
+                            placed_keys.clear();
                             students = students
                                 .into_values()
                                 .flatten()
