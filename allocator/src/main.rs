@@ -26,7 +26,6 @@ fn main() {
     };
     let mut allocation_mode = AllocationMode::SeperateSubject;
     let mut placed_keys = HashSet::new();
-    let seated_students: Vec<&Student> = Vec::with_capacity(total_students);
     'main: for hall in &mut halls {
         if students.is_empty() {
             break;
@@ -39,10 +38,13 @@ fn main() {
                 if extra_seats == 0 {
                     allocation_mode = match allocation_mode {
                         SeperateSubject => {
-                            placed_keys = seated_students
-                                .iter()
-                                .map(|s| s.class().to_owned())
-                                .collect();
+                            placed_keys.clear();
+                            hall.previously_placed_key = hall
+                                .students()
+                                .last()
+                                .unwrap_or(&None)
+                                .as_ref()
+                                .map(|s| s.class().to_owned());
                             students = students
                                 .into_values()
                                 .flatten()
@@ -133,9 +135,3 @@ fn get_next_key(
             .clone(),
     )
 }
-/*
-
-
-
-
-*/

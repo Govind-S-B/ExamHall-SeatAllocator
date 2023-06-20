@@ -4,9 +4,15 @@ import sqlite3 as sq
 import itertools
 from math import ceil
 # import random
-
+import configparser
 
 def generate_report():
+
+    # Config
+    config = configparser.ConfigParser()
+    config.read("config.txt")
+    name = config.get("exam info","name")
+    title = config.get("exam info","title")
 
     conn = sq.connect("report.db")
     
@@ -125,14 +131,14 @@ def generate_report():
     pdf1.add_page()
 
     pdf1.set_font(font, '', 27)
-    text = "Marian Engineering College"
+    text = name
     text_w = pdf1.get_string_width(text)+6
     doc_w = pdf1.w
     pdf1.set_x((doc_w - text_w) / 2)
     pdf1.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
 
     pdf1.set_font(font, '', 21)
-    text = "Halls for Internal Examination"
+    text = "Halls for " + title
     text_w = pdf1.get_string_width(text)+6
     pdf1.set_x((doc_w - text_w) / 2)
     pdf1.cell(text_w, 7, text,  new_x="LMARGIN", new_y="NEXT", align='C')
@@ -251,14 +257,14 @@ def generate_report():
 
             pdf2.add_page()
             pdf2.set_font(font, '', 27)
-            text = "Marian Engineering College"
+            text = name
             text_w = pdf2.get_string_width(text)+6
             pdf2.set_x((pdf2.w - text_w) / 2)
             pdf2.cell(text_w, 23, text,  new_x="LMARGIN",
                       new_y="NEXT", align='C')
 
             pdf2.set_font(font, '', 20)
-            text = "Packing List for Internal Examination"
+            text = "Packing List for " + title
             text_w = pdf2.get_string_width(text)+6
             pdf2.set_x((pdf2.w - text_w) / 2)
             pdf2.cell(text_w, 10, text,  new_x="LMARGIN",
@@ -430,14 +436,14 @@ def generate_report():
 
             pdf2.add_page()
             pdf2.set_font(font, '', 27)
-            text = "Marian Engineering College"
+            text = name
             text_w = pdf2.get_string_width(text)+6
             pdf2.set_x((pdf2.w - text_w) / 2)
             pdf2.cell(text_w, 23, text,  new_x="LMARGIN",
                       new_y="NEXT", align='C')
 
             pdf2.set_font(font, '', 20)
-            text = "Packing List for Internal Examination"
+            text = "Packing List for " + title
             text_w = pdf2.get_string_width(text)+6
             pdf2.set_x((pdf2.w - text_w) / 2)
             pdf2.cell(text_w, 10, text,  new_x="LMARGIN",
@@ -654,13 +660,13 @@ def generate_report():
         # Headings
         pdf3.add_page()
         pdf3.set_font(font, '', 27)
-        text = "Marian Engineering College"
+        text = name
         text_w = pdf3.get_string_width(text)+6
         pdf3.w = pdf3.w
         pdf3.set_x((pdf3.w - text_w) / 2)
         pdf3.cell(text_w, 23, text,  new_x="LMARGIN", new_y="NEXT", align='C')
         pdf3.set_font(font, '', 20)
-        text = "Seating Arrangement for Internal Examination"
+        text = "Seating Arrangement for " + title
         text_w = pdf3.get_string_width(text)+6
         pdf3.set_x((pdf3.w - text_w) / 2)
         pdf3.cell(text_w, 10, text,  new_x="LMARGIN", new_y="NEXT", align='C')

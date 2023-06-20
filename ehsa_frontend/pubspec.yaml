@@ -33,6 +33,7 @@ dependencies:
   sqflite_common_ffi: ^2.2.5
   url_launcher: ^6.1.11
   flutter_neumorphic: ^3.0.0
+  awesome_snackbar_content: ^0.1.3
 
 dev_dependencies:
   flutter_test:
