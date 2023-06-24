@@ -3,7 +3,6 @@ mod hall;
 mod student;
 use std::collections::{HashMap, HashSet};
 
-use db_manager::DatabaseManager;
 use hall::Hall;
 use student::Student;
 
@@ -13,10 +12,9 @@ enum AllocationMode {
     SeperateClass,
 }
 fn main() {
-    let db = DatabaseManager::new();
-    let mut students: HashMap<String, Vec<Student>> = db.read_students_table();
-
-    let mut halls: Vec<Hall> = db.read_halls_table();
+    let conn = sqlite::open("input.db").expect("Error connecting to input.db");
+    let mut students: HashMap<String, Vec<Student>> = db_manager::read_students_table(&conn);
+    let mut halls: Vec<Hall> = db_manager::read_halls_table(&conn);
 
     let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
     let total_students: usize = students.values().map(|s| s.len()).sum();
@@ -79,7 +77,8 @@ fn main() {
             }
         }
     }
-    db.write_report_table(&halls)
+    let conn = sqlite::open("report.db").expect("Error connecting to report.db");
+    db_manager::write_report_table(&conn, &halls);
 }
 
 fn get_next_student(
