@@ -8,19 +8,7 @@ use crate::student::Student;
 /// - `name` - Represents the name of the hall.
 /// - `capacity` - Represents the maximum number of students the hall can accommodate.
 /// - `students` - Represents a list of students currently in the hall. This list can include empty seats (represented as `None`).
-///
-/// # Example
-///
-/// ```rust
-/// use crate::student::Student;
-///
-/// // Create a new Hall.
-/// let mut hall = Hall::new("Hall A", 50);
-///
-/// // Add a student to the Hall.
-/// let student = Student::new("12345", "Math");
-/// hall.push(student);
-/// ```
+
 pub struct Hall {
     name: String,
     capacity: usize,
