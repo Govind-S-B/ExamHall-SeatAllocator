@@ -18,17 +18,20 @@ fn main() {
     let conn = sqlite::open(args.input_db_path).expect("Error connecting to input.db");
     let mut students = db_manager::read_students_table(&conn);
     let mut halls = db_manager::read_halls_table(&conn);
-
     if args.randomize {
         halls.shuffle(&mut rand::thread_rng())
     }
 
-    let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
-    let total_students: usize = students.values().map(|s| s.len()).sum();
-    let mut extra_seats = match total_seats >= total_students {
-        true => total_seats - total_students,
-        false => panic!("ERROR: more students than seats"),
+    let mut extra_seats = {
+        let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
+        let total_students: usize = students.values().map(|s| s.len()).sum();
+
+        if total_students > total_seats {
+            panic!("ERROR: more students than seats")
+        }
+        total_seats - total_students
     };
+
     let mut allocation_mode = AllocationMode::SeperateSubject;
     let mut placed_keys = HashSet::new();
 
