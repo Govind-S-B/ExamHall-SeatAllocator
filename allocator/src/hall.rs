@@ -33,21 +33,20 @@ impl Hall {
     ///
     /// This function will return an error if the hall is full
     pub fn push(&mut self, student: Student) -> Result<(), Student> {
-        match self.is_full() {
-            false => {
-                self.students.push(Some(student));
-                Ok(())
-            }
-            true => Err(student),
+        if self.is_full() {
+            Err(student)
+        } else {
+            self.students.push(Some(student));
+            Ok(())
         }
     }
     pub fn push_empty(&mut self) -> Result<(), ()> {
-        if !self.is_full() {
+        if self.is_full() {
+            Err(())
+        } else {
             self.students.push(None);
             self.previously_placed_key = None;
             Ok(())
-        } else {
-            Err(())
         }
     }
 

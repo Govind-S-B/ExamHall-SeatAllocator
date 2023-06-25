@@ -16,7 +16,7 @@ pub fn get() -> Arguments {
     // first argument is the path of the program itself
     let [_, input_db_path, output_db_path] = args.as_slice()
     else {
-        eprintln!("args given are {:?}", args);
+        eprintln!("args given are {args:?}");
         panic!("INVALID ARGUMENTS: arguments should be \" ./allocator <input_db_path> <output_db_path> [-r | --randomize]");
     };
     Arguments {
