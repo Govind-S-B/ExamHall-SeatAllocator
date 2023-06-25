@@ -12,7 +12,14 @@ enum AllocationMode {
     SeperateClass,
 }
 fn main() {
-    let conn = sqlite::open("input.db").expect("Error connecting to input.db");
+    let input_db_path = std::env::args()
+        .nth(1)
+        .expect("no path given for input database");
+    let output_db_path = std::env::args()
+        .nth(2)
+        .expect("no path given for output database");
+
+    let conn = sqlite::open(input_db_path).expect("Error connecting to input.db");
     let mut students: HashMap<String, Vec<Student>> = db_manager::read_students_table(&conn);
     let mut halls: Vec<Hall> = db_manager::read_halls_table(&conn);
 
@@ -77,7 +84,7 @@ fn main() {
             }
         }
     }
-    let conn = sqlite::open("report.db").expect("Error connecting to report.db");
+    let conn = sqlite::open(output_db_path).expect("Error connecting to report.db");
     db_manager::write_report_table(&conn, &halls);
 }
 
