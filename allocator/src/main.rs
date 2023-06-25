@@ -38,12 +38,14 @@ fn main() {
         };
 
         while !hall.is_full() && !students.is_empty() {
+            // happy path, student is added to hall
             if let Some(next_student) = get_next_student(&mut students, hall, &mut placed_keys) {
                 hall.push(next_student)
                     .expect("tried to push student into full hall");
                 continue;
             }
 
+            // run out of subjects and now must leave empty seats between students
             if extra_seats > 0 {
                 hall.push_empty()
                     .expect("tried to push empty on full hall (error should never happer)");
@@ -51,10 +53,15 @@ fn main() {
                 continue;
             }
 
+            // if there are no extra seats left and no classes to seperate students by, switch to 'any' mode
+            // that is, give up on seperating students
             if let AllocationMode::SeperateClass = allocation_mode {
                 break 'main;
             }
 
+            // if the allocation mode is currently on 'seperate subject'
+            // switch to seperating by class and adjust the students dict,
+            // placed keys and previously placed key to reglect this
             allocation_mode = AllocationMode::SeperateClass;
             placed_keys.clear();
             hall.previously_placed_key = hall
