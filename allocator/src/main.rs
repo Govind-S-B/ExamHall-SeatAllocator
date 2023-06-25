@@ -96,9 +96,13 @@ fn main() {
     if !students.is_empty() {
         let mut students: Vec<Student> = students.into_values().flatten().collect();
         for hall in &mut halls {
-            while !hall.is_full() && !students.is_empty() {
-                hall.push(students.pop().unwrap())
-                    .expect("tried to push student into full hall");
+            let Some(student) = students.pop()
+            else {
+                break;
+            };
+            if let Err(student) = hall.push(student) {
+                students.push(student);
+                continue;
             }
         }
     }
