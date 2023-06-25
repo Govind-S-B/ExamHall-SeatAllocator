@@ -1,20 +1,27 @@
+mod args;
 mod db_manager;
 mod hall;
 mod student;
-use std::collections::{HashMap, HashSet};
-
 use hall::Hall;
 use student::Student;
 
-// TODO: exit codes
+use rand::seq::SliceRandom;
+use std::collections::{HashMap, HashSet};
+
 enum AllocationMode {
     SeperateSubject,
     SeperateClass,
 }
 fn main() {
-    let conn = sqlite::open("input.db").expect("Error connecting to input.db");
-    let mut students: HashMap<String, Vec<Student>> = db_manager::read_students_table(&conn);
-    let mut halls: Vec<Hall> = db_manager::read_halls_table(&conn);
+    let args = args::get();
+
+    let conn = sqlite::open(args.input_db_path).expect("Error connecting to input.db");
+    let mut students = db_manager::read_students_table(&conn);
+    let mut halls = db_manager::read_halls_table(&conn);
+
+    if args.randomize {
+        halls.shuffle(&mut rand::thread_rng())
+    }
 
     let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
     let total_students: usize = students.values().map(|s| s.len()).sum();
@@ -24,45 +31,54 @@ fn main() {
     };
     let mut allocation_mode = AllocationMode::SeperateSubject;
     let mut placed_keys = HashSet::new();
+
     'main: for hall in &mut halls {
         if students.is_empty() {
             break;
         };
 
         while !hall.is_full() && !students.is_empty() {
-            let Some(next_student) = get_next_student(&mut students, hall, &mut placed_keys)
-            else {
-                use AllocationMode::*;
-                if extra_seats == 0 {
-                    allocation_mode = match allocation_mode {
-                        SeperateSubject => {
-                            placed_keys.clear();
-                            hall.previously_placed_key = hall
-                                .students()
-                                .last()
-                                .unwrap_or(&None)
-                                .as_ref()
-                                .map(|s| s.class().to_owned());
-                            students = students
-                                .into_values()
-                                .flatten()
-                                .fold(HashMap::new(), |mut map, student| {
-                                    map.entry(student.class().to_owned()).or_default().push(student);
-                                    map
-                                });
-                            SeperateClass
-                        },
-                        SeperateClass => break 'main,
-                    };
-                } else {
-                    hall.push_empty().expect("tried to push empty on full hall (error should never happer)");
-                    extra_seats -= 1;
-                }
+            // happy path, student is added to hall
+            if let Some(next_student) = get_next_student(&mut students, hall, &mut placed_keys) {
+                hall.push(next_student)
+                    .expect("tried to push student into full hall");
                 continue;
-            };
+            }
 
-            hall.push(next_student)
-                .expect("tried to push student into full hall");
+            // run out of subjects and now must leave empty seats between students
+            if extra_seats > 0 {
+                hall.push_empty()
+                    .expect("tried to push empty on full hall (error should never happer)");
+                extra_seats -= 1;
+                continue;
+            }
+
+            // if there are no extra seats left and no classes to seperate students by, switch to 'any' mode
+            // that is, give up on seperating students
+            if let AllocationMode::SeperateClass = allocation_mode {
+                break 'main;
+            }
+
+            // if the allocation mode is currently on 'seperate subject'
+            // switch to seperating by class and adjust the students dict,
+            // placed keys and previously placed key to reglect this
+            allocation_mode = AllocationMode::SeperateClass;
+            placed_keys.clear();
+            hall.previously_placed_key = hall
+                .students()
+                .last()
+                .unwrap_or(&None)
+                .as_ref()
+                .map(|s| s.class().to_owned());
+            students = students
+                .into_values()
+                .flatten()
+                .fold(HashMap::new(), |mut map, student| {
+                    map.entry(student.class().to_owned())
+                        .or_default()
+                        .push(student);
+                    map
+                });
         }
     }
 
@@ -77,7 +93,7 @@ fn main() {
             }
         }
     }
-    let conn = sqlite::open("report.db").expect("Error connecting to report.db");
+    let conn = sqlite::open(args.output_db_path).expect("Error connecting to report.db");
     db_manager::write_report_table(&conn, &halls);
 }
 

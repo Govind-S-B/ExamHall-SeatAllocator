@@ -32,8 +32,8 @@ pub fn read_students_table(conn: &Connection) -> HashMap<String, Vec<Student>> {
     let mut students: HashMap<String, Vec<Student>> = HashMap::new();
     conn.iterate(query, |pair| {
         //pair is an array slice of the columns and the values in the colums
-        //first element of pair is ("id", <the id>)
-        // second element is ("subject", <the subject>)
+        //first element of pair is the tuple ("id", <the id>)
+        // second element is the tuple ("subject", <the subject>)
         let mut iter = pair.iter();
         let &(_, Some(id)) = iter.next().unwrap()
                 else {
