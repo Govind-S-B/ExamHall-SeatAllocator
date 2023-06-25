@@ -6,7 +6,7 @@ pub struct Arguments {
 
 pub fn get_args() -> Arguments {
     let mut randomize = false;
-    let mut paths = Vec::with_capacity(2);
+    let mut paths = Vec::with_capacity(3);
     for arg in std::env::args() {
         match arg.as_str() {
             "-r" | "--randomize" => randomize = true,
