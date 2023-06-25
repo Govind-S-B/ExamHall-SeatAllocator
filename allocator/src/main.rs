@@ -31,45 +31,47 @@ fn main() {
     };
     let mut allocation_mode = AllocationMode::SeperateSubject;
     let mut placed_keys = HashSet::new();
+
     'main: for hall in &mut halls {
         if students.is_empty() {
             break;
         };
 
         while !hall.is_full() && !students.is_empty() {
-            let Some(next_student) = get_next_student(&mut students, hall, &mut placed_keys)
-            else {
-                use AllocationMode::*;
-                if extra_seats == 0 {
-                    allocation_mode = match allocation_mode {
-                        SeperateSubject => {
-                            placed_keys.clear();
-                            hall.previously_placed_key = hall
-                                .students()
-                                .last()
-                                .unwrap_or(&None)
-                                .as_ref()
-                                .map(|s| s.class().to_owned());
-                            students = students
-                                .into_values()
-                                .flatten()
-                                .fold(HashMap::new(), |mut map, student| {
-                                    map.entry(student.class().to_owned()).or_default().push(student);
-                                    map
-                                });
-                            SeperateClass
-                        },
-                        SeperateClass => break 'main,
-                    };
-                } else {
-                    hall.push_empty().expect("tried to push empty on full hall (error should never happer)");
-                    extra_seats -= 1;
-                }
+            if let Some(next_student) = get_next_student(&mut students, hall, &mut placed_keys) {
+                hall.push(next_student)
+                    .expect("tried to push student into full hall");
                 continue;
-            };
+            }
 
-            hall.push(next_student)
-                .expect("tried to push student into full hall");
+            if extra_seats > 0 {
+                hall.push_empty()
+                    .expect("tried to push empty on full hall (error should never happer)");
+                extra_seats -= 1;
+                continue;
+            }
+
+            if let AllocationMode::SeperateClass = allocation_mode {
+                break 'main;
+            }
+
+            allocation_mode = AllocationMode::SeperateClass;
+            placed_keys.clear();
+            hall.previously_placed_key = hall
+                .students()
+                .last()
+                .unwrap_or(&None)
+                .as_ref()
+                .map(|s| s.class().to_owned());
+            students = students
+                .into_values()
+                .flatten()
+                .fold(HashMap::new(), |mut map, student| {
+                    map.entry(student.class().to_owned())
+                        .or_default()
+                        .push(student);
+                    map
+                });
         }
     }
 
