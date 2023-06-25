@@ -1,7 +1,7 @@
 use crate::{hall::Hall, student::Student};
 use sq::Connection;
 use sqlite as sq;
-use std::{collections::hash_map::HashMap, vec};
+use std::collections::hash_map::HashMap;
 
 pub fn read_halls_table(conn: &Connection) -> Vec<Hall> {
     let query = "SELECT * FROM halls ORDER BY capacity DESC";
