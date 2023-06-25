@@ -22,6 +22,9 @@ fn main() {
         halls.shuffle(&mut rand::thread_rng())
     }
 
+    let mut allocation_mode = AllocationMode::SeperateSubject;
+    let mut placed_keys = HashSet::new();
+
     let mut extra_seats = {
         let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
         let total_students: usize = students.values().map(|s| s.len()).sum();
@@ -31,9 +34,6 @@ fn main() {
         }
         total_seats - total_students
     };
-
-    let mut allocation_mode = AllocationMode::SeperateSubject;
-    let mut placed_keys = HashSet::new();
 
     'main: for hall in &mut halls {
         if students.is_empty() {
@@ -87,8 +87,7 @@ fn main() {
 
     // ANY mode
     if !students.is_empty() {
-        let mut students = students.into_values().flatten().collect::<Vec<Student>>();
-
+        let mut students: Vec<Student> = students.into_values().flatten().collect();
         for hall in &mut halls {
             while !hall.is_full() && !students.is_empty() {
                 hall.push(students.pop().unwrap())
