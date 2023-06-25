@@ -1,3 +1,4 @@
+mod args;
 mod db_manager;
 mod hall;
 mod student;
@@ -12,12 +13,7 @@ enum AllocationMode {
     SeperateClass,
 }
 fn main() {
-    let input_db_path = std::env::args()
-        .nth(1)
-        .expect("no path given for input database");
-    let output_db_path = std::env::args()
-        .nth(2)
-        .expect("no path given for output database");
+    let (randomize, input_db_path, output_db_path) = args::get_args();
 
     let conn = sqlite::open(input_db_path).expect("Error connecting to input.db");
     let mut students: HashMap<String, Vec<Student>> = db_manager::read_students_table(&conn);
