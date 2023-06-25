@@ -7,7 +7,7 @@ pub fn get_args() -> (bool, String, String) {
             _ => paths.push(arg),
         }
     }
-
+    // first argument is the path of the program itself
     let [_, input_db_path, output_db_path] = paths.as_slice()
         else {
             eprintln!("INVALID ARGUMENTS: arguments should be 
