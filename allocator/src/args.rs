@@ -1,4 +1,10 @@
-pub fn get_args() -> (bool, String, String) {
+pub struct Arguments {
+    pub randomize: bool,
+    pub input_db_path: String,
+    pub output_db_path: String,
+}
+
+pub fn get_args() -> Arguments {
     let mut randomize = false;
     let mut paths = Vec::with_capacity(2);
     for arg in std::env::args() {
@@ -14,9 +20,9 @@ pub fn get_args() -> (bool, String, String) {
              \" ./allocator <input_db_path> <output_db_path> [-r | --randomize]");
             panic!("args given are {:?}", paths);
         };
-    (
+    Arguments {
         randomize,
-        input_db_path.to_owned(),
-        output_db_path.to_owned(),
-    )
+        input_db_path: input_db_path.to_owned(),
+        output_db_path: output_db_path.to_owned(),
+    }
 }
