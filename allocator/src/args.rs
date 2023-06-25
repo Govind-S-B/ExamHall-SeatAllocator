@@ -4,7 +4,7 @@ pub struct Arguments {
     pub output_db_path: String,
 }
 
-pub fn get_args() -> Arguments {
+pub fn get() -> Arguments {
     let mut randomize = false;
     let mut args = Vec::with_capacity(3);
     for arg in std::env::args() {

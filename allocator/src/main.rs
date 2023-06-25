@@ -13,7 +13,7 @@ enum AllocationMode {
     SeperateClass,
 }
 fn main() {
-    let args = args::get_args();
+    let args = args::get();
 
     let conn = sqlite::open(args.input_db_path).expect("Error connecting to input.db");
     let mut students = db_manager::read_students_table(&conn);
