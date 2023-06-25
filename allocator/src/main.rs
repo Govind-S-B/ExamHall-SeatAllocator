@@ -2,12 +2,12 @@ mod args;
 mod db_manager;
 mod hall;
 mod student;
-use std::collections::{HashMap, HashSet};
-
 use hall::Hall;
 use student::Student;
 
-// TODO: exit codes
+use rand::seq::SliceRandom;
+use std::collections::{HashMap, HashSet};
+
 enum AllocationMode {
     SeperateSubject,
     SeperateClass,
@@ -16,8 +16,12 @@ fn main() {
     let (randomize, input_db_path, output_db_path) = args::get_args();
 
     let conn = sqlite::open(input_db_path).expect("Error connecting to input.db");
-    let mut students: HashMap<String, Vec<Student>> = db_manager::read_students_table(&conn);
-    let mut halls: Vec<Hall> = db_manager::read_halls_table(&conn);
+    let mut students = db_manager::read_students_table(&conn);
+    let mut halls = db_manager::read_halls_table(&conn);
+
+    if randomize {
+        halls.shuffle(&mut rand::thread_rng())
+    }
 
     let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
     let total_students: usize = students.values().map(|s| s.len()).sum();
