@@ -98,9 +98,9 @@ fn main() {
     let mut students: Vec<Student> = students.into_values().flatten().collect();
     for hall in &mut halls {
         let Some(student) = students.pop()
-            else {
-                break;
-            };
+        else {
+            break
+        };
         if let Err(student) = hall.push(student) {
             students.push(student);
             continue;
