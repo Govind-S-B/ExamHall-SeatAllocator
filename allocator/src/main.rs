@@ -38,10 +38,6 @@ fn main() {
     };
 
     'main: for hall in &mut halls {
-        if students.is_empty() {
-            break;
-        };
-
         while !hall.is_full() && !students.is_empty() {
             // happy path, student is added to hall
             if let Some(next_key) =
