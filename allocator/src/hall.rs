@@ -13,7 +13,6 @@ pub struct Hall {
     name: String,
     capacity: usize,
     students: Vec<Option<Student>>,
-    pub previously_placed_key: Option<String>,
 }
 
 impl Hall {
@@ -23,7 +22,6 @@ impl Hall {
             name: name.to_owned(),
             capacity,
             students: Vec::with_capacity(capacity),
-            previously_placed_key: None,
         }
     }
 
@@ -45,7 +43,6 @@ impl Hall {
             Err(())
         } else {
             self.students.push(None);
-            self.previously_placed_key = None;
             Ok(())
         }
     }
