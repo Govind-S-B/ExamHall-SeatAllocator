@@ -22,8 +22,10 @@ fn main() {
     }
 
     let mut allocation_mode = AllocationMode::SeperateSubject;
-    let mut placed_keys = HashSet::new();
+    // the 'key' of the previously placed student
+    // it's None if a seat was left empty previously
     let mut previously_placed_key: Option<String> = None;
+    let mut placed_keys = HashSet::new();
 
     let mut extra_seats = {
         let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
