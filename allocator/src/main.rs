@@ -61,15 +61,18 @@ fn main() {
                 continue;
             }
 
-            // if there are no extra seats left and no classes to seperate students by, switch to 'any' mode
+            // while in 'seperate by class' mode if there are no extra seats left
+            // and no classes to seperate students by, switch to 'any' mode
             // that is, give up on seperating students
             if let AllocationMode::SeperateClass = allocation_mode {
+                // TODO: move 'any' mode code here?
                 break 'main;
             }
 
             // if the allocation mode is currently on 'seperate subject'
-            // switch to seperating by class and adjust the students dict,
-            // placed keys and previously placed key to reglect this
+            // and there are no more subejcts or extra seats to seperate students,
+            // switch to seperating by class and adjust students, placed_keys
+            // and previously_placed_key to reflect this
             allocation_mode = AllocationMode::SeperateClass;
             placed_keys.clear();
             previously_placed_key = hall
@@ -90,7 +93,10 @@ fn main() {
         }
     }
 
-    // ANY mode
+    // 'ANY' MODE
+    // if there are any students left, they were not able to be assigned seats
+    // by seperating by subject or by hall
+    // so they are just filled in roll no order in the remaining halls
     let mut students: Vec<Student> = students.into_values().flatten().collect();
     for hall in &mut halls {
         let Some(student) = students.pop()
