@@ -112,6 +112,7 @@ fn main() {
     let conn = sqlite::open(args.output_db_path).expect("Error connecting to report.db");
     db_manager::write_report_table(&conn, &halls);
 }
+
 /// also clears entries as they get empty
 fn get_next_student(students: &mut HashMap<String, Vec<Student>>, key: &str) -> Student {
     let students_in_key = students
