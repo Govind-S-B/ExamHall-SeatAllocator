@@ -1,5 +1,5 @@
 mod args;
-mod db_manager;
+mod db;
 mod hall;
 mod student;
 
@@ -15,8 +15,8 @@ fn main() {
     let args = args::get();
 
     let conn = sqlite::open(args.input_db_path).expect("Error connecting to input.db");
-    let mut students = db_manager::read_students_table(&conn);
-    let mut halls = db_manager::read_halls_table(&conn);
+    let mut students = db::read_students_table(&conn);
+    let mut halls = db::read_halls_table(&conn);
     if args.randomize {
         halls.shuffle(&mut rand::thread_rng())
     }
@@ -110,7 +110,7 @@ fn main() {
     }
 
     let conn = sqlite::open(args.output_db_path).expect("Error connecting to report.db");
-    db_manager::write_report_table(&conn, &halls);
+    db::write_report_table(&conn, &halls);
 }
 
 /// also clears entries as they get empty
