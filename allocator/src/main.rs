@@ -40,6 +40,13 @@ fn main() {
             new_students
         };
     }
+    for students_vec in students.values() {
+        println!("============");
+        for student in students_vec {
+            println!("{}: {}", student.class(), student.roll_no());
+        }
+    }
+    println!("{}", args.randomize);
 
     let mut allocation_mode = AllocationMode::SeperateSubject;
     // the 'key' of the previously placed student
