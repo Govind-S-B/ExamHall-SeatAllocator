@@ -44,7 +44,7 @@ fn main() {
     let mut allocation_mode = AllocationMode::SeperateSubject;
     // the 'key' of the previously placed student
     // it's None if a seat was left empty previously
-    let mut previously_placed_key: Option<String> = None;
+    let mut previously_placed_key: Option<String>;
     let mut placed_keys = HashSet::new();
 
     let mut extra_seats = {
