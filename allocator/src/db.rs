@@ -11,14 +11,16 @@ pub fn read_halls_table(conn: &Connection) -> Vec<Hall> {
         //first element of pair is ("id", <the id>)
         // second element is ("subject", <the subject>)
         let mut iter = pair.iter();
+
         let &(_, Some(hall_name)) = iter.next().unwrap()
-                else {
-                    panic!("DATABASE NOT VALID")
-                };
+        else {
+            panic!("DATABASE NOT VALID")
+        };
+
         let &(_, Some(capacity)) = iter.next().unwrap()
-                else {
-                    panic!("DATABASE NOT VALID")
-                };
+        else {
+            panic!("DATABASE NOT VALID")
+        };
 
         halls.push(Hall::new(hall_name, capacity.parse().unwrap()));
 
