@@ -18,7 +18,27 @@ fn main() {
     let mut students = db::read_students_table(&conn);
     let mut halls = db::read_halls_table(&conn);
     if args.randomize {
-        halls.shuffle(&mut rand::thread_rng())
+        let mut rng = rand::thread_rng();
+        halls.shuffle(&mut rng);
+        students = {
+            let mut new_students: HashMap<String, Vec<Student>> = HashMap::new();
+            for (subject, same_sub_students) in students.into_iter() {
+                let mut v: Vec<Vec<Student>> = same_sub_students
+                    .into_iter()
+                    .fold(HashMap::new(), |mut map: HashMap<_, Vec<_>>, student| {
+                        map.entry(student.class().to_owned())
+                            .or_default()
+                            .push(student);
+                        map
+                    })
+                    .into_values()
+                    .collect();
+                v.shuffle(&mut rng);
+
+                new_students.insert(subject, v.into_iter().flatten().collect());
+            }
+            new_students
+        };
     }
 
     let mut allocation_mode = AllocationMode::SeperateSubject;
