@@ -3,6 +3,7 @@ mod db;
 mod hall;
 mod student;
 
+use hall::Hall;
 use rand::seq::SliceRandom;
 use std::collections::{HashMap, HashSet};
 use student::Student;
@@ -17,14 +18,63 @@ fn main() {
     let conn = sqlite::open(args.input_db_path).expect("Error connecting to input.db");
     let mut students = db::read_students_table(&conn);
     let mut halls = db::read_halls_table(&conn);
-    if args.randomize {
-        halls.shuffle(&mut rand::thread_rng())
-    }
+    if let Some(delta) = args.randomize {
+        if delta == 0 {
+            panic!("delta is 0")
+        }
+        let mut rng = rand::thread_rng();
+        halls = {
+            let mut grouped_halls: Vec<(usize, Vec<Hall>)> = halls
+                .into_iter()
+                .fold(
+                    HashMap::new(),
+                    |mut map: HashMap<usize, Vec<Hall>>, hall| {
+                        map.entry(hall.capacity() - hall.capacity() % delta)
+                            .or_default()
+                            .push(hall);
+                        map
+                    },
+                )
+                .into_iter()
+                .collect();
+            grouped_halls.sort_by_key(|(group, _)| *group);
+            let mut grouped_halls: Vec<Vec<Hall>> = grouped_halls
+                .into_iter()
+                .rev()
+                .map(|(_, vec)| vec)
+                .collect();
+            for group in &mut grouped_halls {
+                group.shuffle(&mut rng)
+            }
+            grouped_halls.into_iter().flatten().collect()
+        };
+        students = {
+            let mut new_students: HashMap<String, Vec<Student>> = HashMap::new();
+            for (subject, same_sub_students) in students.into_iter() {
+                let mut v: Vec<Vec<Student>> = same_sub_students
+                    .into_iter()
+                    .fold(HashMap::new(), |mut map: HashMap<_, Vec<_>>, student| {
+                        map.entry(student.class().to_owned())
+                            .or_default()
+                            .push(student);
+                        map
+                    })
+                    .into_values()
+                    .collect();
+                v.shuffle(&mut rng);
 
+                new_students.insert(subject, v.into_iter().flatten().collect());
+            }
+            new_students
+        };
+    }
+    for hall in &halls {
+        println!("{}: {}", hall.name(), hall.capacity())
+    }
     let mut allocation_mode = AllocationMode::SeperateSubject;
     // the 'key' of the previously placed student
     // it's None if a seat was left empty previously
-    let mut previously_placed_key: Option<String> = None;
+    let mut previously_placed_key;
     let mut placed_keys = HashSet::new();
 
     let mut extra_seats = {

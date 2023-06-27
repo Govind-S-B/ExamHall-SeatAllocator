@@ -62,4 +62,8 @@ impl Hall {
     pub fn seats_left(&self) -> usize {
         self.capacity - self.students.len()
     }
+
+    pub fn capacity(&self) -> usize {
+        self.capacity
+    }
 }
