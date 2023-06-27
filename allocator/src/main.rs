@@ -68,9 +68,7 @@ fn main() {
             new_students
         };
     }
-    for hall in &halls {
-        println!("{}: {}", hall.name(), hall.capacity())
-    }
+
     let mut allocation_mode = AllocationMode::SeperateSubject;
     // the 'key' of the previously placed student
     // it's None if a seat was left empty previously
@@ -162,6 +160,7 @@ fn main() {
 
     let conn = sqlite::open(args.output_db_path).expect("Error connecting to report.db");
     db::write_report_table(&conn, &halls);
+    log_sparse_halls(&halls);
 }
 
 /// also clears entries as they get empty
@@ -210,3 +209,34 @@ fn get_next_key(
             .clone(),
     )
 }
+
+#[cfg(debug_assertions)]
+pub fn log_sparse_halls(halls: &[Hall]) {
+    use std::io::Write;
+
+    let mut file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("logs\\logs.txt")
+        .expect("err opening log file");
+    let mut sparse_hall_count = 0;
+    for hall in halls {
+        let num_students = hall.students().len();
+        if num_students > 0 && num_students < 20 {
+            sparse_hall_count += 1;
+            let content = format!("{}: {}, ", hall.name(), num_students);
+            file.write_all(content.as_bytes())
+                .expect("file write error");
+        }
+    }
+    if sparse_hall_count == 0 {
+        let content = format!("No sparse halls :D");
+        file.write_all(content.as_bytes())
+            .expect("file write error")
+    }
+
+    file.write_all("\n".as_bytes()).expect("file write error")
+}
+
+#[cfg(not(debug_assertions))]
+pub fn log_sparse_halls(_: &[Hall]) {}

@@ -1,3 +1,1 @@
-cd bin
-allocator.exe input.db report.db %1 %2
-pdf_generator.exe
+.\bin\allocator.exe bin/input.db bin/report.db %1 %2
