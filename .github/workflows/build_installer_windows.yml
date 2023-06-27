@@ -89,32 +89,4 @@ jobs:
         git push
         git push -f origin build_branch
         
-  Installer_Build:
-    name: Installer Build
-    needs: [Windows_Python_Build,Windows_Rust_Build,Windows_Flutter_Build]
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          ref: build_branch
-        
-      - name: Install NSIS
-        run: |
-          Invoke-WebRequest -Uri https://raw.githubusercontent.com/actions/runner-images/main/images/win/scripts/Installers/Install-NSIS.ps1 -OutFile Install-NSIS.ps1
-          .\Install-NSIS.ps1 -Version "3.06.1"
 
-      - name: Build installer
-        run: |
-          & 'C:\Program Files (x86)\NSIS\makensis.exe' nsis_script.nsi
-
-      - name: Upload installer artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: EHSA Installer
-          path: ehsa_installer.exe
-          
-      - name: Delete branch
-        run: |
-          git checkout dev
-          git branch -d build_branch
-          git push origin --delete build_branch
