@@ -16,6 +16,8 @@ class _GeneratePageState extends State<GeneratePage> {
       TextEditingController();
   String _sessionId = "";
 
+  bool is_randomisation_enabled = false;
+
   var databaseFactory = databaseFactoryFfi;
   late Database _database;
 
@@ -40,6 +42,12 @@ class _GeneratePageState extends State<GeneratePage> {
     var val = await _database.query("metadata", where: "key = 'session_name'");
     _sessionId = (val.isEmpty ? "Undefined" : val[0]["value"]).toString();
     setState(() {});
+  }
+
+  void toggleButton() {
+    setState(() {
+      is_randomisation_enabled = !is_randomisation_enabled;
+    });
   }
 
   @override
@@ -125,6 +133,17 @@ class _GeneratePageState extends State<GeneratePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  const Text('Enable Randomisation ?'),
+                  Checkbox(
+                    value: is_randomisation_enabled,
+                    onChanged: (value) => toggleButton(),
+                  )
+                ],
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
@@ -138,9 +157,22 @@ class _GeneratePageState extends State<GeneratePage> {
                           var title = "PDF Generation Failed";
                           var msg = "PDF Generation Failed";
 
+                          List<String> allocator_args;
+
+                          if (is_randomisation_enabled) {
+                            allocator_args = [
+                              "input.db",
+                              "report.db",
+                              "--randomize"
+                            ];
+                          } else {
+                            allocator_args = ["input.db", "report.db"];
+                          }
+
                           try {
                             final result = await Process.run(
-                                '${Directory.current.path}\\allocator.exe', []);
+                                '${Directory.current.path}\\allocator.exe',
+                                allocator_args);
 
                             if (result.exitCode == 0) {
                               // Executable executed successfully
@@ -159,9 +191,13 @@ class _GeneratePageState extends State<GeneratePage> {
                                     "PDF Generated , please check the output folder.";
                               } else {
                                 // pdf generation failed
+
+                                msg = "PDF Generator Failed";
                               }
                             } else {
                               // Executable failed
+
+                              msg = "Allocator Failed";
                             }
                           } catch (e) {
                             // Handle any exceptions here
@@ -181,7 +217,6 @@ class _GeneratePageState extends State<GeneratePage> {
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
                             ..showSnackBar(snackBar);
-                            
                         },
                         child: const Text("Generate")),
                   ),
