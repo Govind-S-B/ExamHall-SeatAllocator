@@ -38,6 +38,7 @@ fn main() {
     };
 
     'main: for hall in &mut halls {
+        previously_placed_key = None;
         while !hall.is_full() && !students.is_empty() {
             // happy path, student is added to hall
             if let Some(next_key) =
@@ -65,7 +66,7 @@ fn main() {
             // and no classes to seperate students by, switch to 'any' mode
             // that is, give up on seperating students
             if let AllocationMode::SeperateClass = allocation_mode {
-                // TODO: move 'any' mode code here?
+                // TODO: move 'any' mode code here? (prolly not worth it tbh)
                 break 'main;
             }
 
