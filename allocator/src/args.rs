@@ -1,6 +1,6 @@
 // TODO: delta as an argument
 pub struct Arguments {
-    pub delta: Option<u32>,
+    pub randomize: Option<u32>,
     pub input_db_path: String,
     pub output_db_path: String,
 }
@@ -29,7 +29,7 @@ pub fn get() -> Arguments {
         panic!("INVALID ARGUMENTS: arguments should be \" ./allocator <input_db_path> <output_db_path> [-r | --randomize]");
     };
     Arguments {
-        delta,
+        randomize: delta,
         input_db_path: input_db_path.to_owned(),
         output_db_path: output_db_path.to_owned(),
     }

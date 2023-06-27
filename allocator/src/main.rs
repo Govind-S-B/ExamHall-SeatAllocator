@@ -17,7 +17,7 @@ fn main() {
     let conn = sqlite::open(args.input_db_path).expect("Error connecting to input.db");
     let mut students = db::read_students_table(&conn);
     let mut halls = db::read_halls_table(&conn);
-    if let Some(delta) = args.delta {
+    if let Some(delta) = args.randomize {
         let mut rng = rand::thread_rng();
         halls.shuffle(&mut rng);
         students = {
