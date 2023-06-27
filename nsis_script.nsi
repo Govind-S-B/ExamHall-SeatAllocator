@@ -1,5 +1,5 @@
 Unicode False
-!addplugindir "${NSISDIR}\Plugins"
+!addplugindir "./"
 !include LogicLib.nsh
 
 ; The name of the installer
@@ -39,9 +39,9 @@ Function InstallVCRedist
   ; Download the VC++ Redist installer
   NSISdl::download "https://aka.ms/vs/17/release/vc_redist.x64.exe" "$TEMP\vc_redist.x64.exe"
   ; Run the installer
-  ExecWait "$TEMP\vcredist_x86.exe /q"
+  ExecWait "$TEMP\vc_redist.x64.exe /q"
   ; Check if the installation was successful
-  ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x86" "Installed"
+  ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" "Installed"
   ; If the installation was not successful, prompt the user to try again
   ${If} $0 == ""
     MessageBox MB_RETRYCANCEL "VC++ Redist installation failed. Do you want to try again?" IDRETRY retry 
@@ -52,7 +52,7 @@ FunctionEnd
 
 Function CheckVCRedist
   ; Check if the registry key exists
-  ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x86" "Installed"
+  ReadRegDWORD $0 HKLM "SOFTWARE\Microsoft\VisualStudio\14.0\VC\Runtimes\x64" "Installed"
   ; If the key does not exist, prompt the user to install VC++ Redist
   ${If} $0 == ""
     MessageBox MB_YESNO "This application requires VC++ Redist. Do you want to install it now?" IDYES install_vc_redist
