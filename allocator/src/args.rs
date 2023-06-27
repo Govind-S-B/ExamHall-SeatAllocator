@@ -1,12 +1,12 @@
 // TODO: delta as an argument
 pub struct Arguments {
-    pub randomize: Option<u32>,
+    pub randomize: Option<usize>,
     pub input_db_path: String,
     pub output_db_path: String,
 }
 
 pub fn get() -> Arguments {
-    let mut delta: Option<u32> = None;
+    let mut delta = None;
     let mut paths = Vec::with_capacity(3);
     let mut args = std::env::args().into_iter();
     while let Some(arg) = args.next() {
@@ -28,6 +28,7 @@ pub fn get() -> Arguments {
         eprintln!("args given are {paths:?}");
         panic!("INVALID ARGUMENTS: arguments should be \" ./allocator <input_db_path> <output_db_path> [-r | --randomize]");
     };
+
     Arguments {
         randomize: delta,
         input_db_path: input_db_path.to_owned(),

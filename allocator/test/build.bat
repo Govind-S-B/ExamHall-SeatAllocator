@@ -1,3 +1,3 @@
 cd ..
 cargo build
-move target\release\allocator.exe test\bin
+move target\debug\allocator.exe test\bin
