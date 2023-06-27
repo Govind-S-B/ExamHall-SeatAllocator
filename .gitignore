@@ -6,4 +6,5 @@ allocator/*.bat
 EHSA_V3/*.db
 allocator/test/bin/*.db 
 allocator/test/bin/*.exe
-allocator/test/bin/log.txt
+allocator/test/reports/*.db
+allocator/test/logs/*.txt

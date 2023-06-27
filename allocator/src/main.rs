@@ -214,18 +214,28 @@ fn get_next_key(
 pub fn log_sparse_halls(halls: &[Hall]) {
     use std::io::Write;
 
-    let mut file = std::fs::File::create("log.txt").expect("file open error");
+    let mut file = std::fs::OpenOptions::new()
+        .create(true)
+        .append(true)
+        .open("logs\\logs.txt")
+        .expect("err opening log file");
     let mut sparse_hall_count = 0;
     for hall in halls {
         let num_students = hall.students().len();
         if num_students > 0 && num_students < 20 {
             sparse_hall_count += 1;
-            write!(file, "{}: {}\n", hall.name(), num_students).expect("file write error");
+            let content = format!("{}: {}, ", hall.name(), num_students);
+            file.write_all(content.as_bytes())
+                .expect("file write error");
         }
     }
     if sparse_hall_count == 0 {
-        write!(file, "No sparse halls :D").expect("file write error");
+        let content = format!("No sparse halls :D");
+        file.write_all(content.as_bytes())
+            .expect("file write error")
     }
+
+    file.write_all("\n".as_bytes()).expect("file write error")
 }
 
 #[cfg(not(debug_assertions))]
