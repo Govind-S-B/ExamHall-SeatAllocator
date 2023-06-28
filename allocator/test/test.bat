@@ -1,0 +1,1 @@
+.\bin\allocator.exe bin/input.db bin/report.db %1 %2
