@@ -16,8 +16,19 @@ Section
   SetOutPath $INSTDIR
 SectionEnd
 
+; Function to delete specific files in the installation directory
+Function DeleteInstallationContents
+  ; Delete existing files
+  Delete "$INSTDIR\file1.txt"
+  Delete "$INSTDIR\file2.txt"
+  ; Delete existing directories (optional)
+  RMDir /r "$INSTDIR\subdirectory1"
+  RMDir /r "$INSTDIR\subdirectory2"
+FunctionEnd
+
 ; Add the files and directories to the installer
 Section
+  Call DeleteInstallationContents ;Call the function to delete specific files
   SetOutPath $INSTDIR
   File /r "EHSA_V3\*.*"
 SectionEnd
