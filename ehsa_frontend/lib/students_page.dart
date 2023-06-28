@@ -57,7 +57,7 @@ class _StudentsPageState extends State<StudentsPage> {
   final TextEditingController _rollsTextEditingController =
       TextEditingController();
 
-  List<bool> isSelected = [true, false];
+  List<bool> isSelected = [true, false, false];
   int selectedOption = 1;
 
   List<SubjectViewRow> subjectViewRows = [];
@@ -147,8 +147,7 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _dropTable() async {
-    await _database.execute(
-        "DELETE FROM students");
+    await _database.execute("DELETE FROM students");
     _fetchTableViewRows();
     _subjectListinit();
   }
@@ -367,6 +366,16 @@ class _StudentsPageState extends State<StudentsPage> {
             ],
           ),
         );
+      case 3:
+        return SizedBox(
+          width: double.infinity,
+          child: DataTable(columns: const [
+            DataColumn(label: Text('Classes')),
+            DataColumn(label: Text('Subjects')),
+            DataColumn(label: Text('Roll List')),
+            DataColumn(label: Text('Actions')),
+          ], rows: const []),
+        );
       default:
         return Container();
     }
@@ -552,7 +561,8 @@ class _StudentsPageState extends State<StudentsPage> {
               },
               children: const [
                 Text('1'), // Students
-                Text('2'), // Subjects
+                Text('2'),
+                Text('3'), // Subjects
               ],
             ),
           ),
@@ -576,7 +586,8 @@ class _StudentsPageState extends State<StudentsPage> {
                           child: Padding(
                             padding: const EdgeInsets.all(10.0),
                             child: ElevatedButton(
-                                onPressed: _dropTable, child: const Text('Clear Table')),
+                                onPressed: _dropTable,
+                                child: const Text('Clear Table')),
                           )),
                     ],
                   ),
