@@ -163,7 +163,8 @@ class _GeneratePageState extends State<GeneratePage> {
                             allocator_args = [
                               "input.db",
                               "report.db",
-                              "--randomize"
+                              "--randomize",
+                              "5"
                             ];
                           } else {
                             allocator_args = ["input.db", "report.db"];
