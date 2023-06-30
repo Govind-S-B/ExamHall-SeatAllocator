@@ -78,7 +78,9 @@ class _StudentsPageState extends State<StudentsPage> {
     _database = await databaseFactory.openDatabase(path);
     _database.execute("""CREATE TABLE IF NOT EXISTS students
                 (id CHAR(8) PRIMARY KEY NOT NULL,
-                subject TEXT NOT NULL)""");
+                subject TEXT NOT NULL,
+                class CHAR(8),
+                rollno CHAR(8))""");
     _fetchTableViewRows();
     _subjectListinit();
   }
