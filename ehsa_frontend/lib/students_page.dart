@@ -487,12 +487,16 @@ class _StudentsPageState extends State<StudentsPage> {
                                           _database.insert('students', {
                                             "id": "$studentClass-$i",
                                             "subject": selectedSubject,
+                                            "class": studentClass,
+                                            "rollno": i,
                                           });
                                         }
                                       } else {
                                         _database.insert('students', {
                                           "id": "$studentClass-$roll",
                                           "subject": selectedSubject,
+                                            "class": studentClass,
+                                            "rollno": roll,
                                         });
                                       }
                                     }
