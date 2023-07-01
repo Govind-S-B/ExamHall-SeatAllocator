@@ -38,12 +38,15 @@ class ClassViewRow {
   final String
       unEditedClass; // variable name cant be a keyword, so can't use just 'class'
   final String subject;
+  final String rollList;
   String editedClass; // holds edited class
   String editedSubject; // hold edited Subject
+  String editedRollList; // hold edited Roll list
 
-  ClassViewRow(this.unEditedClass, this.subject)
+  ClassViewRow(this.unEditedClass, this.subject, this.rollList)
       : editedClass = unEditedClass,
-        editedSubject = subject;
+        editedSubject = subject,
+        editedRollList = rollList;
 
   Map<String, dynamic> toMap() {
     return {
@@ -85,6 +88,9 @@ class _StudentsPageState extends State<StudentsPage> {
   List<TableViewRow> tableViewRows = [];
   List<TableViewRow> editedTableViewRows = [];
 
+  List<ClassViewRow> classViewRows = [];
+  List<ClassViewRow> editedClassViewRows = [];
+
   @override
   void initState() {
     super.initState();
@@ -102,6 +108,7 @@ class _StudentsPageState extends State<StudentsPage> {
                 rollno CHAR(8))""");
     _fetchTableViewRows();
     _subjectListinit();
+    _fetchClassViewRows();
   }
 
   Future<void> _subjectListinit() async {
@@ -138,6 +145,24 @@ class _StudentsPageState extends State<StudentsPage> {
         return TableViewRow(
           row['id'],
           row['subject'],
+        );
+      }).toList();
+    });
+  }
+
+  Future<void> _fetchClassViewRows() async {
+    final List<Map<String, dynamic>> tableData = await _database.rawQuery('''
+    SELECT class, subject, GROUP_CONCAT(rollno) AS rolls
+    FROM students
+    GROUP BY class, subject;
+  ''');
+
+    setState(() {
+      classViewRows = tableData.map((row) {
+        return ClassViewRow(
+          row['class'],
+          row['subject'],
+          row['rolls'],
         );
       }).toList();
     });
@@ -253,7 +278,7 @@ class _StudentsPageState extends State<StudentsPage> {
                               onChanged: (value) {
                                 setState(() {
                                   row.editedStudent_id =
-                                      value; // Update editedHallName
+                                      value; // Update editedStudent_id
                                 });
                               },
                             )
@@ -266,7 +291,7 @@ class _StudentsPageState extends State<StudentsPage> {
                               onChanged: (value) {
                                 setState(() {
                                   row.editedSubject =
-                                      value; // Update editedCapacity
+                                      value; // Update editedSubject
                                 });
                               },
                             )
@@ -390,13 +415,107 @@ class _StudentsPageState extends State<StudentsPage> {
       case 3:
         return SizedBox(
           width: double.infinity,
-          child: DataTable(columns: const [
-            DataColumn(label: Text('Classes')),
-            DataColumn(label: Text('Subjects')),
-            DataColumn(label: Text('Roll List')),
-            DataColumn(label: Text('Actions')),
-          ], rows: const []),
+          child: DataTable(
+            columns: const [
+              DataColumn(label: Text('Classes')),
+              DataColumn(label: Text('Subjects')),
+              DataColumn(label: Text('Roll List')),
+              DataColumn(label: Text('Actions')),
+            ],
+            rows: [
+              for (var row in classViewRows)
+                DataRow(
+                  color: editedClassViewRows.contains(row)
+                      ? MaterialStateColor.resolveWith(
+                          (states) => Colors.grey.withOpacity(0.8))
+                      : MaterialStateColor.resolveWith(
+                          (states) => Colors.transparent),
+                  cells: [
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? TextFormField(
+                              initialValue: row.editedClass,
+                              onChanged: (value) {
+                                setState(() {
+                                  row.editedClass = value; // Update editedClass
+                                });
+                              },
+                            )
+                          : Text(row.editedClass),
+                    ),
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? TextFormField(
+                              initialValue: row.editedSubject,
+                              onChanged: (value) {
+                                setState(() {
+                                  row.editedSubject =
+                                      value; // Update editedSubject
+                                });
+                              },
+                            )
+                          : Text(row.editedSubject),
+                    ),
+                    DataCell(Text(row.editedRollList)),
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.done),
+                                  onPressed: () {
+                                    // Save changes
+                                    setState(() {
+                                      // row.unEditedClass = row.editedClass;
+                                      // row.subject = row.editedSubject;
+                                      // Update the changes in the database
+                                      // ...
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.cancel),
+                                  onPressed: () {
+                                    // Cancel edit
+                                    setState(() {
+                                      row.editedClass = row.unEditedClass;
+                                      row.editedSubject = row.subject;
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () {
+                                    setState(() {
+                                      editedClassViewRows.add(row);
+                                    });
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () {
+                                    setState(() {
+                                      // Remove the row from the database
+                                      // ...
+                                      classViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
         );
+
       default:
         return Container();
     }
@@ -526,6 +645,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                     filteredSubjects = subjects;
                                     _fetchSubjectViewRows();
                                     _fetchTableViewRows();
+                                    _fetchClassViewRows();
                                     setState(() {});
                                   },
                                 ),
