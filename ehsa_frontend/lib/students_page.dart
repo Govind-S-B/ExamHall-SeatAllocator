@@ -34,6 +34,25 @@ class SubjectViewRow {
   }
 }
 
+class ClassViewRow {
+  final String
+      unEditedClass; // variable name cant be a keyword, so can't use just 'class'
+  final String subject;
+  String editedClass; // holds edited class
+  String editedSubject; // hold edited Subject
+
+  ClassViewRow(this.unEditedClass, this.subject)
+      : editedClass = unEditedClass,
+        editedSubject = subject;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'class': editedClass, // Use edited Student  in toMap method
+      'subject': editedSubject, // Use edited Subject in toMap method
+    };
+  }
+}
+
 class StudentsPage extends StatefulWidget {
   const StudentsPage({super.key});
 
@@ -495,8 +514,8 @@ class _StudentsPageState extends State<StudentsPage> {
                                         _database.insert('students', {
                                           "id": "$studentClass-$roll",
                                           "subject": selectedSubject,
-                                            "class": studentClass,
-                                            "rollno": roll,
+                                          "class": studentClass,
+                                          "rollno": roll,
                                         });
                                       }
                                     }
