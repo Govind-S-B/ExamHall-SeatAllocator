@@ -193,7 +193,7 @@ class _GeneratePageState extends State<GeneratePage> {
                               } else {
                                 // pdf generation failed
 
-                                msg = "PDF Generator Failed";
+                                msg = "PDF Generator script Failed";
                               }
                             } else {
                               // Executable failed
