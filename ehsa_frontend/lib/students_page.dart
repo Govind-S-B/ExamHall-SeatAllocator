@@ -496,15 +496,22 @@ int _getSortValue(String value) {
                   cells: [
                     DataCell(
                       editedClassViewRows.contains(row)
-                          ? TextFormField(
-                              initialValue: row.editedClassName,
-                              onChanged: (value) {
-                                setState(() {
-                                  row.editedClassName =
-                                      value; // Update editedClassName
-                                });
-                              },
-                            )
+                          ? Row(
+                            children: [
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 20/100,
+                                child: TextFormField(
+                                    initialValue: row.editedClassName,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        row.editedClassName =
+                                            value; // Update editedClassName
+                                      });
+                                    },
+                                  ),
+                              ),
+                            ],
+                          )
                           : Row(
                             children: [
                               Text(row.editedClassName),
@@ -523,7 +530,12 @@ int _getSortValue(String value) {
                                 });
                               },
                             )
-                          : Text(row.editedSubject),
+                          : Row(
+                            children: [
+                              Text(row.editedSubject),
+                              ElevatedButton(onPressed: (){}, child: Icon(Icons.save))
+                            ],
+                          ),
                     ),
                     DataCell(
                       editedClassViewRows.contains(row)
