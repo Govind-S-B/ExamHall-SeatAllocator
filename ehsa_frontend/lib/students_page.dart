@@ -505,7 +505,12 @@ int _getSortValue(String value) {
                                 });
                               },
                             )
-                          : Text(row.editedClassName),
+                          : Row(
+                            children: [
+                              Text(row.editedClassName),
+                              ElevatedButton(onPressed: (){}, child: Icon(Icons.edit))
+                            ],
+                          ),
                     ),
                     DataCell(
                       editedClassViewRows.contains(row)
