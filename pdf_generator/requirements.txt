@@ -1,2 +1,2 @@
-pyinstaller==5.7.0
+pyinstaller>=5.12
 fpdf2==2.6.0
