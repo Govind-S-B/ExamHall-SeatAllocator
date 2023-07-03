@@ -35,22 +35,22 @@ class SubjectViewRow {
 }
 
 class ClassViewRow {
-  final String
-      unEditedClass; // variable name cant be a keyword, so can't use just 'class'
-  final String subject;
-  final String rollList;
-  String editedClass; // holds edited class
+  String
+      className; // variable name cant be a keyword, so can't use just 'class'
+  String subject;
+  String rollList;
+  String editedClassName; // holds edited class
   String editedSubject; // hold edited Subject
   String editedRollList; // hold edited Roll list
 
-  ClassViewRow(this.unEditedClass, this.subject, this.rollList)
-      : editedClass = unEditedClass,
+  ClassViewRow(this.className, this.subject, this.rollList)
+      : editedClassName = className,
         editedSubject = subject,
         editedRollList = rollList;
 
   Map<String, dynamic> toMap() {
     return {
-      'class': editedClass, // Use edited Student  in toMap method
+      'class': editedClassName, // Use edited Student  in toMap method
       'subject': editedSubject, // Use edited Subject in toMap method
     };
   }
@@ -180,6 +180,7 @@ class _StudentsPageState extends State<StudentsPage> {
     }
     _fetchTableViewRows();
     _fetchSubjectViewRows();
+    _fetchClassViewRows();
   }
 
   Future<void> _updateSubjectViewRow(SubjectViewRow row) async {
@@ -190,12 +191,14 @@ class _StudentsPageState extends State<StudentsPage> {
     }
     _fetchTableViewRows();
     _fetchSubjectViewRows();
+    _fetchClassViewRows();
   }
 
   Future<void> _dropTable() async {
     await _database.execute("DELETE FROM students");
     _fetchTableViewRows();
     _subjectListinit();
+    _fetchClassViewRows();
   }
 
   Future<void> _deleteTableViewRow(String studentId) async {
@@ -206,15 +209,16 @@ class _StudentsPageState extends State<StudentsPage> {
     );
     _fetchTableViewRows();
     _fetchSubjectViewRows();
+    _fetchClassViewRows();
   }
 
-  void updateTableViewRow(TableViewRow row) {
-    if (!editedTableViewRows.contains(row)) {
-      setState(() {
-        editedTableViewRows.add(row);
-      });
-    }
-  }
+  // void updateTableViewRow(TableViewRow row) {
+  //   if (!editedTableViewRows.contains(row)) {
+  //     setState(() {
+  //       editedTableViewRows.add(row);
+  //     });
+  //   }
+  // }
 
   void cancelEdit(TableViewRow row) {
     if (editedTableViewRows.contains(row)) {
@@ -320,7 +324,11 @@ class _StudentsPageState extends State<StudentsPage> {
                                 IconButton(
                                   icon: const Icon(Icons.edit),
                                   onPressed: () {
-                                    updateTableViewRow(row);
+                                    if (!editedTableViewRows.contains(row)) {
+                                      setState(() {
+                                        editedTableViewRows.add(row);
+                                      });
+                                    }
                                   },
                                 ),
                                 IconButton(
@@ -434,14 +442,15 @@ class _StudentsPageState extends State<StudentsPage> {
                     DataCell(
                       editedClassViewRows.contains(row)
                           ? TextFormField(
-                              initialValue: row.editedClass,
+                              initialValue: row.editedClassName,
                               onChanged: (value) {
                                 setState(() {
-                                  row.editedClass = value; // Update editedClass
+                                  row.editedClassName =
+                                      value; // Update editedClassName
                                 });
                               },
                             )
-                          : Text(row.editedClass),
+                          : Text(row.editedClassName),
                     ),
                     DataCell(
                       editedClassViewRows.contains(row)
@@ -456,7 +465,19 @@ class _StudentsPageState extends State<StudentsPage> {
                             )
                           : Text(row.editedSubject),
                     ),
-                    DataCell(Text(row.editedRollList)),
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? TextFormField(
+                              initialValue: row.editedRollList,
+                              onChanged: (value) {
+                                setState(() {
+                                  row.editedRollList =
+                                      value; // Update editedRollList
+                                });
+                              },
+                            )
+                          : Text(row.editedRollList),
+                    ),
                     DataCell(
                       editedClassViewRows.contains(row)
                           ? Row(
@@ -466,10 +487,11 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
-                                      // row.unEditedClass = row.editedClass;
-                                      // row.subject = row.editedSubject;
+                                      row.className = row.editedClassName;
+                                      row.subject = row.editedSubject;
+                                      row.rollList = row.editedRollList;
                                       // Update the changes in the database
-                                      // ...
+                                      // left to implement
                                       editedClassViewRows.remove(row);
                                     });
                                   },
@@ -479,8 +501,9 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
-                                      row.editedClass = row.unEditedClass;
+                                      row.editedClassName = row.className;
                                       row.editedSubject = row.subject;
+                                      row.editedRollList = row.rollList;
                                       editedClassViewRows.remove(row);
                                     });
                                   },
