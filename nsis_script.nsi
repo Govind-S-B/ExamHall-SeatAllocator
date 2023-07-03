@@ -27,11 +27,11 @@ Section
   Call DeleteInstallationContents ;Call the function to delete specific files
   SetOutPath $INSTDIR
   File /r "EHSA_V3\*.*"
+  CreateDirectory "$INSTDIR\output"
 SectionEnd
 
 ; Create a shortcut for ehsa_frontend.exe on the desktop
 Section
-  SetOutPath "$INSTDIR\bin"
   CreateShortCut "$DESKTOP\EHSA.lnk" "$INSTDIR\bin\ehsa_frontend.exe"
   ShellLink::SetRunAsAdministrator $DESKTOP\EHSA.lnk
 SectionEnd
