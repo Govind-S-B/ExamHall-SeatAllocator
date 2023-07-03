@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -151,11 +153,20 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _fetchClassViewRows() async {
-    final List<Map<String, dynamic>> tableData = await _database.rawQuery('''
+    List<Map<String, dynamic>> tableData = await _database.rawQuery('''
     SELECT class, subject, GROUP_CONCAT(rollno) AS rolls
     FROM students
     GROUP BY class, subject;
   ''');
+
+    // print(tableData);
+    // var sortedRolls;
+    // Sort the rolls within each item in tableData
+    // tableData.forEach((item) {
+    //   var rolls = item['rolls'] as String;
+    //   sortedRolls = rolls.split(',')..sort((a, b) => int.parse(a).compareTo(int.parse(b)));
+    //   item['rolls'] = sortedRolls.join(',');
+    // });
 
     setState(() {
       classViewRows = tableData.map((row) {
@@ -213,11 +224,31 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _deleteClassViewRow(List rollList) async {
-    await _database.execute("DELETE FROM students WHERE rollno IN (${rollList.join(',')})");
+    await _database.execute(
+        "DELETE FROM students WHERE rollno IN (${rollList.join(',')})");
     _fetchTableViewRows();
     _fetchSubjectViewRows();
     _fetchClassViewRows();
   }
+
+  void sortList(List<String> values) {
+  values.sort((a, b) {
+    final aValue = _getSortValue(a);
+    final bValue = _getSortValue(b);
+    return aValue.compareTo(bValue);
+  });
+}
+
+int _getSortValue(String value) {
+  final hyphenIndex = value.indexOf('-');
+  if (hyphenIndex != -1) {
+    final beforeHyphen = value.substring(0, hyphenIndex);
+    return int.parse(beforeHyphen);
+  } else {
+    return int.parse(value);
+  }
+}
+
 
   void cancelEdit(TableViewRow row) {
     if (editedTableViewRows.contains(row)) {
@@ -252,19 +283,25 @@ class _StudentsPageState extends State<StudentsPage> {
     if (numbersString.endsWith(',')) {
       numbersString = numbersString.substring(0, numbersString.length - 1);
     }
-    
+
     // Split the string into individual numbers
     List<String> numberStrings = numbersString.split(',');
-    
+
     // Convert each number string to an integer
-    List<int> numbers = numberStrings.map((numberString) => int.parse(numberString)).toList();
-    
+    List<int> numbers =
+        numberStrings.map((numberString) => int.parse(numberString)).toList();
+
     // Sort the numbers in ascending order
     numbers.sort();
-    
+
     return numbers;
   }
 
+  String sortedRollList(String numberString) {
+    List list = convertStringToList(numberString);
+    list.sort();
+    return list.join(',');
+  }
 
   @override
   void dispose() {
@@ -486,7 +523,7 @@ class _StudentsPageState extends State<StudentsPage> {
                     DataCell(
                       editedClassViewRows.contains(row)
                           ? TextFormField(
-                              initialValue: row.editedRollList,
+                              initialValue: sortedRollList(row.editedRollList),
                               onChanged: (value) {
                                 setState(() {
                                   row.editedRollList =
@@ -544,7 +581,8 @@ class _StudentsPageState extends State<StudentsPage> {
                                     setState(() {
                                       // Remove the row from the database
                                       // ...
-                                      _deleteClassViewRow(convertStringToList(row.editedRollList));
+                                      _deleteClassViewRow(convertStringToList(
+                                          row.editedRollList));
                                     });
                                   },
                                 ),
@@ -655,6 +693,8 @@ class _StudentsPageState extends State<StudentsPage> {
                                     var rollList = _rollsTextEditingController
                                         .text
                                         .split(",");
+                                    sortList(rollList);
+                                    print(rollList);
 
                                     for (var roll in rollList) {
                                       if (roll.contains("-")) {
