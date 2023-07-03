@@ -212,13 +212,12 @@ class _StudentsPageState extends State<StudentsPage> {
     _fetchClassViewRows();
   }
 
-  // void updateTableViewRow(TableViewRow row) {
-  //   if (!editedTableViewRows.contains(row)) {
-  //     setState(() {
-  //       editedTableViewRows.add(row);
-  //     });
-  //   }
-  // }
+  Future<void> _deleteClassViewRow(List rollList) async {
+    await _database.execute("DELETE FROM students WHERE rollno IN (${rollList.join(',')})");
+    _fetchTableViewRows();
+    _fetchSubjectViewRows();
+    _fetchClassViewRows();
+  }
 
   void cancelEdit(TableViewRow row) {
     if (editedTableViewRows.contains(row)) {
@@ -247,6 +246,25 @@ class _StudentsPageState extends State<StudentsPage> {
       });
     }
   }
+
+  List<int> convertStringToList(String numbersString) {
+    // Remove trailing comma if present
+    if (numbersString.endsWith(',')) {
+      numbersString = numbersString.substring(0, numbersString.length - 1);
+    }
+    
+    // Split the string into individual numbers
+    List<String> numberStrings = numbersString.split(',');
+    
+    // Convert each number string to an integer
+    List<int> numbers = numberStrings.map((numberString) => int.parse(numberString)).toList();
+    
+    // Sort the numbers in ascending order
+    numbers.sort();
+    
+    return numbers;
+  }
+
 
   @override
   void dispose() {
@@ -526,7 +544,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                     setState(() {
                                       // Remove the row from the database
                                       // ...
-                                      classViewRows.remove(row);
+                                      _deleteClassViewRow(convertStringToList(row.editedRollList));
                                     });
                                   },
                                 ),
