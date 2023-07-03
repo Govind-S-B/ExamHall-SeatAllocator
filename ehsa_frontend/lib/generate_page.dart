@@ -163,7 +163,8 @@ class _GeneratePageState extends State<GeneratePage> {
                             allocator_args = [
                               "input.db",
                               "report.db",
-                              "--randomize"
+                              "--randomize",
+                              "5"
                             ];
                           } else {
                             allocator_args = ["input.db", "report.db"];
@@ -192,15 +193,24 @@ class _GeneratePageState extends State<GeneratePage> {
                               } else {
                                 // pdf generation failed
 
-                                msg = "PDF Generator Failed";
+                                msg = "PDF Generator Failed : ${result2.exitCode} ${result2.stderr}";
                               }
-                            } else {
+                            }
+                            else if(result.exitCode == 101){ // THIS IS NOT WORKING AS ARJUN SAID IT WOULD . FIX IT OR REMOVE IT
+
+                              msg = "Allocator Failed : " + result.stderr;
+
+                            }
+                            else {
                               // Executable failed
 
-                              msg = "Allocator Failed";
+                              msg = "Allocator Failed : Unhandled exception ${result.exitCode} ${result.stderr}";
                             }
                           } catch (e) {
                             // Handle any exceptions here
+
+                            msg = "You shouldnt be seeing this : $e";
+
                           }
 
                           final snackBar = SnackBar(
