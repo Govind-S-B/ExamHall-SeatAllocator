@@ -232,23 +232,22 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   void sortList(List<String> values) {
-  values.sort((a, b) {
-    final aValue = _getSortValue(a);
-    final bValue = _getSortValue(b);
-    return aValue.compareTo(bValue);
-  });
-}
-
-int _getSortValue(String value) {
-  final hyphenIndex = value.indexOf('-');
-  if (hyphenIndex != -1) {
-    final beforeHyphen = value.substring(0, hyphenIndex);
-    return int.parse(beforeHyphen);
-  } else {
-    return int.parse(value);
+    values.sort((a, b) {
+      final aValue = _getSortValue(a);
+      final bValue = _getSortValue(b);
+      return aValue.compareTo(bValue);
+    });
   }
-}
 
+  int _getSortValue(String value) {
+    final hyphenIndex = value.indexOf('-');
+    if (hyphenIndex != -1) {
+      final beforeHyphen = value.substring(0, hyphenIndex);
+      return int.parse(beforeHyphen);
+    } else {
+      return int.parse(value);
+    }
+  }
 
   void cancelEdit(TableViewRow row) {
     if (editedTableViewRows.contains(row)) {
@@ -497,10 +496,12 @@ int _getSortValue(String value) {
                     DataCell(
                       editedClassViewRows.contains(row)
                           ? Row(
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width * 20/100,
-                                child: TextFormField(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width *
+                                      1 /
+                                      16,
+                                  child: TextFormField(
                                     initialValue: row.editedClassName,
                                     onChanged: (value) {
                                       setState(() {
@@ -509,51 +510,7 @@ int _getSortValue(String value) {
                                       });
                                     },
                                   ),
-                              ),
-                            ],
-                          )
-                          : Row(
-                            children: [
-                              Text(row.editedClassName),
-                              ElevatedButton(onPressed: (){}, child: Icon(Icons.edit))
-                            ],
-                          ),
-                    ),
-                    DataCell(
-                      editedClassViewRows.contains(row)
-                          ? TextFormField(
-                              initialValue: row.editedSubject,
-                              onChanged: (value) {
-                                setState(() {
-                                  row.editedSubject =
-                                      value; // Update editedSubject
-                                });
-                              },
-                            )
-                          : Row(
-                            children: [
-                              Text(row.editedSubject),
-                              ElevatedButton(onPressed: (){}, child: Icon(Icons.save))
-                            ],
-                          ),
-                    ),
-                    DataCell(
-                      editedClassViewRows.contains(row)
-                          ? TextFormField(
-                              initialValue: sortedRollList(row.editedRollList),
-                              onChanged: (value) {
-                                setState(() {
-                                  row.editedRollList =
-                                      value; // Update editedRollList
-                                });
-                              },
-                            )
-                          : Text(row.editedRollList),
-                    ),
-                    DataCell(
-                      editedClassViewRows.contains(row)
-                          ? Row(
-                              children: [
+                                ),
                                 IconButton(
                                   icon: const Icon(Icons.done),
                                   onPressed: () {
@@ -584,27 +541,171 @@ int _getSortValue(String value) {
                             )
                           : Row(
                               children: [
+                                Text(row.editedClassName),
+                                const SizedBox(width: 30),
+                                Container(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 25, maxWidth: 50),
+                                  child: ElevatedButton(
+                                    child: const Icon(Icons.edit, size: 18),
+                                    onPressed: () {
+                                      setState(() {
+                                        editedClassViewRows.add(row);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width *
+                                      1 /
+                                      16,
+                                  child: TextFormField(
+                                    initialValue: row.editedSubject,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        row.editedSubject =
+                                            value; // Update editedSubject
+                                      });
+                                    },
+                                  ),
+                                ),
                                 IconButton(
-                                  icon: const Icon(Icons.edit),
+                                  icon: const Icon(Icons.done),
                                   onPressed: () {
+                                    // Save changes
                                     setState(() {
-                                      editedClassViewRows.add(row);
+                                      row.className = row.editedClassName;
+                                      row.subject = row.editedSubject;
+                                      row.rollList = row.editedRollList;
+                                      // Update the changes in the database
+                                      // left to implement
+                                      editedClassViewRows.remove(row);
                                     });
                                   },
                                 ),
                                 IconButton(
-                                  icon: const Icon(Icons.delete),
+                                  icon: const Icon(Icons.cancel),
                                   onPressed: () {
+                                    // Cancel edit
                                     setState(() {
-                                      // Remove the row from the database
-                                      // ...
-                                      _deleteClassViewRow(convertStringToList(
-                                          row.editedRollList));
+                                      row.editedClassName = row.className;
+                                      row.editedSubject = row.subject;
+                                      row.editedRollList = row.rollList;
+                                      editedClassViewRows.remove(row);
                                     });
                                   },
                                 ),
                               ],
+                            )
+                          : Row(
+                              children: [
+                                Text(row.editedSubject),
+                                const SizedBox(width: 30),
+                                Container(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 25, maxWidth: 50),
+                                  child: ElevatedButton(
+                                    child: const Icon(Icons.edit, size: 18),
+                                    onPressed: () {
+                                      setState(() {
+                                        editedClassViewRows.add(row);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
+                    ),
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  height: double.infinity,
+                                  width: 320,
+                                  child: TextFormField(
+                                    initialValue:
+                                        sortedRollList(row.editedRollList),
+                                    onChanged: (value) {
+                                      setState(() {
+                                        row.editedRollList =
+                                            value; // Update editedRollList
+                                      });
+                                    },
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.done),
+                                  onPressed: () {
+                                    // Save changes
+                                    setState(() {
+                                      row.className = row.editedClassName;
+                                      row.subject = row.editedSubject;
+                                      row.rollList = row.editedRollList;
+                                      // Update the changes in the database
+                                      // left to implement
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.cancel),
+                                  onPressed: () {
+                                    // Cancel edit
+                                    setState(() {
+                                      row.editedClassName = row.className;
+                                      row.editedSubject = row.subject;
+                                      row.editedRollList = row.rollList;
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Container(
+                                    constraints: const BoxConstraints(
+                                        maxWidth: 350, minWidth: 350),
+                                    child: Text(
+                                      row.editedRollList,
+                                      overflow: TextOverflow.visible,
+                                    )),
+                                const SizedBox(width: 30),
+                                Container(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 25, maxWidth: 50),
+                                  child: ElevatedButton(
+                                    child: const Icon(Icons.edit, size: 18),
+                                    onPressed: () {
+                                      setState(() {
+                                        editedClassViewRows.add(row);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                    DataCell(
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          setState(() {
+                            // Remove the row from the database
+                            // ...
+                            _deleteClassViewRow(
+                                convertStringToList(row.editedRollList));
+                          });
+                        },
+                      ),
                     ),
                   ],
                 ),
