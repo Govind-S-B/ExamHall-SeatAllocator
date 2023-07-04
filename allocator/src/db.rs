@@ -14,12 +14,12 @@ pub fn read_halls_table(conn: &Connection) -> Vec<Hall> {
 
         let &(_, Some(hall_name)) = iter.next().unwrap()
         else {
-            panic!("DATABASE NOT VALID")
+            panic!("[ HALL DATABASE NOT VALID ]")
         };
 
         let &(_, Some(capacity)) = iter.next().unwrap()
         else {
-            panic!("DATABASE NOT VALID")
+            panic!("[ HALL DATABASE NOT VALID ]")
         };
 
         halls.push(Hall::new(hall_name, capacity.parse().unwrap()));
@@ -39,11 +39,11 @@ pub fn read_students_table(conn: &Connection) -> HashMap<String, Vec<Student>> {
         let mut iter = pair.iter();
         let &(_, Some(id)) = iter.next().unwrap()
                 else {
-                    panic!("DATABASE NOT VALID")
+                    panic!("[ STUDENT DATABASE NOT VALID ]")
                 };
         let &(_, Some(subject)) = iter.next().unwrap()
                 else {
-                    panic!("DATABASE NOT VALID")
+                    panic!("[ STUDENT DATABASE NOT VALID ]")
                 };
 
         let student = Student::new(id.to_owned(), subject.to_owned());
@@ -65,7 +65,8 @@ pub fn read_students_table(conn: &Connection) -> HashMap<String, Vec<Student>> {
 }
 pub fn write_report_table(conn: &Connection, halls: &Vec<Hall>) {
     let query = "DROP TABLE IF EXISTS report";
-    conn.execute(query).expect("error dropping report table");
+    conn.execute(query)
+        .expect("[ error dropping report table ]");
     let command = "
                 CREATE TABLE report 
                 (id CHAR(15) PRIMARY KEY NOT NULL, 
@@ -75,7 +76,8 @@ pub fn write_report_table(conn: &Connection, halls: &Vec<Hall>) {
                 seat_no INT NOT NULL, 
                 subject CHAR(50) NOT NULL)";
 
-    conn.execute(command).expect("error creating report table");
+    conn.execute(command)
+        .expect("[ error creating report table ]");
 
     let mut command =
         "INSERT INTO report (id,class,roll_no,subject,hall,seat_no) VALUES".to_owned();
@@ -102,5 +104,5 @@ pub fn write_report_table(conn: &Connection, halls: &Vec<Hall>) {
     command.pop();
     command += ";";
     conn.execute(command)
-        .expect("error inserting row into report table");
+        .expect("[ error inserting row into report table ]");
 }

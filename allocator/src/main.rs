@@ -15,12 +15,12 @@ enum AllocationMode {
 fn main() {
     let args = args::get();
 
-    let conn = sqlite::open(args.input_db_path).expect("Error connecting to input.db");
+    let conn = sqlite::open(args.input_db_path).expect("[ Error connecting to input.db ]");
     let mut students = db::read_students_table(&conn);
     let mut halls = db::read_halls_table(&conn);
     if let Some(delta) = args.randomize {
         if delta == 0 {
-            panic!("delta is 0")
+            panic!("[ delta(CLI Argument) is 0 ]")
         }
         let mut rng = rand::thread_rng();
         halls = {
@@ -79,7 +79,7 @@ fn main() {
         let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
         let total_students: usize = students.values().map(|s| s.len()).sum();
         if total_students > total_seats {
-            panic!("ERROR: more students than seats")
+            panic!("[ ERROR: more students than seats ]")
         }
         total_seats - total_students
     };
@@ -94,7 +94,7 @@ fn main() {
                 let next_student = get_next_student(&mut students, &next_key);
 
                 hall.push(next_student)
-                    .expect("tried to push student into full hall");
+                    .expect("[ tried to push student into full hall ]");
                 placed_keys.insert(next_key.clone());
                 previously_placed_key = Some(next_key);
                 continue;
@@ -103,7 +103,7 @@ fn main() {
             // run out of subjects and now must leave empty seats between students
             if extra_seats > 0 {
                 hall.push_empty()
-                    .expect("tried to push empty on full hall (error should never happer)");
+                    .expect("[ tried to push empty on full hall (error should never happer) ]");
                 previously_placed_key = None;
                 extra_seats -= 1;
                 continue;
@@ -157,7 +157,7 @@ fn main() {
         }
     }
 
-    let conn = sqlite::open(args.output_db_path).expect("Error connecting to report.db");
+    let conn = sqlite::open(args.output_db_path).expect("[ Error connecting to report.db ]");
     db::write_report_table(&conn, &halls);
     log_sparse_halls(&halls);
 }
@@ -166,11 +166,11 @@ fn main() {
 fn get_next_student(students: &mut HashMap<String, Vec<Student>>, key: &str) -> Student {
     let students_in_key = students
         .get_mut(key)
-        .expect("trying to take a student from subject that doesn't exist");
+        .expect("[ trying to take a student from subject that doesn't exist ]");
 
     let next_student = students_in_key
         .pop()
-        .expect("trying to take student from empty subject list");
+        .expect("[ trying to take student from empty subject list ]");
 
     if students_in_key.is_empty() {
         students.remove(key);
@@ -217,7 +217,7 @@ pub fn log_sparse_halls(halls: &[Hall]) {
         .create(true)
         .append(true)
         .open("logs\\logs.txt")
-        .expect("err opening log file");
+        .expect("[ err opening log file ]");
     let mut sparse_hall_count = 0;
     for hall in halls {
         let num_students = hall.students().len();
@@ -225,16 +225,17 @@ pub fn log_sparse_halls(halls: &[Hall]) {
             sparse_hall_count += 1;
             let content = format!("{}: {}, ", hall.name(), num_students);
             file.write_all(content.as_bytes())
-                .expect("file write error");
+                .expect("[ file write error ]");
         }
     }
     if sparse_hall_count == 0 {
         let content = format!("No sparse halls :D");
         file.write_all(content.as_bytes())
-            .expect("file write error")
+            .expect("[ file write error ]")
     }
 
-    file.write_all("\n".as_bytes()).expect("file write error")
+    file.write_all("\n".as_bytes())
+        .expect("[ file write error ]")
 }
 
 #[cfg(not(debug_assertions))]
