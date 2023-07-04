@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_print
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -266,32 +264,20 @@ class _StudentsPageState extends State<StudentsPage> {
 
   Future<void> _updateClassViewRowrollList(ClassViewRow row) async {
     List<int> oldList = convertStringToList(row.rollList);
-    print(oldList);
     List<int> newList = convertStringToList(row.editedRollList);
-    print(newList);
     List<List<int>> rollIdentifier = compareLists(oldList, newList);
     // List<int> commonValues = rollIdentifier[0];
     List<int> removedValues = rollIdentifier[1];
     List<int> addedValues = rollIdentifier[2];
-    print("entered update fn...");
-    print(addedValues);
-    print("");
-    print(removedValues);
-    // for (int value in commonValues) {
-    //   await _database.execute(
-    //     "UPDATE students SET subject = '${row.editedSubject}' WHERE class = '${row.editedClassName}' AND rollno IN (${row.editedRollList})");
-    // }
 
     //delete removed students from db
     for (int value in removedValues) {
       await _database.execute("DELETE FROM students WHERE rollno = '$value'");
-      print("deleted rollno $value...");
     }
     //insert students into db
     for (int value in addedValues) {
       await _database.execute(
           "INSERT INTO students (id, subject, class, rollno) VALUES ('${row.editedClassName}-$value', '${row.editedSubject}', '${row.editedClassName}', $value)");
-      print("inerted rollno $value...");
     }
 
     if (row.subject != row.editedSubject) {
@@ -915,7 +901,6 @@ class _StudentsPageState extends State<StudentsPage> {
                                         .text
                                         .split(",");
                                     sortList(rollList);
-                                    print(rollList);
 
                                     for (var roll in rollList) {
                                       if (roll.contains("-")) {
