@@ -801,7 +801,7 @@ class _StudentsPageState extends State<StudentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
+      body: Column( 
         children: <Widget>[
           Expanded(
             flex: 2,
@@ -816,8 +816,8 @@ class _StudentsPageState extends State<StudentsPage> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 20, right: 20, top: 8),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       SizedBox(
                         width: 300,
@@ -971,8 +971,9 @@ class _StudentsPageState extends State<StudentsPage> {
           ),
           SizedBox(
             width: 150,
-            height: 40,
+            height: 25,
             child: ToggleButtons(
+              borderRadius: const BorderRadius.all(Radius.elliptical(8, 8)),
               isSelected: isSelected,
               onPressed: (index) {
                 setState(() {
@@ -992,8 +993,8 @@ class _StudentsPageState extends State<StudentsPage> {
           Expanded(
             flex: 3,
             child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 16, right: 16, top: 16, bottom: 8),
+              padding:
+                  const EdgeInsets.only(left: 16, right: 16, top: 8, bottom: 8),
               child: Container(
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.vertical(
