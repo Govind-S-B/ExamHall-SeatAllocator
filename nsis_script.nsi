@@ -32,6 +32,7 @@ SectionEnd
 
 ; Create a shortcut for ehsa_frontend.exe on the desktop
 Section
+  SetOutPath "$INSTDIR\bin"
   CreateShortCut "$DESKTOP\EHSA.lnk" "$INSTDIR\bin\ehsa_frontend.exe"
   ShellLink::SetRunAsAdministrator $DESKTOP\EHSA.lnk
 SectionEnd
