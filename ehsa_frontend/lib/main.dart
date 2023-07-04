@@ -1,10 +1,18 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:window_manager/window_manager.dart'; 
 
-void main() {
+void main() async { 
+  WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  if (Platform.isWindows) {
+    WindowManager.instance.setMinimumSize(const Size(950, 700));
+    
+  }
   runApp(const MyApp());
 }
 
@@ -114,22 +122,21 @@ class MyAppState extends State<MyApp> {
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                         color: Colors.blue,
                       ),
-                      child: GestureDetector(
-                        onTap: () {
-                          _scaffoldKey.currentState?.closeDrawer();
-                        },
-                        child: Center(
-                          child: TextButton(
-                            onPressed: (){
-                              _showCreditsOverlay = true;
-                              setState(() {});
-                            },
-                            child: Text(
-                              'EHSA',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 40,
-                              ),
+                      child: Center(
+                        child: TextButton(
+                          style: ButtonStyle(
+                              fixedSize: MaterialStateProperty.all(
+                                  const Size(600, 300))),
+                          onPressed: () {
+                            _showCreditsOverlay = true;
+                            setState(() {});
+                            _scaffoldKey.currentState?.closeDrawer();
+                          },
+                          child: const Text(
+                            'EHSA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
                             ),
                           ),
                         ),
@@ -217,7 +224,9 @@ class MyAppState extends State<MyApp> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.only(
+                          top: 20,
+                        ),
                         child: Column(
                           children: [
                             const SizedBox(
