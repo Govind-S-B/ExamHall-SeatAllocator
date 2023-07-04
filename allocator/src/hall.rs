@@ -8,24 +8,11 @@ use crate::student::Student;
 /// - `name` - Represents the name of the hall.
 /// - `capacity` - Represents the maximum number of students the hall can accommodate.
 /// - `students` - Represents a list of students currently in the hall. This list can include empty seats (represented as `None`).
-///
-/// # Example
-///
-/// ```rust
-/// use crate::student::Student;
-///
-/// // Create a new Hall.
-/// let mut hall = Hall::new("Hall A", 50);
-///
-/// // Add a student to the Hall.
-/// let student = Student::new("12345", "Math");
-/// hall.push(student);
-/// ```
+
 pub struct Hall {
     name: String,
     capacity: usize,
     students: Vec<Option<Student>>,
-    pub previously_placed_key: Option<String>,
 }
 
 impl Hall {
@@ -35,7 +22,6 @@ impl Hall {
             name: name.to_owned(),
             capacity,
             students: Vec::with_capacity(capacity),
-            previously_placed_key: None,
         }
     }
 
@@ -45,21 +31,19 @@ impl Hall {
     ///
     /// This function will return an error if the hall is full
     pub fn push(&mut self, student: Student) -> Result<(), Student> {
-        match self.is_full() {
-            false => {
-                self.students.push(Some(student));
-                Ok(())
-            }
-            true => Err(student),
+        if self.is_full() {
+            Err(student)
+        } else {
+            self.students.push(Some(student));
+            Ok(())
         }
     }
     pub fn push_empty(&mut self) -> Result<(), ()> {
-        if !self.is_full() {
-            self.students.push(None);
-            self.previously_placed_key = None;
-            Ok(())
-        } else {
+        if self.is_full() {
             Err(())
+        } else {
+            self.students.push(None);
+            Ok(())
         }
     }
 
@@ -77,5 +61,9 @@ impl Hall {
 
     pub fn seats_left(&self) -> usize {
         self.capacity - self.students.len()
+    }
+
+    pub fn capacity(&self) -> usize {
+        self.capacity
     }
 }

@@ -4,4 +4,7 @@ allocator/target/
 venv/
 allocator/*.bat
 EHSA_V3/*.db
-allocator/test
+allocator/test/bin/*.db 
+allocator/test/bin/*.exe
+allocator/test/reports/*.db
+allocator/test/logs/*.txt

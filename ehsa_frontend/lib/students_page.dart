@@ -34,6 +34,28 @@ class SubjectViewRow {
   }
 }
 
+class ClassViewRow {
+  String
+      className; // variable name cant be a keyword, so can't use just 'class'
+  String subject;
+  String rollList;
+  String editedClassName; // holds edited class
+  String editedSubject; // hold edited Subject
+  String editedRollList; // hold edited Roll list
+
+  ClassViewRow(this.className, this.subject, this.rollList)
+      : editedClassName = className,
+        editedSubject = subject,
+        editedRollList = rollList;
+
+  Map<String, dynamic> toMap() {
+    return {
+      'class': editedClassName, // Use edited Student  in toMap method
+      'subject': editedSubject, // Use edited Subject in toMap method
+    };
+  }
+}
+
 class StudentsPage extends StatefulWidget {
   const StudentsPage({super.key});
 
@@ -57,7 +79,7 @@ class _StudentsPageState extends State<StudentsPage> {
   final TextEditingController _rollsTextEditingController =
       TextEditingController();
 
-  List<bool> isSelected = [true, false];
+  List<bool> isSelected = [true, false, false];
   int selectedOption = 1;
 
   List<SubjectViewRow> subjectViewRows = [];
@@ -65,6 +87,9 @@ class _StudentsPageState extends State<StudentsPage> {
 
   List<TableViewRow> tableViewRows = [];
   List<TableViewRow> editedTableViewRows = [];
+
+  List<ClassViewRow> classViewRows = [];
+  List<ClassViewRow> editedClassViewRows = [];
 
   @override
   void initState() {
@@ -78,9 +103,12 @@ class _StudentsPageState extends State<StudentsPage> {
     _database = await databaseFactory.openDatabase(path);
     _database.execute("""CREATE TABLE IF NOT EXISTS students
                 (id CHAR(8) PRIMARY KEY NOT NULL,
-                subject TEXT NOT NULL)""");
+                subject TEXT NOT NULL,
+                class CHAR(8),
+                rollno CHAR(8))""");
     _fetchTableViewRows();
     _subjectListinit();
+    _fetchClassViewRows();
   }
 
   Future<void> _subjectListinit() async {
@@ -122,18 +150,34 @@ class _StudentsPageState extends State<StudentsPage> {
     });
   }
 
+  Future<void> _fetchClassViewRows() async {
+    List<Map<String, dynamic>> tableData = await _database.rawQuery('''
+    SELECT class, subject, GROUP_CONCAT(rollno) AS rolls
+    FROM students
+    GROUP BY class, subject;
+  ''');
+    print(tableData);
+    setState(() {
+      classViewRows = tableData.map((row) {
+        return ClassViewRow(
+          row['class'],
+          row['subject'],
+          sortedRollList(row['rolls']),
+        );
+      }).toList();
+    });
+  }
+
   Future<void> _updateTableViewRow(TableViewRow row) async {
-    await _database.update(
-      'students',
-      row.toMap(),
-      where: 'id = ?',
-      whereArgs: [row.student_id],
-    );
+    List<String> sID = row.editedStudent_id.split('-');
+    await _database.execute(
+        "UPDATE students SET id = '${row.editedStudent_id}' , subject = '${row.editedSubject}' , class = '${sID[0]}' , rollno = '${sID[1]}' WHERE id = '${row.student_id}'");
     if (row.subject != row.editedSubject) {
       subjects.add(row.editedSubject);
     }
     _fetchTableViewRows();
     _fetchSubjectViewRows();
+    _fetchClassViewRows();
   }
 
   Future<void> _updateSubjectViewRow(SubjectViewRow row) async {
@@ -144,12 +188,113 @@ class _StudentsPageState extends State<StudentsPage> {
     }
     _fetchTableViewRows();
     _fetchSubjectViewRows();
+    _fetchClassViewRows();
+  }
+
+  Future<void> _updateClassViewRowClass(ClassViewRow row) async {
+    await _database.execute(
+        "UPDATE students SET class = '${row.editedClassName}'  WHERE subject = '${row.editedSubject}' AND rollno IN (${row.editedRollList})");
+    List<int> updateClass = convertStringToList(row.editedRollList);
+    for (int value in updateClass) {
+      await _database.execute(
+          "UPDATE students SET id = '${row.editedClassName}-$value'  WHERE subject = '${row.editedSubject}' AND rollno = $value");
+    }
+
+    // if (row.className != row.editedClassName) {
+    //   subjects.add(row.editedSubject);
+    // }
+    _fetchTableViewRows();
+    _fetchSubjectViewRows();
+    _fetchClassViewRows();
+  }
+
+  Future<void> _updateClassViewRowSubject(ClassViewRow row) async {
+    await _database.execute(
+        "UPDATE students SET subject = '${row.editedSubject}' WHERE class = '${row.editedClassName}' AND rollno IN (${row.editedRollList})");
+    if (row.subject != row.editedSubject) {
+      subjects.add(row.editedSubject);
+    }
+    _fetchTableViewRows();
+    _fetchSubjectViewRows();
+    _fetchClassViewRows();
+  }
+
+  String expandRanges(String string) {
+    List<String> result = [];
+    List<String> ranges = string.split(",");
+    for (String r in ranges) {
+      if (r.trim().isNotEmpty) {
+        // Ignore empty elements
+        if (r.contains("-")) {
+          List<String> parts = r.split("-");
+          int start = int.parse(parts[0]);
+          int end = int.parse(parts[1]);
+          for (int i = start; i <= end; i++) {
+            result.add(i.toString());
+          }
+        } else {
+          result.add(r);
+        }
+      }
+    }
+    return result.join(",");
+  }
+
+  List<List<int>> compareLists(List<int> oldList, List<int> newList) {
+    List<int> commonValues = [];
+    List<int> removedValues = [];
+    List<int> addedValues = [];
+
+    // Find common values
+    for (int value in oldList) {
+      if (newList.contains(value)) {
+        commonValues.add(value);
+      } else {
+        removedValues.add(value);
+      }
+    }
+
+    // Find added values
+    for (int value in newList) {
+      if (!oldList.contains(value)) {
+        addedValues.add(value);
+      }
+    }
+
+    return [commonValues, removedValues, addedValues];
+  }
+
+  Future<void> _updateClassViewRowrollList(ClassViewRow row) async {
+    List<int> oldList = convertStringToList(row.rollList);
+    List<int> newList = convertStringToList(row.editedRollList);
+    List<List<int>> rollIdentifier = compareLists(oldList, newList);
+    // List<int> commonValues = rollIdentifier[0];
+    List<int> removedValues = rollIdentifier[1];
+    List<int> addedValues = rollIdentifier[2];
+
+    //delete removed students from db
+    for (int value in removedValues) {
+      await _database.execute("DELETE FROM students WHERE rollno = '$value' AND subject = '${row.editedSubject}'");
+    }
+    //insert students into db
+    for (int value in addedValues) {
+      await _database.execute(
+          "INSERT INTO students (id, subject, class, rollno) VALUES ('${row.editedClassName}-$value', '${row.editedSubject}', '${row.editedClassName}', $value)");
+    }
+
+    if (row.subject != row.editedSubject) {
+      subjects.add(row.editedSubject);
+    }
+    _fetchTableViewRows();
+    _fetchSubjectViewRows();
+    _fetchClassViewRows();
   }
 
   Future<void> _dropTable() async {
     await _database.execute("DELETE FROM students");
     _fetchTableViewRows();
     _subjectListinit();
+    _fetchClassViewRows();
   }
 
   Future<void> _deleteTableViewRow(String studentId) async {
@@ -160,13 +305,32 @@ class _StudentsPageState extends State<StudentsPage> {
     );
     _fetchTableViewRows();
     _fetchSubjectViewRows();
+    _fetchClassViewRows();
   }
 
-  void updateTableViewRow(TableViewRow row) {
-    if (!editedTableViewRows.contains(row)) {
-      setState(() {
-        editedTableViewRows.add(row);
-      });
+  Future<void> _deleteClassViewRow(List rollList) async {
+    await _database.execute(
+        "DELETE FROM students WHERE rollno IN (${rollList.join(',')})");
+    _fetchTableViewRows();
+    _fetchSubjectViewRows();
+    _fetchClassViewRows();
+  }
+
+  void sortList(List<String> values) {
+    values.sort((a, b) {
+      final aValue = _getSortValue(a);
+      final bValue = _getSortValue(b);
+      return aValue.compareTo(bValue);
+    });
+  }
+
+  int _getSortValue(String value) {
+    final hyphenIndex = value.indexOf('-');
+    if (hyphenIndex != -1) {
+      final beforeHyphen = value.substring(0, hyphenIndex);
+      return int.parse(beforeHyphen);
+    } else {
+      return int.parse(value);
     }
   }
 
@@ -196,6 +360,31 @@ class _StudentsPageState extends State<StudentsPage> {
         editedTableViewRows.remove(row);
       });
     }
+  }
+
+  List<int> convertStringToList(String numbersString) {
+    // Remove trailing comma if present
+    if (numbersString.endsWith(',')) {
+      numbersString = numbersString.substring(0, numbersString.length - 1);
+    }
+
+    // Split the string into individual numbers
+    List<String> numberStrings = numbersString.split(',');
+
+    // Convert each number string to an integer
+    List<int> numbers =
+        numberStrings.map((numberString) => int.parse(numberString)).toList();
+
+    // Sort the numbers in ascending order
+    numbers.sort();
+
+    return numbers;
+  }
+
+  String sortedRollList(String numberString) {
+    List list = convertStringToList(numberString);
+    list.sort();
+    return list.join(',');
   }
 
   @override
@@ -232,7 +421,7 @@ class _StudentsPageState extends State<StudentsPage> {
                               onChanged: (value) {
                                 setState(() {
                                   row.editedStudent_id =
-                                      value; // Update editedHallName
+                                      value; // Update editedStudent_id
                                 });
                               },
                             )
@@ -245,7 +434,7 @@ class _StudentsPageState extends State<StudentsPage> {
                               onChanged: (value) {
                                 setState(() {
                                   row.editedSubject =
-                                      value; // Update editedCapacity
+                                      value; // Update editedSubject
                                 });
                               },
                             )
@@ -274,7 +463,11 @@ class _StudentsPageState extends State<StudentsPage> {
                                 IconButton(
                                   icon: const Icon(Icons.edit),
                                   onPressed: () {
-                                    updateTableViewRow(row);
+                                    if (!editedTableViewRows.contains(row)) {
+                                      setState(() {
+                                        editedTableViewRows.add(row);
+                                      });
+                                    }
                                   },
                                 ),
                                 IconButton(
@@ -366,6 +559,240 @@ class _StudentsPageState extends State<StudentsPage> {
             ],
           ),
         );
+      case 3:
+        return SizedBox(
+          width: double.infinity,
+          child: DataTable(
+            columns: const [
+              DataColumn(label: Text('Classes')),
+              DataColumn(label: Text('Subjects')),
+              DataColumn(label: Text('Roll List')),
+              DataColumn(label: Text('Actions')),
+            ],
+            rows: [
+              for (var row in classViewRows)
+                DataRow(
+                  color: editedClassViewRows.contains(row)
+                      ? MaterialStateColor.resolveWith(
+                          (states) => Colors.grey.withOpacity(0.8))
+                      : MaterialStateColor.resolveWith(
+                          (states) => Colors.transparent),
+                  cells: [
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width *
+                                      1 /
+                                      16,
+                                  child: TextFormField(
+                                    initialValue: row.editedClassName,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        row.editedClassName =
+                                            value; // Update editedClassName
+                                      });
+                                    },
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.done),
+                                  onPressed: () {
+                                    // Save changes
+                                    setState(() {
+                                      row.className = row.editedClassName;
+                                      // Update the changes in the database
+                                      _updateClassViewRowClass(row);
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.cancel),
+                                  onPressed: () {
+                                    // Cancel edit
+                                    setState(() {
+                                      row.editedClassName = row.className;
+                                      row.editedSubject = row.subject;
+                                      row.editedRollList = row.rollList;
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Text(row.editedClassName),
+                                const SizedBox(width: 30),
+                                Container(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 25, maxWidth: 50),
+                                  child: ElevatedButton(
+                                    child: const Icon(Icons.edit, size: 18),
+                                    onPressed: () {
+                                      setState(() {
+                                        editedClassViewRows.add(row);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  width: MediaQuery.of(context).size.width *
+                                      1 /
+                                      16,
+                                  child: TextFormField(
+                                    initialValue: row.editedSubject,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        row.editedSubject =
+                                            value; // Update editedSubject
+                                      });
+                                    },
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.done),
+                                  onPressed: () {
+                                    // Save changes
+                                    setState(() {
+                                      row.rollList = row.editedRollList;
+                                      // Update the changes in the database
+                                      _updateClassViewRowSubject(row);
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.cancel),
+                                  onPressed: () {
+                                    // Cancel edit
+                                    setState(() {
+                                      row.editedClassName = row.className;
+                                      row.editedSubject = row.subject;
+                                      row.editedRollList = row.rollList;
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Text(row.editedSubject),
+                                const SizedBox(width: 30),
+                                Container(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 25, maxWidth: 50),
+                                  child: ElevatedButton(
+                                    child: const Icon(Icons.edit, size: 18),
+                                    onPressed: () {
+                                      setState(() {
+                                        editedClassViewRows.add(row);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                    DataCell(
+                      editedClassViewRows.contains(row)
+                          ? Row(
+                              children: [
+                                SizedBox(
+                                  height: double.infinity,
+                                  width: 320,
+                                  child: TextFormField(
+                                    initialValue: row.editedRollList,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        row.editedRollList =
+                                            value; // Update editedRollList
+                                      });
+                                    },
+                                  ),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.done),
+                                  onPressed: () {
+                                    // Save changes
+                                    setState(() {
+                                      row.editedRollList =
+                                          expandRanges(row.editedRollList);
+                                      row.editedRollList =
+                                          sortedRollList(row.editedRollList);
+                                      // Update the changes in the database
+                                      // left to implement
+                                      _updateClassViewRowrollList(row);
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.cancel),
+                                  onPressed: () {
+                                    // Cancel edit
+                                    setState(() {
+                                      row.editedRollList = row.rollList;
+                                      editedClassViewRows.remove(row);
+                                    });
+                                  },
+                                ),
+                              ],
+                            )
+                          : Row(
+                              children: [
+                                Container(
+                                    constraints: const BoxConstraints(
+                                        maxWidth: 350, minWidth: 350),
+                                    child: Text(
+                                      row.editedRollList,
+                                      overflow: TextOverflow.visible,
+                                    )),
+                                const SizedBox(width: 30),
+                                Container(
+                                  constraints: const BoxConstraints(
+                                      maxHeight: 25, maxWidth: 50),
+                                  child: ElevatedButton(
+                                    child: const Icon(Icons.edit, size: 18),
+                                    onPressed: () {
+                                      setState(() {
+                                        editedClassViewRows.add(row);
+                                      });
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                    ),
+                    DataCell(
+                      IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          setState(() {
+                            // Remove the row from the database
+                            // ...
+                            _deleteClassViewRow(
+                                convertStringToList(row.editedRollList));
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+            ],
+          ),
+        );
+
       default:
         return Container();
     }
@@ -464,6 +891,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                     var rollList = _rollsTextEditingController
                                         .text
                                         .split(",");
+                                    sortList(rollList);
 
                                     for (var roll in rollList) {
                                       if (roll.contains("-")) {
@@ -475,12 +903,16 @@ class _StudentsPageState extends State<StudentsPage> {
                                           _database.insert('students', {
                                             "id": "$studentClass-$i",
                                             "subject": selectedSubject,
+                                            "class": studentClass,
+                                            "rollno": i,
                                           });
                                         }
                                       } else {
                                         _database.insert('students', {
                                           "id": "$studentClass-$roll",
                                           "subject": selectedSubject,
+                                          "class": studentClass,
+                                          "rollno": roll,
                                         });
                                       }
                                     }
@@ -491,6 +923,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                     filteredSubjects = subjects;
                                     _fetchSubjectViewRows();
                                     _fetchTableViewRows();
+                                    _fetchClassViewRows();
                                     setState(() {});
                                   },
                                 ),
@@ -551,8 +984,9 @@ class _StudentsPageState extends State<StudentsPage> {
                 });
               },
               children: const [
-                Text('1', style: TextStyle(fontSize: 11)), // Students
-                Text('2', style: TextStyle(fontSize: 11)), // Subjects
+                Text('1'), // Students
+                Text('2'),
+                Text('3'), // Subjects
               ],
             ),
           ),

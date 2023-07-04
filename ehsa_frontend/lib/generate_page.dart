@@ -17,6 +17,8 @@ class _GeneratePageState extends State<GeneratePage> {
       TextEditingController();
   String _sessionId = "";
 
+  bool is_randomisation_enabled = false;
+
   var databaseFactory = databaseFactoryFfi;
   late Database _database;
 
@@ -40,6 +42,12 @@ class _GeneratePageState extends State<GeneratePage> {
     var val = await _database.query("metadata", where: "key = 'session_name'");
     _sessionId = (val.isEmpty ? "Undefined" : val[0]["value"]).toString();
     setState(() {});
+  }
+
+  void toggleButton() {
+    setState(() {
+      is_randomisation_enabled = !is_randomisation_enabled;
+    });
   }
 
   @override
@@ -123,7 +131,19 @@ class _GeneratePageState extends State<GeneratePage> {
                     ),
                   ],
                 ),
+              ), // set session name
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('Enable Randomisation ?'),
+                  Checkbox(
+                    value: is_randomisation_enabled,
+                    onChanged: (value) => toggleButton(),
+                  )
+                ],
               ),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -135,11 +155,23 @@ class _GeneratePageState extends State<GeneratePage> {
                         var title = "PDF Generation Failed";
                         var msg = "PDF Generation Failed";
 
-                        try {
-                          final result = await Process.run(
-                            '${Directory.current.path}\\allocator.exe',
-                            [],
-                          );
+                          List<String> allocator_args;
+
+                          if (is_randomisation_enabled) {
+                            allocator_args = [
+                              "input.db",
+                              "report.db",
+                              "--randomize",
+                              "5"
+                            ];
+                          } else {
+                            allocator_args = ["input.db", "report.db"];
+                          }
+
+                          try {
+                            final result = await Process.run(
+                                '${Directory.current.path}\\allocator.exe',
+                                allocator_args);
 
                           if (result.exitCode == 0) {
                             final result2 = await Process.run(
@@ -147,20 +179,35 @@ class _GeneratePageState extends State<GeneratePage> {
                               [],
                             );
 
-                            if (result2.exitCode == 0) {
-                              content_type = ContentType.success;
-                              title = "PDF Generated";
-                              msg =
-                                  "PDF Generated, please check the output folder.";
-                            } else {
-                              // pdf generation failed
+                              if (result2.exitCode == 0) {
+                                // pdf generated successfully
+
+                                content_type = ContentType.success;
+                                title = "PDF Generated";
+                                msg =
+                                    "PDF Generated , please check the output folder.";
+                              } else {
+                                // pdf generation failed
+
+                                msg = "PDF Generator Failed : ${result2.exitCode} ${result2.stderr}";
+                              }
                             }
-                          } else {
-                            // Executable failed
+                            else if(result.exitCode == 101){ // THIS IS NOT WORKING AS ARJUN SAID IT WOULD . FIX IT OR REMOVE IT
+
+                              msg = "Allocator Failed : " + result.stderr;
+
+                            }
+                            else {
+                              // Executable failed
+
+                              msg = "Allocator Failed : Unhandled exception ${result.exitCode} ${result.stderr}";
+                            }
+                          } catch (e) {
+                            // Handle any exceptions here
+
+                            msg = "You shouldnt be seeing this : $e";
+
                           }
-                        } catch (e) {
-                          // Handle any exceptions here
-                        }
 
                         final snackBar = SnackBar(
                           elevation: 0,
@@ -173,17 +220,11 @@ class _GeneratePageState extends State<GeneratePage> {
                           ),
                         );
 
-                        ScaffoldMessenger.of(context)
-                          ..hideCurrentSnackBar()
-                          ..showSnackBar(snackBar);
-                      },
-                      style: NeumorphicStyle(
-                        boxShape: NeumorphicBoxShape.roundRect(
-                          BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: const Text("Generate"),
-                    ),
+                          ScaffoldMessenger.of(context)
+                            ..hideCurrentSnackBar()
+                            ..showSnackBar(snackBar);
+                        },
+                        child: const Text("Generate")),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
