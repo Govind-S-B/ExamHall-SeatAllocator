@@ -37,16 +37,12 @@ fn main() {
                 )
                 .into_iter()
                 .collect();
-            // sorting is in place (and only defined on vectors, not iterators)
-            // so i need to collect it before I can sort
             grouped_halls.sort_by_key(|(group, _)| *group);
-
             let mut grouped_halls: Vec<Vec<Hall>> = grouped_halls
                 .into_iter()
                 .rev()
                 .map(|(_, vec)| vec)
                 .collect();
-            //shuffling is only defined on vectors not iterators, so i need to collect before shuffling
             for group in &mut grouped_halls {
                 group.shuffle(&mut rng)
             }
@@ -82,7 +78,6 @@ fn main() {
     let mut extra_seats = {
         let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
         let total_students: usize = students.values().map(|s| s.len()).sum();
-
         if total_students > total_seats {
             panic!("ERROR: more students than seats")
         }

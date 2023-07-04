@@ -4,7 +4,7 @@ use sqlite as sq;
 use std::collections::hash_map::HashMap;
 
 pub fn read_halls_table(conn: &Connection) -> Vec<Hall> {
-    let query = "SELECT * FROM halls ORDER BY capacity DESC";
+    let query = "SELECT name, capacity FROM halls ORDER BY capacity DESC";
     let mut halls: Vec<Hall> = vec![];
     conn.iterate(query, |pair| {
         //pair is an array slice of the columns and the values in the colums
@@ -30,7 +30,7 @@ pub fn read_halls_table(conn: &Connection) -> Vec<Hall> {
     halls
 }
 pub fn read_students_table(conn: &Connection) -> HashMap<String, Vec<Student>> {
-    let query = "SELECT * FROM students";
+    let query = "SELECT id, subject FROM students";
     let mut students: HashMap<String, Vec<Student>> = HashMap::new();
     conn.iterate(query, |pair| {
         //pair is an array slice of the columns and the values in the colums
