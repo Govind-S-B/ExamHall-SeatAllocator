@@ -156,12 +156,13 @@ class _StudentsPageState extends State<StudentsPage> {
     FROM students
     GROUP BY class, subject;
   ''');
+    print(tableData);
     setState(() {
       classViewRows = tableData.map((row) {
         return ClassViewRow(
           row['class'],
           row['subject'],
-          row['rolls'],
+          sortedRollList(row['rolls']),
         );
       }).toList();
     });
@@ -169,7 +170,8 @@ class _StudentsPageState extends State<StudentsPage> {
 
   Future<void> _updateTableViewRow(TableViewRow row) async {
     List<String> sID = row.editedStudent_id.split('-');
-    await _database.execute("UPDATE students SET id = '${row.editedStudent_id}' , subject = '${row.editedSubject}' , class = '${sID[0]}' , rollno = '${sID[1]}' WHERE id = '${row.student_id}'");
+    await _database.execute(
+        "UPDATE students SET id = '${row.editedStudent_id}' , subject = '${row.editedSubject}' , class = '${sID[0]}' , rollno = '${sID[1]}' WHERE id = '${row.student_id}'");
     if (row.subject != row.editedSubject) {
       subjects.add(row.editedSubject);
     }
@@ -272,7 +274,7 @@ class _StudentsPageState extends State<StudentsPage> {
 
     //delete removed students from db
     for (int value in removedValues) {
-      await _database.execute("DELETE FROM students WHERE rollno = '$value'");
+      await _database.execute("DELETE FROM students WHERE rollno = '$value' AND subject = '${row.editedSubject}'");
     }
     //insert students into db
     for (int value in addedValues) {
