@@ -158,16 +158,6 @@ class _StudentsPageState extends State<StudentsPage> {
     FROM students
     GROUP BY class, subject;
   ''');
-
-    // print(tableData);
-    // var sortedRolls;
-    // Sort the rolls within each item in tableData
-    // tableData.forEach((item) {
-    //   var rolls = item['rolls'] as String;
-    //   sortedRolls = rolls.split(',')..sort((a, b) => int.parse(a).compareTo(int.parse(b)));
-    //   item['rolls'] = sortedRolls.join(',');
-    // });
-
     setState(() {
       classViewRows = tableData.map((row) {
         return ClassViewRow(
@@ -180,12 +170,8 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _updateTableViewRow(TableViewRow row) async {
-    await _database.update(
-      'students',
-      row.toMap(),
-      where: 'id = ?',
-      whereArgs: [row.student_id],
-    );
+    List<String> sID = row.editedStudent_id.split('-');
+    await _database.execute("UPDATE students SET id = '${row.editedStudent_id}' , subject = '${row.editedSubject}' , class = '${sID[0]}' , rollno = '${sID[1]}' WHERE id = '${row.student_id}'");
     if (row.subject != row.editedSubject) {
       subjects.add(row.editedSubject);
     }
@@ -197,6 +183,117 @@ class _StudentsPageState extends State<StudentsPage> {
   Future<void> _updateSubjectViewRow(SubjectViewRow row) async {
     await _database.execute(
         "UPDATE students SET subject = '${row.editedSubject}' WHERE subject = '${row.subject}'");
+    if (row.subject != row.editedSubject) {
+      subjects.add(row.editedSubject);
+    }
+    _fetchTableViewRows();
+    _fetchSubjectViewRows();
+    _fetchClassViewRows();
+  }
+
+  Future<void> _updateClassViewRowClass(ClassViewRow row) async {
+    await _database.execute(
+        "UPDATE students SET class = '${row.editedClassName}'  WHERE subject = '${row.editedSubject}' AND rollno IN (${row.editedRollList})");
+    List<int> updateClass = convertStringToList(row.editedRollList);
+    for (int value in updateClass) {
+      await _database.execute(
+          "UPDATE students SET id = '${row.editedClassName}-$value'  WHERE subject = '${row.editedSubject}' AND rollno = $value");
+    }
+
+    // if (row.className != row.editedClassName) {
+    //   subjects.add(row.editedSubject);
+    // }
+    _fetchTableViewRows();
+    _fetchSubjectViewRows();
+    _fetchClassViewRows();
+  }
+
+  Future<void> _updateClassViewRowSubject(ClassViewRow row) async {
+    await _database.execute(
+        "UPDATE students SET subject = '${row.editedSubject}' WHERE class = '${row.editedClassName}' AND rollno IN (${row.editedRollList})");
+    if (row.subject != row.editedSubject) {
+      subjects.add(row.editedSubject);
+    }
+    _fetchTableViewRows();
+    _fetchSubjectViewRows();
+    _fetchClassViewRows();
+  }
+
+  String expandRanges(String string) {
+    List<String> result = [];
+    List<String> ranges = string.split(",");
+    for (String r in ranges) {
+      if (r.trim().isNotEmpty) {
+        // Ignore empty elements
+        if (r.contains("-")) {
+          List<String> parts = r.split("-");
+          int start = int.parse(parts[0]);
+          int end = int.parse(parts[1]);
+          for (int i = start; i <= end; i++) {
+            result.add(i.toString());
+          }
+        } else {
+          result.add(r);
+        }
+      }
+    }
+    return result.join(",");
+  }
+
+  List<List<int>> compareLists(List<int> oldList, List<int> newList) {
+    List<int> commonValues = [];
+    List<int> removedValues = [];
+    List<int> addedValues = [];
+
+    // Find common values
+    for (int value in oldList) {
+      if (newList.contains(value)) {
+        commonValues.add(value);
+      } else {
+        removedValues.add(value);
+      }
+    }
+
+    // Find added values
+    for (int value in newList) {
+      if (!oldList.contains(value)) {
+        addedValues.add(value);
+      }
+    }
+
+    return [commonValues, removedValues, addedValues];
+  }
+
+  Future<void> _updateClassViewRowrollList(ClassViewRow row) async {
+    List<int> oldList = convertStringToList(row.rollList);
+    print(oldList);
+    List<int> newList = convertStringToList(row.editedRollList);
+    print(newList);
+    List<List<int>> rollIdentifier = compareLists(oldList, newList);
+    // List<int> commonValues = rollIdentifier[0];
+    List<int> removedValues = rollIdentifier[1];
+    List<int> addedValues = rollIdentifier[2];
+    print("entered update fn...");
+    print(addedValues);
+    print("");
+    print(removedValues);
+    // for (int value in commonValues) {
+    //   await _database.execute(
+    //     "UPDATE students SET subject = '${row.editedSubject}' WHERE class = '${row.editedClassName}' AND rollno IN (${row.editedRollList})");
+    // }
+
+    //delete removed students from db
+    for (int value in removedValues) {
+      await _database.execute("DELETE FROM students WHERE rollno = '$value'");
+      print("deleted rollno $value...");
+    }
+    //insert students into db
+    for (int value in addedValues) {
+      await _database.execute(
+          "INSERT INTO students (id, subject, class, rollno) VALUES ('${row.editedClassName}-$value', '${row.editedSubject}', '${row.editedClassName}', $value)");
+      print("inerted rollno $value...");
+    }
+
     if (row.subject != row.editedSubject) {
       subjects.add(row.editedSubject);
     }
@@ -517,10 +614,11 @@ class _StudentsPageState extends State<StudentsPage> {
                                     // Save changes
                                     setState(() {
                                       row.className = row.editedClassName;
-                                      row.subject = row.editedSubject;
-                                      row.rollList = row.editedRollList;
+                                      // row.subject = row.editedSubject;
+                                      // row.rollList = row.editedRollList;
                                       // Update the changes in the database
                                       // left to implement
+                                      _updateClassViewRowClass(row);
                                       editedClassViewRows.remove(row);
                                     });
                                   },
@@ -581,11 +679,12 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
-                                      row.className = row.editedClassName;
-                                      row.subject = row.editedSubject;
+                                      // row.className = row.editedClassName;
+                                      // row.subject = row.editedSubject;
                                       row.rollList = row.editedRollList;
                                       // Update the changes in the database
                                       // left to implement
+                                      _updateClassViewRowSubject(row);
                                       editedClassViewRows.remove(row);
                                     });
                                   },
@@ -631,8 +730,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   height: double.infinity,
                                   width: 320,
                                   child: TextFormField(
-                                    initialValue:
-                                        sortedRollList(row.editedRollList),
+                                    initialValue: row.editedRollList,
                                     onChanged: (value) {
                                       setState(() {
                                         row.editedRollList =
@@ -646,11 +744,16 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
-                                      row.className = row.editedClassName;
-                                      row.subject = row.editedSubject;
-                                      row.rollList = row.editedRollList;
+                                      // row.className = row.editedClassName;
+                                      // row.subject = row.editedSubject;
+                                      row.editedRollList =
+                                          expandRanges(row.editedRollList);
+                                      row.editedRollList =
+                                          sortedRollList(row.editedRollList);
+                                      // row.rollList = row.editedRollList;
                                       // Update the changes in the database
                                       // left to implement
+                                      _updateClassViewRowrollList(row);
                                       editedClassViewRows.remove(row);
                                     });
                                   },
@@ -660,8 +763,8 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
-                                      row.editedClassName = row.className;
-                                      row.editedSubject = row.subject;
+                                      // row.editedClassName = row.className;
+                                      // row.editedSubject = row.subject;
                                       row.editedRollList = row.rollList;
                                       editedClassViewRows.remove(row);
                                     });
