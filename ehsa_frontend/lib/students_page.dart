@@ -600,10 +600,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                     // Save changes
                                     setState(() {
                                       row.className = row.editedClassName;
-                                      // row.subject = row.editedSubject;
-                                      // row.rollList = row.editedRollList;
                                       // Update the changes in the database
-                                      // left to implement
                                       _updateClassViewRowClass(row);
                                       editedClassViewRows.remove(row);
                                     });
@@ -665,11 +662,8 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
-                                      // row.className = row.editedClassName;
-                                      // row.subject = row.editedSubject;
                                       row.rollList = row.editedRollList;
                                       // Update the changes in the database
-                                      // left to implement
                                       _updateClassViewRowSubject(row);
                                       editedClassViewRows.remove(row);
                                     });
@@ -730,13 +724,10 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
-                                      // row.className = row.editedClassName;
-                                      // row.subject = row.editedSubject;
                                       row.editedRollList =
                                           expandRanges(row.editedRollList);
                                       row.editedRollList =
                                           sortedRollList(row.editedRollList);
-                                      // row.rollList = row.editedRollList;
                                       // Update the changes in the database
                                       // left to implement
                                       _updateClassViewRowrollList(row);
@@ -749,8 +740,6 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
-                                      // row.editedClassName = row.className;
-                                      // row.editedSubject = row.subject;
                                       row.editedRollList = row.rollList;
                                       editedClassViewRows.remove(row);
                                     });
