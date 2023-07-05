@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
-import 'package:neumorphic_ui/neumorphic_ui.dart';
 
 class GeneratePage extends StatefulWidget {
   const GeneratePage({Key? key}) : super(key: key);
@@ -91,7 +90,7 @@ class _GeneratePageState extends State<GeneratePage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(10),
-                      child: NeumorphicButton(
+                      child: ElevatedButton(
                         onPressed: () {
                           var input = _sessionIdFieldController.text.trim();
                           if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N')
@@ -121,11 +120,6 @@ class _GeneratePageState extends State<GeneratePage> {
                           _sessionIdFieldController.clear();
                           setState(() {});
                         },
-                        style: NeumorphicStyle(
-                          boxShape: NeumorphicBoxShape.roundRect(
-                            BorderRadius.circular(8),
-                          ),
-                        ),
                         child: const Icon(Icons.settings),
                       ),
                     ),
@@ -149,7 +143,7 @@ class _GeneratePageState extends State<GeneratePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: NeumorphicButton(
+                    child: ElevatedButton(
                       onPressed: () async {
                         var content_type = ContentType.failure;
                         var title = "PDF Generation Failed";
@@ -228,17 +222,12 @@ class _GeneratePageState extends State<GeneratePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: NeumorphicButton(
+                    child: ElevatedButton(
                       onPressed: () {
                         final Uri fileLocation = Uri.parse(
                             "file:" '${Directory.current.path}/../output/');
                         launchUrl(fileLocation);
                       },
-                      style: NeumorphicStyle(
-                        boxShape: NeumorphicBoxShape.roundRect(
-                          BorderRadius.circular(8),
-                        ),
-                      ),
                       child: const Icon(Icons.folder_open),
                     ),
                   ),
