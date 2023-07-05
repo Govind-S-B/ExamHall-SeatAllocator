@@ -9,8 +9,16 @@ pub struct Student {
 impl Student {
     pub fn new(id: String, subject: String) -> Self {
         let id_clone = id.clone();
-        let (class, roll_no) = id_clone.split_once('-').expect("invalid id format");
-        let roll_no: i32 = roll_no.parse().expect("invalid roll number");
+        let (class, roll_no) = id_clone
+            .split_once('-')
+            .unwrap_or_else(|| panic!("[ invalid id format (id is {})]", id));
+        let roll_no: i32 = roll_no.parse().unwrap_or_else(|e| {
+            panic!(
+                "[ invalid roll number (id is {}) (error is {1:?}; {1})]",
+                id, e
+            )
+        });
+        // expect("[ invalid roll number ]");
         let class = class.to_owned();
         Self {
             id,

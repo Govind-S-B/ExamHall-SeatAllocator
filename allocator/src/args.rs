@@ -14,9 +14,9 @@ pub fn get() -> Arguments {
             "-r" | "--randomize" => {
                 delta = Some(
                     args.next()
-                        .expect("no argument after -r flag")
+                        .expect("[ no argument after -r flag ]")
                         .parse()
-                        .expect("invalid argument for delta"),
+                        .expect("[ invalid argument for delta ]"),
                 )
             }
             _ => paths.push(arg),
@@ -26,7 +26,7 @@ pub fn get() -> Arguments {
     let [_, input_db_path, output_db_path] = paths.as_slice()
     else {
         eprintln!("args given are {paths:?}");
-        panic!("INVALID ARGUMENTS: arguments should be \" ./allocator <input_db_path> <output_db_path> [-r | --randomize]");
+        panic!("[ INVALID ARGUMENTS: arguments should be \" ./allocator <input_db_path> <output_db_path> [-r | --randomize] ]");
     };
 
     Arguments {
