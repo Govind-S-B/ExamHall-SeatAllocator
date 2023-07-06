@@ -144,10 +144,10 @@ class _GeneratePageState extends State<GeneratePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
-                      onPressed: () async {
-                        var content_type = ContentType.failure;
-                        var title = "PDF Generation Failed";
-                        var msg = "PDF Generation Failed";
+                        onPressed: () async {
+                          var content_type = ContentType.failure;
+                          var title = "PDF Generation Failed";
+                          var msg = "PDF Generation Failed";
 
                           List<String> allocator_args;
 
@@ -167,11 +167,11 @@ class _GeneratePageState extends State<GeneratePage> {
                                 '${Directory.current.path}\\allocator.exe',
                                 allocator_args);
 
-                          if (result.exitCode == 0) {
-                            final result2 = await Process.run(
-                              '${Directory.current.path}\\pdf_generator.exe',
-                              [],
-                            );
+                            if (result.exitCode == 0) {
+                              final result2 = await Process.run(
+                                '${Directory.current.path}\\pdf_generator.exe',
+                                [],
+                              );
 
                               if (result2.exitCode == 0) {
                                 // pdf generated successfully
@@ -183,36 +183,31 @@ class _GeneratePageState extends State<GeneratePage> {
                               } else {
                                 // pdf generation failed
 
-                                msg = "PDF Generator Failed : ${result2.exitCode} ${result2.stderr}";
+                                msg =
+                                    "PDF Generator Failed : ${result2.exitCode} ${result2.stderr}";
                               }
-                            }
-                            else if(result.exitCode == 101){ // THIS IS NOT WORKING AS ARJUN SAID IT WOULD . FIX IT OR REMOVE IT
-
-                              msg = "Allocator Failed : " + result.stderr;
-
-                            }
-                            else {
+                            } else {
                               // Executable failed
 
-                              msg = "Allocator Failed : Unhandled exception ${result.exitCode} ${result.stderr}";
+                              msg =
+                                  "Allocator Failed : Unhandled exception ${result.exitCode} ${result.stderr}";
                             }
                           } catch (e) {
                             // Handle any exceptions here
 
                             msg = "You shouldnt be seeing this : $e";
-
                           }
 
-                        final snackBar = SnackBar(
-                          elevation: 0,
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: Colors.transparent,
-                          content: AwesomeSnackbarContent(
-                            title: title,
-                            message: msg,
-                            contentType: content_type,
-                          ),
-                        );
+                          final snackBar = SnackBar(
+                            elevation: 0,
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            content: AwesomeSnackbarContent(
+                              title: title,
+                              message: msg,
+                              contentType: content_type,
+                            ),
+                          );
 
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
