@@ -49,6 +49,35 @@ class _GeneratePageState extends State<GeneratePage> {
     });
   }
 
+  void onSubmitSessionId(String input) {
+    // var input = _sessionIdFieldController.text.trim();
+    if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N').hasMatch(input)) {
+      _sessionId = input;
+    } else {
+      final snackBar = SnackBar(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+          title: 'Invalid Session ID',
+          message:
+              'Please Recheck the Session ID entered if of proper format and try again. format is DD-MM-YYYY [A/F]N ',
+          contentType: ContentType.failure,
+        ),
+      );
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(snackBar);
+    }
+
+    _database.execute(
+      "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
+    );
+    _sessionIdFieldController.clear();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +114,7 @@ class _GeneratePageState extends State<GeneratePage> {
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.all(10),
                           ),
+                          onSubmitted: onSubmitSessionId,
                         ),
                       ),
                     ),
@@ -92,33 +122,8 @@ class _GeneratePageState extends State<GeneratePage> {
                       padding: const EdgeInsets.all(10),
                       child: ElevatedButton(
                         onPressed: () {
-                          var input = _sessionIdFieldController.text.trim();
-                          if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N')
-                              .hasMatch(input)) {
-                            _sessionId = input;
-                          } else {
-                            final snackBar = SnackBar(
-                              elevation: 0,
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: Colors.transparent,
-                              content: AwesomeSnackbarContent(
-                                title: 'Invalid Session ID',
-                                message:
-                                    'Please Recheck the Session ID entered if of proper format and try again.',
-                                contentType: ContentType.failure,
-                              ),
-                            );
-
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(snackBar);
-                          }
-
-                          _database.execute(
-                            "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
-                          );
-                          _sessionIdFieldController.clear();
-                          setState(() {});
+                          onSubmitSessionId(
+                              _sessionIdFieldController.text.trim());
                         },
                         child: const Icon(Icons.settings),
                       ),
@@ -144,10 +149,10 @@ class _GeneratePageState extends State<GeneratePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
-                      onPressed: () async {
-                        var content_type = ContentType.failure;
-                        var title = "PDF Generation Failed";
-                        var msg = "PDF Generation Failed";
+                        onPressed: () async {
+                          var content_type = ContentType.failure;
+                          var title = "PDF Generation Failed";
+                          var msg = "PDF Generation Failed";
 
                           List<String> allocator_args;
 
@@ -167,11 +172,11 @@ class _GeneratePageState extends State<GeneratePage> {
                                 '${Directory.current.path}\\allocator.exe',
                                 allocator_args);
 
-                          if (result.exitCode == 0) {
-                            final result2 = await Process.run(
-                              '${Directory.current.path}\\pdf_generator.exe',
-                              [],
-                            );
+                            if (result.exitCode == 0) {
+                              final result2 = await Process.run(
+                                '${Directory.current.path}\\pdf_generator.exe',
+                                [],
+                              );
 
                               if (result2.exitCode == 0) {
                                 // pdf generated successfully
@@ -183,36 +188,34 @@ class _GeneratePageState extends State<GeneratePage> {
                               } else {
                                 // pdf generation failed
 
-                                msg = "PDF Generator Failed : ${result2.exitCode} ${result2.stderr}";
+                                msg =
+                                    "PDF Generator Failed : ${result2.exitCode} ${result2.stderr}";
                               }
-                            }
-                            else if(result.exitCode == 101){ // THIS IS NOT WORKING AS ARJUN SAID IT WOULD . FIX IT OR REMOVE IT
-
-                              msg = "Allocator Failed : " + result.stderr;
-
-                            }
-                            else {
+                            } else {
                               // Executable failed
-
-                              msg = "Allocator Failed : Unhandled exception ${result.exitCode} ${result.stderr}";
+                              String rawMessage = result.stderr;
+                              var relevantErrorMessage = RegExp(r"\[(.+)\]")
+                                  .firstMatch(rawMessage)
+                                  ?.group(0);
+                              var message = relevantErrorMessage ?? rawMessage;
+                              msg = "Allocator Failed : $message";
                             }
                           } catch (e) {
                             // Handle any exceptions here
 
                             msg = "You shouldnt be seeing this : $e";
-
                           }
 
-                        final snackBar = SnackBar(
-                          elevation: 0,
-                          behavior: SnackBarBehavior.floating,
-                          backgroundColor: Colors.transparent,
-                          content: AwesomeSnackbarContent(
-                            title: title,
-                            message: msg,
-                            contentType: content_type,
-                          ),
-                        );
+                          final snackBar = SnackBar(
+                            elevation: 0,
+                            behavior: SnackBarBehavior.floating,
+                            backgroundColor: Colors.transparent,
+                            content: AwesomeSnackbarContent(
+                              title: title,
+                              message: msg,
+                              contentType: content_type,
+                            ),
+                          );
 
                           ScaffoldMessenger.of(context)
                             ..hideCurrentSnackBar()
