@@ -49,6 +49,35 @@ class _GeneratePageState extends State<GeneratePage> {
     });
   }
 
+  void onSubmitSessionId(String input) {
+    // var input = _sessionIdFieldController.text.trim();
+    if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N').hasMatch(input)) {
+      _sessionId = input;
+    } else {
+      final snackBar = SnackBar(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+          title: 'Invalid Session ID',
+          message:
+              'Please Recheck the Session ID entered if of proper format and try again. format is DD-MM-YYYY [A/F]N ',
+          contentType: ContentType.failure,
+        ),
+      );
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(snackBar);
+    }
+
+    _database.execute(
+      "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
+    );
+    _sessionIdFieldController.clear();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -85,6 +114,7 @@ class _GeneratePageState extends State<GeneratePage> {
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.all(10),
                           ),
+                          onSubmitted: onSubmitSessionId,
                         ),
                       ),
                     ),
@@ -92,33 +122,8 @@ class _GeneratePageState extends State<GeneratePage> {
                       padding: const EdgeInsets.all(10),
                       child: ElevatedButton(
                         onPressed: () {
-                          var input = _sessionIdFieldController.text.trim();
-                          if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N')
-                              .hasMatch(input)) {
-                            _sessionId = input;
-                          } else {
-                            final snackBar = SnackBar(
-                              elevation: 0,
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: Colors.transparent,
-                              content: AwesomeSnackbarContent(
-                                title: 'Invalid Session ID',
-                                message:
-                                    'Please Recheck the Session ID entered if of proper format and try again. format is DD-MM-YYYY [A/F]N ',
-                                contentType: ContentType.failure,
-                              ),
-                            );
-
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(snackBar);
-                          }
-
-                          _database.execute(
-                            "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
-                          );
-                          _sessionIdFieldController.clear();
-                          setState(() {});
+                          onSubmitSessionId(
+                              _sessionIdFieldController.text.trim());
                         },
                         child: const Icon(Icons.settings),
                       ),
