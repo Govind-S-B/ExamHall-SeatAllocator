@@ -104,7 +104,7 @@ class _GeneratePageState extends State<GeneratePage> {
                               content: AwesomeSnackbarContent(
                                 title: 'Invalid Session ID',
                                 message:
-                                    'Please Recheck the Session ID entered if of proper format and try again.',
+                                    'Please Recheck the Session ID entered if of proper format and try again. format is DD-MM-YYYY [A/F]N ',
                                 contentType: ContentType.failure,
                               ),
                             );
@@ -188,9 +188,13 @@ class _GeneratePageState extends State<GeneratePage> {
                               }
                             } else {
                               // Executable failed
-
-                              msg =
-                                  "Allocator Failed : Unhandled exception ${result.exitCode} ${result.stderr}";
+                              String raw_message = result.stderr;
+                              var relevant_error_message = RegExp(r"\[(.+)\]")
+                                  .firstMatch(raw_message)
+                                  ?.group(0);
+                              var message =
+                                  relevant_error_message ?? raw_message;
+                              msg = "Allocator Failed : $message";
                             }
                           } catch (e) {
                             // Handle any exceptions here

@@ -79,7 +79,7 @@ fn main() {
         let total_seats: usize = halls.iter().map(|h| h.seats_left()).sum();
         let total_students: usize = students.values().map(|s| s.len()).sum();
         if total_students > total_seats {
-            panic!("[ ERROR: more students than seats ]")
+            panic!("[ more students than seats ]")
         }
         total_seats - total_students
     };
