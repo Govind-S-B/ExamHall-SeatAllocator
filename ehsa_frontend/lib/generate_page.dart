@@ -188,12 +188,11 @@ class _GeneratePageState extends State<GeneratePage> {
                               }
                             } else {
                               // Executable failed
-                              String raw_message = result.stderr;
-                              var relevant_error_message = RegExp(r"\[(.+)\]")
-                                  .firstMatch(raw_message)
+                              String rawMessage = result.stderr;
+                              var relevantErrorMessage = RegExp(r"\[(.+)\]")
+                                  .firstMatch(rawMessage)
                                   ?.group(0);
-                              var message =
-                                  relevant_error_message ?? raw_message;
+                              var message = relevantErrorMessage ?? rawMessage;
                               msg = "Allocator Failed : $message";
                             }
                           } catch (e) {
