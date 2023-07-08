@@ -274,7 +274,8 @@ class _StudentsPageState extends State<StudentsPage> {
 
     //delete removed students from db
     for (int value in removedValues) {
-      await _database.execute("DELETE FROM students WHERE rollno = '$value' AND subject = '${row.editedSubject}'");
+      await _database.execute(
+          "DELETE FROM students WHERE rollno = '$value' AND subject = '${row.editedSubject}'");
     }
     //insert students into db
     for (int value in addedValues) {
@@ -754,10 +755,26 @@ class _StudentsPageState extends State<StudentsPage> {
                                 Container(
                                     constraints: const BoxConstraints(
                                         maxWidth: 350, minWidth: 350),
-                                    child: Text(
-                                      row.editedRollList,
-                                      overflow: TextOverflow.visible,
-                                    )),
+                                    child: ListView.builder(
+                                        physics:
+                                            const AlwaysScrollableScrollPhysics(),
+                                        itemCount: 1,
+                                        itemBuilder: (context, index) {
+                                          return SingleChildScrollView(
+                                            scrollDirection: Axis.vertical,
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4),
+                                              child: Text(
+                                                row.editedRollList
+                                                    .split(',')
+                                                    .join(', '),
+                                                overflow: TextOverflow.visible,
+                                              ),
+                                            ),
+                                          );
+                                        })),
                                 const SizedBox(width: 30),
                                 Container(
                                   constraints: const BoxConstraints(
@@ -801,7 +818,7 @@ class _StudentsPageState extends State<StudentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column( 
+      body: Column(
         children: <Widget>[
           Expanded(
             flex: 2,
