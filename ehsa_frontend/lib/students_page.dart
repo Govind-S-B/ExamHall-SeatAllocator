@@ -274,7 +274,7 @@ class _StudentsPageState extends State<StudentsPage> {
     //delete removed students from db
     for (int value in removedValues) {
       await _database.execute(
-          "DELETE FROM students WHERE rollno = '$value' AND subject = '${row.editedSubject}'");
+          "DELETE FROM students WHERE rollno = '$value' AND subject = '${row.editedSubject}' AND class = '${row.editedClassName}'");
     }
     //insert students into db
     for (int value in addedValues) {
