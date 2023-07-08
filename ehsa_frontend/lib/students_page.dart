@@ -630,6 +630,12 @@ class _StudentsPageState extends State<StudentsPage> {
                                         constraints: const BoxConstraints(
                                             maxHeight: 25, maxWidth: 50),
                                         child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.blue.shade400),
+                                              shape: MaterialStateProperty.all(
+                                                  const StadiumBorder())),
                                           child:
                                               const Icon(Icons.edit, size: 18),
                                           onPressed: () {
@@ -700,6 +706,12 @@ class _StudentsPageState extends State<StudentsPage> {
                                         constraints: const BoxConstraints(
                                             maxHeight: 25, maxWidth: 50),
                                         child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.blue.shade400),
+                                              shape: MaterialStateProperty.all(
+                                                  const StadiumBorder())),
                                           child:
                                               const Icon(Icons.edit, size: 18),
                                           onPressed: () {
@@ -792,6 +804,12 @@ class _StudentsPageState extends State<StudentsPage> {
                                         constraints: const BoxConstraints(
                                             maxHeight: 25, maxWidth: 50),
                                         child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.blue.shade400),
+                                              shape: MaterialStateProperty.all(
+                                                  const StadiumBorder())),
                                           child:
                                               const Icon(Icons.edit, size: 18),
                                           onPressed: () {
