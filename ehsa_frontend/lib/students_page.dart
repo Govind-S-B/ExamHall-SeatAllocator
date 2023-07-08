@@ -192,11 +192,11 @@ class _StudentsPageState extends State<StudentsPage> {
 
   Future<void> _updateClassViewRowClass(ClassViewRow row) async {
     await _database.execute(
-        "UPDATE students SET class = '${row.editedClassName}'  WHERE subject = '${row.editedSubject}' AND rollno IN (${row.editedRollList})");
+        "UPDATE students SET class = '${row.editedClassName}' WHERE subject = '${row.editedSubject}' AND rollno IN (${row.editedRollList})");
     List<int> updateClass = convertStringToList(row.editedRollList);
     for (int value in updateClass) {
       await _database.execute(
-          "UPDATE students SET id = '${row.editedClassName}-$value'  WHERE subject = '${row.editedSubject}' AND rollno = $value");
+          "UPDATE students SET id = '${row.editedClassName}-$value'  WHERE subject = '${row.editedSubject}' AND rollno = '$value'");
     }
 
     // if (row.className != row.editedClassName) {
