@@ -191,17 +191,11 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _updateClassViewRowClass(ClassViewRow row) async {
-    await _database.execute(
-        "UPDATE students SET class = '${row.editedClassName}' WHERE subject = '${row.editedSubject}' AND rollno IN (${row.editedRollList})");
     List<int> updateClass = convertStringToList(row.editedRollList);
-    for (int value in updateClass) {
+    for (int i in updateClass) {
       await _database.execute(
-          "UPDATE students SET id = '${row.editedClassName}-$value'  WHERE subject = '${row.editedSubject}' AND rollno = '$value'");
+          "UPDATE students SET id = '${row.editedClassName}-$i' , class = '${row.editedClassName}' WHERE rollno = '$i' AND class = '${row.className}'");
     }
-
-    // if (row.className != row.editedClassName) {
-    //   subjects.add(row.editedSubject);
-    // }
     _fetchTableViewRows();
     _fetchSubjectViewRows();
     _fetchClassViewRows();
@@ -601,7 +595,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
-                                      row.className = row.editedClassName;
+                                      // row.className = row.editedClassName;
                                       // Update the changes in the database
                                       _updateClassViewRowClass(row);
                                       editedClassViewRows.remove(row);
