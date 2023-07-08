@@ -156,7 +156,6 @@ class _StudentsPageState extends State<StudentsPage> {
     FROM students
     GROUP BY class, subject;
   ''');
-    print(tableData);
     setState(() {
       classViewRows = tableData.map((row) {
         return ClassViewRow(
@@ -192,17 +191,11 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   Future<void> _updateClassViewRowClass(ClassViewRow row) async {
-    await _database.execute(
-        "UPDATE students SET class = '${row.editedClassName}'  WHERE subject = '${row.editedSubject}' AND rollno IN (${row.editedRollList})");
     List<int> updateClass = convertStringToList(row.editedRollList);
-    for (int value in updateClass) {
+    for (int i in updateClass) {
       await _database.execute(
-          "UPDATE students SET id = '${row.editedClassName}-$value'  WHERE subject = '${row.editedSubject}' AND rollno = $value");
+          "UPDATE students SET id = '${row.editedClassName}-$i' , class = '${row.editedClassName}' WHERE rollno = '$i' AND class = '${row.className}'");
     }
-
-    // if (row.className != row.editedClassName) {
-    //   subjects.add(row.editedSubject);
-    // }
     _fetchTableViewRows();
     _fetchSubjectViewRows();
     _fetchClassViewRows();
@@ -274,7 +267,8 @@ class _StudentsPageState extends State<StudentsPage> {
 
     //delete removed students from db
     for (int value in removedValues) {
-      await _database.execute("DELETE FROM students WHERE rollno = '$value' AND subject = '${row.editedSubject}'");
+      await _database.execute(
+          "DELETE FROM students WHERE rollno = '$value' AND subject = '${row.editedSubject}' AND class = '${row.editedClassName}'");
     }
     //insert students into db
     for (int value in addedValues) {
@@ -308,9 +302,9 @@ class _StudentsPageState extends State<StudentsPage> {
     _fetchClassViewRows();
   }
 
-  Future<void> _deleteClassViewRow(List rollList) async {
+  Future<void> _deleteClassViewRow(ClassViewRow row) async {
     await _database.execute(
-        "DELETE FROM students WHERE rollno IN (${rollList.join(',')})");
+        "DELETE FROM students WHERE rollno IN (${row.editedRollList}) AND class = '${row.editedClassName}'");
     _fetchTableViewRows();
     _fetchSubjectViewRows();
     _fetchClassViewRows();
@@ -394,6 +388,7 @@ class _StudentsPageState extends State<StudentsPage> {
     super.dispose();
   }
 
+  int selectedDataCell = 0;
   Widget buildOptionContainer(int option) {
     switch (option) {
       case 1:
@@ -564,10 +559,11 @@ class _StudentsPageState extends State<StudentsPage> {
           width: double.infinity,
           child: DataTable(
             columns: const [
-              DataColumn(label: Text('Classes')),
+              DataColumn(label: Text('Class')),
               DataColumn(label: Text('Subjects')),
               DataColumn(label: Text('Roll List')),
               DataColumn(label: Text('Actions')),
+              DataColumn(label: Text(' ')),
             ],
             rows: [
               for (var row in classViewRows)
@@ -579,7 +575,7 @@ class _StudentsPageState extends State<StudentsPage> {
                           (states) => Colors.transparent),
                   cells: [
                     DataCell(
-                      editedClassViewRows.contains(row)
+                      editedClassViewRows.contains(row) && selectedDataCell == 1
                           ? Row(
                               children: [
                                 SizedBox(
@@ -601,7 +597,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
-                                      row.className = row.editedClassName;
+                                      selectedDataCell = 0;
                                       // Update the changes in the database
                                       _updateClassViewRowClass(row);
                                       editedClassViewRows.remove(row);
@@ -613,6 +609,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.editedClassName = row.className;
                                       row.editedSubject = row.subject;
                                       row.editedRollList = row.rollList;
@@ -626,23 +623,34 @@ class _StudentsPageState extends State<StudentsPage> {
                               children: [
                                 Text(row.editedClassName),
                                 const SizedBox(width: 30),
-                                Container(
-                                  constraints: const BoxConstraints(
-                                      maxHeight: 25, maxWidth: 50),
-                                  child: ElevatedButton(
-                                    child: const Icon(Icons.edit, size: 18),
-                                    onPressed: () {
-                                      setState(() {
-                                        editedClassViewRows.add(row);
-                                      });
-                                    },
-                                  ),
-                                ),
+                                editedClassViewRows.contains(row) &&
+                                        selectedDataCell != 0
+                                    ? const SizedBox(width: 5)
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                            maxHeight: 25, maxWidth: 50),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.blue.shade400),
+                                              shape: MaterialStateProperty.all(
+                                                  const StadiumBorder())),
+                                          child:
+                                              const Icon(Icons.edit, size: 18),
+                                          onPressed: () {
+                                            setState(() {
+                                              selectedDataCell = 1;
+                                              editedClassViewRows.add(row);
+                                            });
+                                          },
+                                        ),
+                                      ),
                               ],
                             ),
                     ),
                     DataCell(
-                      editedClassViewRows.contains(row)
+                      editedClassViewRows.contains(row) && selectedDataCell == 2
                           ? Row(
                               children: [
                                 SizedBox(
@@ -664,6 +672,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.rollList = row.editedRollList;
                                       // Update the changes in the database
                                       _updateClassViewRowSubject(row);
@@ -676,6 +685,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.editedClassName = row.className;
                                       row.editedSubject = row.subject;
                                       row.editedRollList = row.rollList;
@@ -689,28 +699,39 @@ class _StudentsPageState extends State<StudentsPage> {
                               children: [
                                 Text(row.editedSubject),
                                 const SizedBox(width: 30),
-                                Container(
-                                  constraints: const BoxConstraints(
-                                      maxHeight: 25, maxWidth: 50),
-                                  child: ElevatedButton(
-                                    child: const Icon(Icons.edit, size: 18),
-                                    onPressed: () {
-                                      setState(() {
-                                        editedClassViewRows.add(row);
-                                      });
-                                    },
-                                  ),
-                                ),
+                                editedClassViewRows.contains(row) &&
+                                        selectedDataCell != 0
+                                    ? const SizedBox(width: 5)
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                            maxHeight: 25, maxWidth: 50),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.blue.shade400),
+                                              shape: MaterialStateProperty.all(
+                                                  const StadiumBorder())),
+                                          child:
+                                              const Icon(Icons.edit, size: 18),
+                                          onPressed: () {
+                                            setState(() {
+                                              selectedDataCell = 2;
+                                              editedClassViewRows.add(row);
+                                            });
+                                          },
+                                        ),
+                                      ),
                               ],
                             ),
                     ),
                     DataCell(
-                      editedClassViewRows.contains(row)
+                      editedClassViewRows.contains(row) && selectedDataCell == 3
                           ? Row(
                               children: [
                                 SizedBox(
                                   height: double.infinity,
-                                  width: 320,
+                                  width: 380,
                                   child: TextFormField(
                                     initialValue: row.editedRollList,
                                     onChanged: (value) {
@@ -726,6 +747,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.editedRollList =
                                           expandRanges(row.editedRollList);
                                       row.editedRollList =
@@ -742,6 +764,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.editedRollList = row.rollList;
                                       editedClassViewRows.remove(row);
                                     });
@@ -751,26 +774,52 @@ class _StudentsPageState extends State<StudentsPage> {
                             )
                           : Row(
                               children: [
-                                Container(
-                                    constraints: const BoxConstraints(
-                                        maxWidth: 350, minWidth: 350),
-                                    child: Text(
-                                      row.editedRollList,
-                                      overflow: TextOverflow.visible,
-                                    )),
-                                const SizedBox(width: 30),
-                                Container(
-                                  constraints: const BoxConstraints(
-                                      maxHeight: 25, maxWidth: 50),
-                                  child: ElevatedButton(
-                                    child: const Icon(Icons.edit, size: 18),
-                                    onPressed: () {
-                                      setState(() {
-                                        editedClassViewRows.add(row);
-                                      });
-                                    },
-                                  ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4),
+                                  child: Container(
+                                      constraints: const BoxConstraints(
+                                          maxWidth: 350, minWidth: 350),
+                                      child: ListView.builder(
+                                          physics:
+                                              const AlwaysScrollableScrollPhysics(),
+                                          itemCount: 1,
+                                          itemBuilder: (context, index) {
+                                            return SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              child: Text(
+                                                row.editedRollList
+                                                    .split(',')
+                                                    .join(', '),
+                                                overflow: TextOverflow.visible,
+                                              ),
+                                            );
+                                          })),
                                 ),
+                                const SizedBox(width: 30),
+                                editedClassViewRows.contains(row) &&
+                                        selectedDataCell != 0
+                                    ? const SizedBox(width: 5)
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                            maxHeight: 25, maxWidth: 50),
+                                        child: ElevatedButton(
+                                          style: ButtonStyle(
+                                              backgroundColor:
+                                                  MaterialStateProperty.all(
+                                                      Colors.blue.shade400),
+                                              shape: MaterialStateProperty.all(
+                                                  const StadiumBorder())),
+                                          child:
+                                              const Icon(Icons.edit, size: 18),
+                                          onPressed: () {
+                                            selectedDataCell = 3;
+                                            setState(() {
+                                              editedClassViewRows.add(row);
+                                            });
+                                          },
+                                        ),
+                                      ),
                               ],
                             ),
                     ),
@@ -780,13 +829,12 @@ class _StudentsPageState extends State<StudentsPage> {
                         onPressed: () {
                           setState(() {
                             // Remove the row from the database
-                            // ...
-                            _deleteClassViewRow(
-                                convertStringToList(row.editedRollList));
+                            _deleteClassViewRow(row);
                           });
                         },
                       ),
                     ),
+                    const DataCell(SizedBox(width: 2))
                   ],
                 ),
             ],
@@ -801,7 +849,7 @@ class _StudentsPageState extends State<StudentsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column( 
+      body: Column(
         children: <Widget>[
           Expanded(
             flex: 2,
