@@ -394,6 +394,7 @@ class _StudentsPageState extends State<StudentsPage> {
     super.dispose();
   }
 
+  int selectedDataCell = 0;
   Widget buildOptionContainer(int option) {
     switch (option) {
       case 1:
@@ -564,10 +565,11 @@ class _StudentsPageState extends State<StudentsPage> {
           width: double.infinity,
           child: DataTable(
             columns: const [
-              DataColumn(label: Text('Classes')),
+              DataColumn(label: Text('Class')),
               DataColumn(label: Text('Subjects')),
               DataColumn(label: Text('Roll List')),
               DataColumn(label: Text('Actions')),
+              DataColumn(label: Text(' ')),
             ],
             rows: [
               for (var row in classViewRows)
@@ -579,7 +581,7 @@ class _StudentsPageState extends State<StudentsPage> {
                           (states) => Colors.transparent),
                   cells: [
                     DataCell(
-                      editedClassViewRows.contains(row)
+                      editedClassViewRows.contains(row) && selectedDataCell == 1
                           ? Row(
                               children: [
                                 SizedBox(
@@ -601,6 +603,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.className = row.editedClassName;
                                       // Update the changes in the database
                                       _updateClassViewRowClass(row);
@@ -613,6 +616,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.editedClassName = row.className;
                                       row.editedSubject = row.subject;
                                       row.editedRollList = row.rollList;
@@ -626,23 +630,28 @@ class _StudentsPageState extends State<StudentsPage> {
                               children: [
                                 Text(row.editedClassName),
                                 const SizedBox(width: 30),
-                                Container(
-                                  constraints: const BoxConstraints(
-                                      maxHeight: 25, maxWidth: 50),
-                                  child: ElevatedButton(
-                                    child: const Icon(Icons.edit, size: 18),
-                                    onPressed: () {
-                                      setState(() {
-                                        editedClassViewRows.add(row);
-                                      });
-                                    },
-                                  ),
-                                ),
+                                editedClassViewRows.contains(row) &&
+                                        selectedDataCell != 0
+                                    ? const SizedBox(width: 5)
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                            maxHeight: 25, maxWidth: 50),
+                                        child: ElevatedButton(
+                                          child:
+                                              const Icon(Icons.edit, size: 18),
+                                          onPressed: () {
+                                            setState(() {
+                                              selectedDataCell = 1;
+                                              editedClassViewRows.add(row);
+                                            });
+                                          },
+                                        ),
+                                      ),
                               ],
                             ),
                     ),
                     DataCell(
-                      editedClassViewRows.contains(row)
+                      editedClassViewRows.contains(row) && selectedDataCell == 2
                           ? Row(
                               children: [
                                 SizedBox(
@@ -664,6 +673,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.rollList = row.editedRollList;
                                       // Update the changes in the database
                                       _updateClassViewRowSubject(row);
@@ -676,6 +686,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.editedClassName = row.className;
                                       row.editedSubject = row.subject;
                                       row.editedRollList = row.rollList;
@@ -689,28 +700,33 @@ class _StudentsPageState extends State<StudentsPage> {
                               children: [
                                 Text(row.editedSubject),
                                 const SizedBox(width: 30),
-                                Container(
-                                  constraints: const BoxConstraints(
-                                      maxHeight: 25, maxWidth: 50),
-                                  child: ElevatedButton(
-                                    child: const Icon(Icons.edit, size: 18),
-                                    onPressed: () {
-                                      setState(() {
-                                        editedClassViewRows.add(row);
-                                      });
-                                    },
-                                  ),
-                                ),
+                                editedClassViewRows.contains(row) &&
+                                        selectedDataCell != 0
+                                    ? const SizedBox(width: 5)
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                            maxHeight: 25, maxWidth: 50),
+                                        child: ElevatedButton(
+                                          child:
+                                              const Icon(Icons.edit, size: 18),
+                                          onPressed: () {
+                                            setState(() {
+                                              selectedDataCell = 2;
+                                              editedClassViewRows.add(row);
+                                            });
+                                          },
+                                        ),
+                                      ),
                               ],
                             ),
                     ),
                     DataCell(
-                      editedClassViewRows.contains(row)
+                      editedClassViewRows.contains(row) && selectedDataCell == 3
                           ? Row(
                               children: [
                                 SizedBox(
                                   height: double.infinity,
-                                  width: 320,
+                                  width: 380,
                                   child: TextFormField(
                                     initialValue: row.editedRollList,
                                     onChanged: (value) {
@@ -726,6 +742,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Save changes
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.editedRollList =
                                           expandRanges(row.editedRollList);
                                       row.editedRollList =
@@ -742,6 +759,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                   onPressed: () {
                                     // Cancel edit
                                     setState(() {
+                                      selectedDataCell = 0;
                                       row.editedRollList = row.rollList;
                                       editedClassViewRows.remove(row);
                                     });
@@ -751,42 +769,46 @@ class _StudentsPageState extends State<StudentsPage> {
                             )
                           : Row(
                               children: [
-                                Container(
-                                    constraints: const BoxConstraints(
-                                        maxWidth: 350, minWidth: 350),
-                                    child: ListView.builder(
-                                        physics:
-                                            const AlwaysScrollableScrollPhysics(),
-                                        itemCount: 1,
-                                        itemBuilder: (context, index) {
-                                          return SingleChildScrollView(
-                                            scrollDirection: Axis.vertical,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 4),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4),
+                                  child: Container(
+                                      constraints: const BoxConstraints(
+                                          maxWidth: 350, minWidth: 350),
+                                      child: ListView.builder(
+                                          physics:
+                                              const AlwaysScrollableScrollPhysics(),
+                                          itemCount: 1,
+                                          itemBuilder: (context, index) {
+                                            return SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
                                               child: Text(
                                                 row.editedRollList
                                                     .split(',')
                                                     .join(', '),
                                                 overflow: TextOverflow.visible,
                                               ),
-                                            ),
-                                          );
-                                        })),
-                                const SizedBox(width: 30),
-                                Container(
-                                  constraints: const BoxConstraints(
-                                      maxHeight: 25, maxWidth: 50),
-                                  child: ElevatedButton(
-                                    child: const Icon(Icons.edit, size: 18),
-                                    onPressed: () {
-                                      setState(() {
-                                        editedClassViewRows.add(row);
-                                      });
-                                    },
-                                  ),
+                                            );
+                                          })),
                                 ),
+                                const SizedBox(width: 30),
+                                editedClassViewRows.contains(row) &&
+                                        selectedDataCell != 0
+                                    ? const SizedBox(width: 5)
+                                    : Container(
+                                        constraints: const BoxConstraints(
+                                            maxHeight: 25, maxWidth: 50),
+                                        child: ElevatedButton(
+                                          child:
+                                              const Icon(Icons.edit, size: 18),
+                                          onPressed: () {
+                                            selectedDataCell = 3;
+                                            setState(() {
+                                              editedClassViewRows.add(row);
+                                            });
+                                          },
+                                        ),
+                                      ),
                               ],
                             ),
                     ),
@@ -803,6 +825,7 @@ class _StudentsPageState extends State<StudentsPage> {
                         },
                       ),
                     ),
+                    const DataCell(SizedBox(width: 2))
                   ],
                 ),
             ],
