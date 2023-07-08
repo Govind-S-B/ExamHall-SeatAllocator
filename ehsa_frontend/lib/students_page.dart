@@ -156,7 +156,6 @@ class _StudentsPageState extends State<StudentsPage> {
     FROM students
     GROUP BY class, subject;
   ''');
-    print(tableData);
     setState(() {
       classViewRows = tableData.map((row) {
         return ClassViewRow(
