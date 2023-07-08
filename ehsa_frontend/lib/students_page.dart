@@ -302,9 +302,9 @@ class _StudentsPageState extends State<StudentsPage> {
     _fetchClassViewRows();
   }
 
-  Future<void> _deleteClassViewRow(List rollList) async {
+  Future<void> _deleteClassViewRow(ClassViewRow row) async {
     await _database.execute(
-        "DELETE FROM students WHERE rollno IN (${rollList.join(',')})");
+        "DELETE FROM students WHERE rollno IN (${row.editedRollList}) AND class = '${row.editedClassName}'");
     _fetchTableViewRows();
     _fetchSubjectViewRows();
     _fetchClassViewRows();
@@ -811,9 +811,7 @@ class _StudentsPageState extends State<StudentsPage> {
                         onPressed: () {
                           setState(() {
                             // Remove the row from the database
-                            // ...
-                            _deleteClassViewRow(
-                                convertStringToList(row.editedRollList));
+                            _deleteClassViewRow(row);
                           });
                         },
                       ),
