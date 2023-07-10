@@ -1,0 +1,4 @@
+add error handling
+improve credits page
+blah 
+blah blah
