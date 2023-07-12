@@ -70,11 +70,20 @@ class _StudentsPageState extends State<StudentsPage> {
   List<String> subjects = [];
   List<String> filteredSubjects = [];
 
-  final TextEditingController _subjectTextController = TextEditingController();
   String selectedSubject = '';
 
   final TextEditingController _classTextController = TextEditingController();
+  final TextEditingController _subjectTextController = TextEditingController();
   final TextEditingController _rollsTextController = TextEditingController();
+
+  final List<FocusNode> _focusNodes = [
+    // class
+    FocusNode(),
+    // subject
+    FocusNode(),
+    // rolls
+    FocusNode(),
+  ];
 
   //TODO: change the ToggleButtons to radial buttons to remove this monstrosity
   List<bool> isSelected = [true, false, false];
@@ -381,7 +390,9 @@ class _StudentsPageState extends State<StudentsPage> {
   }
 
   bool isAllTextFieldsFilled() {
-    throw UnimplementedError();
+    return (_classTextController.text.isNotEmpty &&
+        _rollsTextController.text.isNotEmpty &&
+        _subjectTextController.text.isNotEmpty);
   }
 
   @override
@@ -877,12 +888,14 @@ class _StudentsPageState extends State<StudentsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextField(
+                              focusNode: _focusNodes[0],
                               controller: _classTextController,
                               decoration: const InputDecoration(
                                 hintText: 'Enter Class',
                               ),
                             ),
                             TextField(
+                              focusNode: _focusNodes[1],
                               controller: _rollsTextController,
                               decoration: const InputDecoration(
                                 hintText: 'Enter Roll List',
@@ -903,6 +916,7 @@ class _StudentsPageState extends State<StudentsPage> {
                               children: [
                                 Expanded(
                                   child: TextField(
+                                    focusNode: _focusNodes[2],
                                     controller: _subjectTextController,
                                     onChanged: (value) {
                                       setState(() {
