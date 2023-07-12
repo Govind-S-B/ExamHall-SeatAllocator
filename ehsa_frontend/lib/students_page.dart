@@ -70,15 +70,13 @@ class _StudentsPageState extends State<StudentsPage> {
   List<String> subjects = [];
   List<String> filteredSubjects = [];
 
-  final TextEditingController _subjectTextEditingController =
-      TextEditingController();
+  final TextEditingController _subjectTextController = TextEditingController();
   String selectedSubject = '';
 
-  final TextEditingController _classTextEditingController =
-      TextEditingController();
-  final TextEditingController _rollsTextEditingController =
-      TextEditingController();
+  final TextEditingController _classTextController = TextEditingController();
+  final TextEditingController _rollsTextController = TextEditingController();
 
+  //TODO: change the ToggleButtons to radial buttons to remove this monstrosity
   List<bool> isSelected = [true, false, false];
   int selectedOption = 1;
 
@@ -272,6 +270,7 @@ class _StudentsPageState extends State<StudentsPage> {
     }
     //insert students into db
     for (int value in addedValues) {
+      // TODO: change into a single exe to improve execution speed
       await _database.execute(
           "INSERT INTO students (id, subject, class, rollno) VALUES ('${row.editedClassName}-$value', '${row.editedSubject}', '${row.editedClassName}', $value)");
     }
@@ -381,9 +380,13 @@ class _StudentsPageState extends State<StudentsPage> {
     return list.join(',');
   }
 
+  bool isAllTextFieldsFilled() {
+    throw UnimplementedError();
+  }
+
   @override
   void dispose() {
-    _subjectTextEditingController.dispose();
+    _subjectTextController.dispose();
     _database.close();
     super.dispose();
   }
@@ -874,13 +877,13 @@ class _StudentsPageState extends State<StudentsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextField(
-                              controller: _classTextEditingController,
+                              controller: _classTextController,
                               decoration: const InputDecoration(
                                 hintText: 'Enter Class',
                               ),
                             ),
                             TextField(
-                              controller: _rollsTextEditingController,
+                              controller: _rollsTextController,
                               decoration: const InputDecoration(
                                 hintText: 'Enter Roll List',
                               ),
@@ -900,7 +903,7 @@ class _StudentsPageState extends State<StudentsPage> {
                               children: [
                                 Expanded(
                                   child: TextField(
-                                    controller: _subjectTextEditingController,
+                                    controller: _subjectTextController,
                                     onChanged: (value) {
                                       setState(() {
                                         filteredSubjects = subjects
@@ -919,14 +922,13 @@ class _StudentsPageState extends State<StudentsPage> {
                                   icon: const Icon(Icons.add),
                                   onPressed: () {
                                     String newSubject =
-                                        _subjectTextEditingController.text
-                                            .trim();
+                                        _subjectTextController.text.trim();
                                     if (newSubject.isNotEmpty &&
                                         !subjects.contains(newSubject)) {
                                       setState(() {
                                         subjects.add(newSubject);
                                         filteredSubjects = subjects;
-                                        _subjectTextEditingController.clear();
+                                        _subjectTextController.clear();
                                       });
                                     }
                                   },
@@ -935,10 +937,9 @@ class _StudentsPageState extends State<StudentsPage> {
                                   child: const Text('Submit'),
                                   onPressed: () {
                                     var studentClass =
-                                        _classTextEditingController.text;
-                                    var rollList = _rollsTextEditingController
-                                        .text
-                                        .split(",");
+                                        _classTextController.text;
+                                    var rollList =
+                                        _rollsTextController.text.split(",");
                                     sortList(rollList);
 
                                     for (var roll in rollList) {
@@ -965,9 +966,9 @@ class _StudentsPageState extends State<StudentsPage> {
                                       }
                                     }
 
-                                    _classTextEditingController.clear();
-                                    _rollsTextEditingController.clear();
-                                    _subjectTextEditingController.clear();
+                                    _classTextController.clear();
+                                    _rollsTextController.clear();
+                                    _subjectTextController.clear();
                                     filteredSubjects = subjects;
                                     _fetchSubjectViewRows();
                                     _fetchTableViewRows();
@@ -998,7 +999,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                         setState(() {
                                           selectedSubject =
                                               filteredSubjects[index];
-                                          _subjectTextEditingController.text =
+                                          _subjectTextController.text =
                                               selectedSubject;
                                           filteredSubjects = [];
                                         });

@@ -120,12 +120,14 @@ class _HallPageState extends State<HallPage> {
     }
   }
 
-  void addRow() {
+  // function called on submitting form
+  // either by pressing button or pressing enter when all values are filled
+  void onSubmitForm() {
     int capacity;
     try {
       capacity = int.parse(_capacityTextController.text);
     } on FormatException {
-      //todo: create error snackbar
+      //TODO: create error snackbar
       _capacityTextController.clear();
       rethrow;
     }
@@ -169,7 +171,7 @@ class _HallPageState extends State<HallPage> {
                         onSubmitted: (value) {
                           if (_capacityTextController.text.isNotEmpty) {
                             try {
-                              addRow();
+                              onSubmitForm();
                             } on FormatException {
                               _capacityFocusNode.requestFocus();
                               return;
@@ -200,7 +202,7 @@ class _HallPageState extends State<HallPage> {
                         }
                         if (_hallNameTextController1.text.isNotEmpty) {
                           try {
-                            addRow();
+                            onSubmitForm();
                           } on FormatException {
                             _capacityFocusNode.requestFocus();
                             return;
@@ -220,7 +222,7 @@ class _HallPageState extends State<HallPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      addRow();
+                      onSubmitForm();
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(4),
