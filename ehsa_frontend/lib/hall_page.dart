@@ -122,7 +122,7 @@ class _HallPageState extends State<HallPage> {
 
   // function called on submitting form
   // either by pressing button or pressing enter when all values are filled
-  void onSubmitForm() {
+  void trySubmitFOrm() {
     int capacity;
     try {
       capacity = int.parse(_capacityTextController.text);
@@ -171,7 +171,7 @@ class _HallPageState extends State<HallPage> {
                         onSubmitted: (value) {
                           if (_capacityTextController.text.isNotEmpty) {
                             try {
-                              onSubmitForm();
+                              trySubmitFOrm();
                             } on FormatException {
                               _capacityFocusNode.requestFocus();
                               return;
@@ -202,7 +202,7 @@ class _HallPageState extends State<HallPage> {
                         }
                         if (_hallNameTextController1.text.isNotEmpty) {
                           try {
-                            onSubmitForm();
+                            trySubmitFOrm();
                           } on FormatException {
                             _capacityFocusNode.requestFocus();
                             return;
@@ -222,7 +222,7 @@ class _HallPageState extends State<HallPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      onSubmitForm();
+                      trySubmitFOrm();
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(4),
