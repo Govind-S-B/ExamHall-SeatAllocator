@@ -389,10 +389,17 @@ class _StudentsPageState extends State<StudentsPage> {
     return list.join(',');
   }
 
-  bool isAllTextFieldsFilled() {
-    return (_classTextController.text.isNotEmpty &&
-        _rollsTextController.text.isNotEmpty &&
-        _subjectTextController.text.isNotEmpty);
+  FocusNode? nextUnfilledTextField() {
+    if (_classTextController.text.isNotEmpty) {
+      return _focusNodes[0];
+    }
+    if (_rollsTextController.text.isNotEmpty) {
+      return _focusNodes[1];
+    }
+    if (_subjectTextController.text.isNotEmpty) {
+      return _focusNodes[2];
+    }
+    return null;
   }
 
   void onSubmitForm() {
@@ -929,6 +936,7 @@ class _StudentsPageState extends State<StudentsPage> {
                             TextField(
                               focusNode: _focusNodes[0],
                               controller: _classTextController,
+                              onSubmitted: (value) {},
                               decoration: const InputDecoration(
                                 hintText: 'Enter Class',
                               ),
