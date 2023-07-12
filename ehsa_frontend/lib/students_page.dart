@@ -395,6 +395,45 @@ class _StudentsPageState extends State<StudentsPage> {
         _subjectTextController.text.isNotEmpty);
   }
 
+  void onSubmitForm() {
+    var studentClass = _classTextController.text;
+    var rollList = _rollsTextController.text.split(",");
+    sortList(rollList);
+    //TODO: add regex check for valid roll no.
+    for (var roll in rollList) {
+      if (roll.contains("-")) {
+        var rollNumRange = roll.split("-");
+
+        for (var i = int.parse(rollNumRange[0]);
+            i <= int.parse(rollNumRange[1]);
+            i++) {
+          _database.insert('students', {
+            "id": "$studentClass-$i",
+            "subject": selectedSubject,
+            "class": studentClass,
+            "rollno": i,
+          });
+        }
+      } else {
+        _database.insert('students', {
+          "id": "$studentClass-$roll",
+          "subject": selectedSubject,
+          "class": studentClass,
+          "rollno": roll,
+        });
+      }
+    }
+
+    _classTextController.clear();
+    _rollsTextController.clear();
+    _subjectTextController.clear();
+    filteredSubjects = subjects;
+    _fetchSubjectViewRows();
+    _fetchTableViewRows();
+    _fetchClassViewRows();
+    setState(() {});
+  }
+
   @override
   void dispose() {
     _subjectTextController.dispose();
@@ -950,44 +989,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                 ElevatedButton(
                                   child: const Text('Submit'),
                                   onPressed: () {
-                                    var studentClass =
-                                        _classTextController.text;
-                                    var rollList =
-                                        _rollsTextController.text.split(",");
-                                    sortList(rollList);
-
-                                    for (var roll in rollList) {
-                                      if (roll.contains("-")) {
-                                        var rollNumRange = roll.split("-");
-
-                                        for (var i = int.parse(rollNumRange[0]);
-                                            i <= int.parse(rollNumRange[1]);
-                                            i++) {
-                                          _database.insert('students', {
-                                            "id": "$studentClass-$i",
-                                            "subject": selectedSubject,
-                                            "class": studentClass,
-                                            "rollno": i,
-                                          });
-                                        }
-                                      } else {
-                                        _database.insert('students', {
-                                          "id": "$studentClass-$roll",
-                                          "subject": selectedSubject,
-                                          "class": studentClass,
-                                          "rollno": roll,
-                                        });
-                                      }
-                                    }
-
-                                    _classTextController.clear();
-                                    _rollsTextController.clear();
-                                    _subjectTextController.clear();
-                                    filteredSubjects = subjects;
-                                    _fetchSubjectViewRows();
-                                    _fetchTableViewRows();
-                                    _fetchClassViewRows();
-                                    setState(() {});
+                                    onSubmitForm();
                                   },
                                 ),
                               ],
