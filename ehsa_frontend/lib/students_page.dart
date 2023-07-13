@@ -392,8 +392,8 @@ class _StudentsPageState extends State<StudentsPage> {
     if (subjects.contains(newSubject)) {
       selectedSubject = newSubject;
       _subjectTextController.clear();
-    }
-    if (newSubject.isNotEmpty) {
+      _classFocusNode.requestFocus();
+    } else if (newSubject.isNotEmpty) {
       setState(() {
         subjects.add(newSubject);
         filteredSubjects = subjects;
@@ -998,6 +998,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                     controller: _subjectTextController,
                                     onSubmitted: (value) {
                                       //TODO: add auto selection of subject
+                                      addSubjectToSubjectList();
                                       onPressEnter();
                                     },
                                     onChanged: (value) {
