@@ -35,8 +35,7 @@ class _HallPageState extends State<HallPage> {
   List<Hall> halls = [];
   List<Hall> editedHalls = [];
 
-  final TextEditingController _hallNameTextController1 =
-      TextEditingController();
+  final TextEditingController _hallNameTextController = TextEditingController();
   final TextEditingController _capacityTextController = TextEditingController();
   final FocusNode _hallNameFocusNode = FocusNode();
   final FocusNode _capacityFocusNode = FocusNode();
@@ -122,7 +121,7 @@ class _HallPageState extends State<HallPage> {
 
   // function called on submitting form
   // either by pressing button or pressing enter when all values are filled
-  void trySubmitFOrm() {
+  void trySubmitForm() {
     int capacity;
     try {
       capacity = int.parse(_capacityTextController.text);
@@ -132,8 +131,8 @@ class _HallPageState extends State<HallPage> {
       rethrow;
     }
     _database.insert(
-        'halls', {"name": _hallNameTextController1.text, "capacity": capacity});
-    _hallNameTextController1.clear();
+        'halls', {"name": _hallNameTextController.text, "capacity": capacity});
+    _hallNameTextController.clear();
     _capacityTextController.clear();
     _fetchHalls();
   }
@@ -171,18 +170,22 @@ class _HallPageState extends State<HallPage> {
                         onSubmitted: (value) {
                           if (_capacityTextController.text.isNotEmpty) {
                             try {
-                              trySubmitFOrm();
+                              trySubmitForm();
                             } on FormatException {
                               _capacityFocusNode.requestFocus();
                               return;
                             }
                             _hallNameFocusNode.requestFocus();
                           } else {
-                            _capacityFocusNode.requestFocus();
+                            FocusNode node =
+                                _hallNameTextController.text.isNotEmpty
+                                    ? _capacityFocusNode
+                                    : _hallNameFocusNode;
+                            node.requestFocus();
                           }
                         },
                         focusNode: _hallNameFocusNode,
-                        controller: _hallNameTextController1,
+                        controller: _hallNameTextController,
                         decoration: const InputDecoration(
                           labelText: 'Hall Name',
                         ),
@@ -200,9 +203,9 @@ class _HallPageState extends State<HallPage> {
                           _hallNameFocusNode.requestFocus();
                           return;
                         }
-                        if (_hallNameTextController1.text.isNotEmpty) {
+                        if (_hallNameTextController.text.isNotEmpty) {
                           try {
-                            trySubmitFOrm();
+                            trySubmitForm();
                           } on FormatException {
                             _capacityFocusNode.requestFocus();
                             return;
@@ -222,7 +225,7 @@ class _HallPageState extends State<HallPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      trySubmitFOrm();
+                      trySubmitForm();
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(4),
