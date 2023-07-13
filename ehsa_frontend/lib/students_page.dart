@@ -392,7 +392,6 @@ class _StudentsPageState extends State<StudentsPage> {
       setState(() {
         _subjectTextController.text = newSubject;
       });
-      // _subjectTextController.clear();
       _classFocusNode.requestFocus();
     } else if (newSubject.isNotEmpty) {
       setState(() {
@@ -420,9 +419,7 @@ class _StudentsPageState extends State<StudentsPage> {
     var rollList = _rollsTextController.text.split(",");
     sortList(rollList);
     var rollNoRegex = RegExp(r'^(\d+)$|^(\d+-\d+)$');
-    // var command =
     var insertValues = "";
-    //('${row.editedClassName}-$value', '${row.editedSubject}', '${row.editedClassName}', $value)");
     for (var roll in rollList) {
       if (!rollNoRegex.hasMatch(roll)) {
         //todo: add error snackbar
@@ -434,23 +431,10 @@ class _StudentsPageState extends State<StudentsPage> {
         for (var i = int.parse(rollNumRange[0]);
             i <= int.parse(rollNumRange[1]);
             i++) {
-          // _database.insert('students', {
-          //   "id": "$studentClass-$i",
-          //   "subject": _subjectTextController.text,
-          //   "class": studentClass,
-          //   "rollno": i,
-          // });
           insertValues +=
               "('$studentClass-$i', '${_subjectTextController.text}', '$studentClass', $i), ";
         }
       } else {
-        //   _database.insert('students', {
-        //     "id": "$studentClass-$roll",
-        //     "subject": _subjectTextController.text,
-        //     "class": studentClass,
-        //     "rollno": roll,
-        //   });
-
         insertValues +=
             "('$studentClass-$roll', '${_subjectTextController.text}', '$studentClass', $roll), ";
       }
