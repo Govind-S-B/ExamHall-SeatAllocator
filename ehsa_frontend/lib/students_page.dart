@@ -399,7 +399,6 @@ class _StudentsPageState extends State<StudentsPage> {
       setState(() {
         subjects.add(newSubject);
         filteredSubjects = subjects;
-        _subjectTextController.clear();
       });
     }
   }
