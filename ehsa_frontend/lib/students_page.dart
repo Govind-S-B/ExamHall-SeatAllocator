@@ -452,6 +452,7 @@ class _StudentsPageState extends State<StudentsPage> {
     _classTextController.clear();
     _rollsTextController.clear();
     _subjectTextController.clear();
+    _classFocusNode.requestFocus();
     filteredSubjects = subjects;
     _fetchSubjectViewRows();
     _fetchTableViewRows();
