@@ -70,7 +70,7 @@ class _StudentsPageState extends State<StudentsPage> {
   List<String> subjects = [];
   List<String> filteredSubjects = [];
 
-  String selectedSubject = '';
+  // String _subjectTextController.text = '';
 
   final TextEditingController _classTextController = TextEditingController();
   final TextEditingController _subjectTextController = TextEditingController();
@@ -390,8 +390,10 @@ class _StudentsPageState extends State<StudentsPage> {
   void addSubjectToSubjectList() {
     String newSubject = _subjectTextController.text.trim();
     if (subjects.contains(newSubject)) {
-      selectedSubject = newSubject;
-      _subjectTextController.clear();
+      setState(() {
+        _subjectTextController.text = newSubject;
+      });
+      // _subjectTextController.clear();
       _classFocusNode.requestFocus();
     } else if (newSubject.isNotEmpty) {
       setState(() {
@@ -406,7 +408,7 @@ class _StudentsPageState extends State<StudentsPage> {
     if (_classTextController.text.isEmpty) {
       return _classFocusNode;
     }
-    if (selectedSubject.isEmpty) {
+    if (_subjectTextController.text.isEmpty) {
       return _subjectFocusNode;
     }
     if (_rollsTextController.text.isEmpty) {
@@ -433,7 +435,7 @@ class _StudentsPageState extends State<StudentsPage> {
             i++) {
           _database.insert('students', {
             "id": "$studentClass-$i",
-            "subject": selectedSubject,
+            "subject": _subjectTextController.text,
             "class": studentClass,
             "rollno": i,
           });
@@ -441,7 +443,7 @@ class _StudentsPageState extends State<StudentsPage> {
       } else {
         _database.insert('students', {
           "id": "$studentClass-$roll",
-          "subject": selectedSubject,
+          "subject": _subjectTextController.text,
           "class": studentClass,
           "rollno": roll,
         });
@@ -978,7 +980,7 @@ class _StudentsPageState extends State<StudentsPage> {
                               decoration: const InputDecoration(
                                 hintText: 'Enter Roll List',
                               ),
-                              maxLines: null,
+                              // maxLines: null,
                             )
                           ],
                         ),
@@ -1048,10 +1050,10 @@ class _StudentsPageState extends State<StudentsPage> {
                                       dense: true,
                                       onTap: () {
                                         setState(() {
-                                          selectedSubject =
-                                              filteredSubjects[index];
                                           _subjectTextController.text =
-                                              selectedSubject;
+                                              filteredSubjects[index];
+                                          // _subjectTextController.text =
+                                          //     _subjectTextController.text;
                                           filteredSubjects = [];
                                         });
                                       },
