@@ -980,7 +980,6 @@ class _StudentsPageState extends State<StudentsPage> {
                               decoration: const InputDecoration(
                                 hintText: 'Enter Roll List',
                               ),
-                              // maxLines: null,
                             )
                           ],
                         ),
@@ -1052,8 +1051,6 @@ class _StudentsPageState extends State<StudentsPage> {
                                         setState(() {
                                           _subjectTextController.text =
                                               filteredSubjects[index];
-                                          // _subjectTextController.text =
-                                          //     _subjectTextController.text;
                                           filteredSubjects = [];
                                           _subjectFocusNode.requestFocus();
                                         });
