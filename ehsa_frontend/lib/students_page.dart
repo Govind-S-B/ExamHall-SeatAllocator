@@ -277,7 +277,6 @@ class _StudentsPageState extends State<StudentsPage> {
     }
     //insert students into db
     for (int value in addedValues) {
-      // TODO: change into a single exe to improve execution speed
       await _database.execute(
           "INSERT INTO students (id, subject, class, rollno) VALUES ('${row.editedClassName}-$value', '${row.editedSubject}', '${row.editedClassName}', $value)");
     }
@@ -421,6 +420,9 @@ class _StudentsPageState extends State<StudentsPage> {
     var rollList = _rollsTextController.text.split(",");
     sortList(rollList);
     var rollNoRegex = RegExp(r'^(\d+)$|^(\d+-\d+)$');
+    // var command =
+    var insertValues = "";
+    //('${row.editedClassName}-$value', '${row.editedSubject}', '${row.editedClassName}', $value)");
     for (var roll in rollList) {
       if (!rollNoRegex.hasMatch(roll)) {
         //todo: add error snackbar
@@ -432,23 +434,34 @@ class _StudentsPageState extends State<StudentsPage> {
         for (var i = int.parse(rollNumRange[0]);
             i <= int.parse(rollNumRange[1]);
             i++) {
-          _database.insert('students', {
-            "id": "$studentClass-$i",
-            "subject": _subjectTextController.text,
-            "class": studentClass,
-            "rollno": i,
-          });
+          // _database.insert('students', {
+          //   "id": "$studentClass-$i",
+          //   "subject": _subjectTextController.text,
+          //   "class": studentClass,
+          //   "rollno": i,
+          // });
+          insertValues +=
+              "('$studentClass-$i', '${_subjectTextController.text}', '$studentClass', $i), ";
         }
       } else {
-        _database.insert('students', {
-          "id": "$studentClass-$roll",
-          "subject": _subjectTextController.text,
-          "class": studentClass,
-          "rollno": roll,
-        });
+        //   _database.insert('students', {
+        //     "id": "$studentClass-$roll",
+        //     "subject": _subjectTextController.text,
+        //     "class": studentClass,
+        //     "rollno": roll,
+        //   });
+
+        insertValues +=
+            "('$studentClass-$roll', '${_subjectTextController.text}', '$studentClass', $roll), ";
       }
     }
-
+    if (insertValues.isNotEmpty) {
+      var insertValuesWithoutTrailing =
+          insertValues.substring(0, insertValues.length - 2);
+      var command =
+          "INSERT INTO students (id, subject, class, rollno) VALUES $insertValuesWithoutTrailing";
+      _database.execute(command);
+    }
     _classTextController.clear();
     _rollsTextController.clear();
     _subjectTextController.clear();
@@ -998,7 +1011,6 @@ class _StudentsPageState extends State<StudentsPage> {
                                     focusNode: _subjectFocusNode,
                                     controller: _subjectTextController,
                                     onSubmitted: (value) {
-                                      //TODO: add auto selection of subject
                                       addSubjectToSubjectList();
                                       onPressEnter();
                                     },
