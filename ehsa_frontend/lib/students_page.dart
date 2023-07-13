@@ -76,14 +76,12 @@ class _StudentsPageState extends State<StudentsPage> {
   final TextEditingController _subjectTextController = TextEditingController();
   final TextEditingController _rollsTextController = TextEditingController();
 
-  final List<FocusNode> _focusNodes = [
-    // class
-    FocusNode(),
-    // subject
-    FocusNode(),
-    // rolls
-    FocusNode(),
-  ];
+  // class
+  final FocusNode _classFocusNode = FocusNode();
+  // subject
+  final FocusNode _subjectFocusNode = FocusNode();
+  // rolls
+  final FocusNode _rollsFocusNode = FocusNode();
 
   //TODO: change the ToggleButtons to radial buttons to remove this monstrosity
   List<bool> isSelected = [true, false, false];
@@ -389,20 +387,35 @@ class _StudentsPageState extends State<StudentsPage> {
     return list.join(',');
   }
 
+  void addSubjectToSubjectList() {
+    String newSubject = _subjectTextController.text.trim();
+    if (subjects.contains(newSubject)) {
+      selectedSubject = newSubject;
+      _subjectTextController.clear();
+    }
+    if (newSubject.isNotEmpty) {
+      setState(() {
+        subjects.add(newSubject);
+        filteredSubjects = subjects;
+        _subjectTextController.clear();
+      });
+    }
+  }
+
   FocusNode? nextUnfilledTextField() {
-    if (_classTextController.text.isNotEmpty) {
-      return _focusNodes[0];
+    if (_classTextController.text.isEmpty) {
+      return _classFocusNode;
     }
-    if (_rollsTextController.text.isNotEmpty) {
-      return _focusNodes[1];
+    if (selectedSubject.isEmpty) {
+      return _subjectFocusNode;
     }
-    if (_subjectTextController.text.isNotEmpty) {
-      return _focusNodes[2];
+    if (_rollsTextController.text.isEmpty) {
+      return _rollsFocusNode;
     }
     return null;
   }
 
-  void onSubmitForm() {
+  void trySubmitForm() {
     var studentClass = _classTextController.text;
     var rollList = _rollsTextController.text.split(",");
     sortList(rollList);
@@ -439,6 +452,15 @@ class _StudentsPageState extends State<StudentsPage> {
     _fetchTableViewRows();
     _fetchClassViewRows();
     setState(() {});
+  }
+
+  void onPressEnter() {
+    var node = nextUnfilledTextField();
+    if (node != null) {
+      trySubmitForm();
+    } else {
+      node!.requestFocus();
+    }
   }
 
   @override
@@ -934,16 +956,21 @@ class _StudentsPageState extends State<StudentsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextField(
-                              focusNode: _focusNodes[0],
+                              focusNode: _classFocusNode,
                               controller: _classTextController,
-                              onSubmitted: (value) {},
+                              onSubmitted: (value) {
+                                onPressEnter();
+                              },
                               decoration: const InputDecoration(
                                 hintText: 'Enter Class',
                               ),
                             ),
                             TextField(
-                              focusNode: _focusNodes[1],
+                              focusNode: _rollsFocusNode,
                               controller: _rollsTextController,
+                              onSubmitted: (value) {
+                                onPressEnter();
+                              },
                               decoration: const InputDecoration(
                                 hintText: 'Enter Roll List',
                               ),
@@ -963,8 +990,12 @@ class _StudentsPageState extends State<StudentsPage> {
                               children: [
                                 Expanded(
                                   child: TextField(
-                                    focusNode: _focusNodes[2],
+                                    focusNode: _subjectFocusNode,
                                     controller: _subjectTextController,
+                                    onSubmitted: (value) {
+                                      //TODO: add auto selection of subject
+                                      onPressEnter();
+                                    },
                                     onChanged: (value) {
                                       setState(() {
                                         filteredSubjects = subjects
@@ -982,22 +1013,13 @@ class _StudentsPageState extends State<StudentsPage> {
                                 IconButton(
                                   icon: const Icon(Icons.add),
                                   onPressed: () {
-                                    String newSubject =
-                                        _subjectTextController.text.trim();
-                                    if (newSubject.isNotEmpty &&
-                                        !subjects.contains(newSubject)) {
-                                      setState(() {
-                                        subjects.add(newSubject);
-                                        filteredSubjects = subjects;
-                                        _subjectTextController.clear();
-                                      });
-                                    }
+                                    addSubjectToSubjectList();
                                   },
                                 ),
                                 ElevatedButton(
                                   child: const Text('Submit'),
                                   onPressed: () {
-                                    onSubmitForm();
+                                    trySubmitForm();
                                   },
                                 ),
                               ],
