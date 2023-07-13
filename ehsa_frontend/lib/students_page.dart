@@ -419,8 +419,12 @@ class _StudentsPageState extends State<StudentsPage> {
     var studentClass = _classTextController.text;
     var rollList = _rollsTextController.text.split(",");
     sortList(rollList);
-    //TODO: add regex check for valid roll no.
+    var rollNoRegex = RegExp(r'^(\d+)$|^(\d+-\d+)$');
     for (var roll in rollList) {
+      if (!rollNoRegex.hasMatch(roll)) {
+        //todo: add error snackbar
+        continue;
+      }
       if (roll.contains("-")) {
         var rollNumRange = roll.split("-");
 
@@ -456,10 +460,10 @@ class _StudentsPageState extends State<StudentsPage> {
 
   void onPressEnter() {
     var node = nextUnfilledTextField();
-    if (node != null) {
+    if (node == null) {
       trySubmitForm();
     } else {
-      node!.requestFocus();
+      node.requestFocus();
     }
   }
 
