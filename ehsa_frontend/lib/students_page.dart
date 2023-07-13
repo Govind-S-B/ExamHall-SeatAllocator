@@ -1055,6 +1055,7 @@ class _StudentsPageState extends State<StudentsPage> {
                                           // _subjectTextController.text =
                                           //     _subjectTextController.text;
                                           filteredSubjects = [];
+                                          _subjectFocusNode.requestFocus();
                                         });
                                       },
                                     );
