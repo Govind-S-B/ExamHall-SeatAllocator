@@ -70,15 +70,20 @@ class _StudentsPageState extends State<StudentsPage> {
   List<String> subjects = [];
   List<String> filteredSubjects = [];
 
-  final TextEditingController _subjectTextEditingController =
-      TextEditingController();
-  String selectedSubject = '';
+  // String _subjectTextController.text = '';
 
-  final TextEditingController _classTextEditingController =
-      TextEditingController();
-  final TextEditingController _rollsTextEditingController =
-      TextEditingController();
+  final TextEditingController _classTextController = TextEditingController();
+  final TextEditingController _subjectTextController = TextEditingController();
+  final TextEditingController _rollsTextController = TextEditingController();
 
+  // class
+  final FocusNode _classFocusNode = FocusNode();
+  // subject
+  final FocusNode _subjectFocusNode = FocusNode();
+  // rolls
+  final FocusNode _rollsFocusNode = FocusNode();
+
+  //TODO: change the ToggleButtons to radial buttons to remove this monstrosity
   List<bool> isSelected = [true, false, false];
   int selectedOption = 1;
 
@@ -381,9 +386,89 @@ class _StudentsPageState extends State<StudentsPage> {
     return list.join(',');
   }
 
+  void addSubjectToSubjectList() {
+    String newSubject = _subjectTextController.text.trim();
+    if (subjects.contains(newSubject)) {
+      setState(() {
+        _subjectTextController.text = newSubject;
+      });
+      _classFocusNode.requestFocus();
+    } else if (newSubject.isNotEmpty) {
+      setState(() {
+        subjects.add(newSubject);
+        filteredSubjects = subjects;
+      });
+    }
+  }
+
+  FocusNode? nextUnfilledTextField() {
+    if (_classTextController.text.isEmpty) {
+      return _classFocusNode;
+    }
+    if (_subjectTextController.text.isEmpty) {
+      return _subjectFocusNode;
+    }
+    if (_rollsTextController.text.isEmpty) {
+      return _rollsFocusNode;
+    }
+    return null;
+  }
+
+  void trySubmitForm() {
+    var studentClass = _classTextController.text;
+    var rollList = _rollsTextController.text.split(",");
+    sortList(rollList);
+    var rollNoRegex = RegExp(r'^(\d+)$|^(\d+-\d+)$');
+    var insertValues = "";
+    for (var roll in rollList) {
+      if (!rollNoRegex.hasMatch(roll)) {
+        //todo: add error snackbar
+        continue;
+      }
+      if (roll.contains("-")) {
+        var rollNumRange = roll.split("-");
+
+        for (var i = int.parse(rollNumRange[0]);
+            i <= int.parse(rollNumRange[1]);
+            i++) {
+          insertValues +=
+              "('$studentClass-$i', '${_subjectTextController.text}', '$studentClass', $i), ";
+        }
+      } else {
+        insertValues +=
+            "('$studentClass-$roll', '${_subjectTextController.text}', '$studentClass', $roll), ";
+      }
+    }
+    if (insertValues.isNotEmpty) {
+      var insertValuesWithoutTrailing =
+          insertValues.substring(0, insertValues.length - 2);
+      var command =
+          "INSERT INTO students (id, subject, class, rollno) VALUES $insertValuesWithoutTrailing";
+      _database.execute(command);
+    }
+    _classTextController.clear();
+    _rollsTextController.clear();
+    _subjectTextController.clear();
+    _classFocusNode.requestFocus();
+    filteredSubjects = subjects;
+    _fetchSubjectViewRows();
+    _fetchTableViewRows();
+    _fetchClassViewRows();
+    setState(() {});
+  }
+
+  void onPressEnter() {
+    var node = nextUnfilledTextField();
+    if (node == null) {
+      trySubmitForm();
+    } else {
+      node.requestFocus();
+    }
+  }
+
   @override
   void dispose() {
-    _subjectTextEditingController.dispose();
+    _subjectTextController.dispose();
     _database.close();
     super.dispose();
   }
@@ -874,17 +959,24 @@ class _StudentsPageState extends State<StudentsPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextField(
-                              controller: _classTextEditingController,
+                              focusNode: _classFocusNode,
+                              controller: _classTextController,
+                              onSubmitted: (value) {
+                                onPressEnter();
+                              },
                               decoration: const InputDecoration(
                                 hintText: 'Enter Class',
                               ),
                             ),
                             TextField(
-                              controller: _rollsTextEditingController,
+                              focusNode: _rollsFocusNode,
+                              controller: _rollsTextController,
+                              onSubmitted: (value) {
+                                onPressEnter();
+                              },
                               decoration: const InputDecoration(
                                 hintText: 'Enter Roll List',
                               ),
-                              maxLines: null,
                             )
                           ],
                         ),
@@ -900,7 +992,12 @@ class _StudentsPageState extends State<StudentsPage> {
                               children: [
                                 Expanded(
                                   child: TextField(
-                                    controller: _subjectTextEditingController,
+                                    focusNode: _subjectFocusNode,
+                                    controller: _subjectTextController,
+                                    onSubmitted: (value) {
+                                      addSubjectToSubjectList();
+                                      onPressEnter();
+                                    },
                                     onChanged: (value) {
                                       setState(() {
                                         filteredSubjects = subjects
@@ -918,61 +1015,13 @@ class _StudentsPageState extends State<StudentsPage> {
                                 IconButton(
                                   icon: const Icon(Icons.add),
                                   onPressed: () {
-                                    String newSubject =
-                                        _subjectTextEditingController.text
-                                            .trim();
-                                    if (newSubject.isNotEmpty &&
-                                        !subjects.contains(newSubject)) {
-                                      setState(() {
-                                        subjects.add(newSubject);
-                                        filteredSubjects = subjects;
-                                        _subjectTextEditingController.clear();
-                                      });
-                                    }
+                                    addSubjectToSubjectList();
                                   },
                                 ),
                                 ElevatedButton(
                                   child: const Text('Submit'),
                                   onPressed: () {
-                                    var studentClass =
-                                        _classTextEditingController.text;
-                                    var rollList = _rollsTextEditingController
-                                        .text
-                                        .split(",");
-                                    sortList(rollList);
-
-                                    for (var roll in rollList) {
-                                      if (roll.contains("-")) {
-                                        var rollNumRange = roll.split("-");
-
-                                        for (var i = int.parse(rollNumRange[0]);
-                                            i <= int.parse(rollNumRange[1]);
-                                            i++) {
-                                          _database.insert('students', {
-                                            "id": "$studentClass-$i",
-                                            "subject": selectedSubject,
-                                            "class": studentClass,
-                                            "rollno": i,
-                                          });
-                                        }
-                                      } else {
-                                        _database.insert('students', {
-                                          "id": "$studentClass-$roll",
-                                          "subject": selectedSubject,
-                                          "class": studentClass,
-                                          "rollno": roll,
-                                        });
-                                      }
-                                    }
-
-                                    _classTextEditingController.clear();
-                                    _rollsTextEditingController.clear();
-                                    _subjectTextEditingController.clear();
-                                    filteredSubjects = subjects;
-                                    _fetchSubjectViewRows();
-                                    _fetchTableViewRows();
-                                    _fetchClassViewRows();
-                                    setState(() {});
+                                    trySubmitForm();
                                   },
                                 ),
                               ],
@@ -996,11 +1045,10 @@ class _StudentsPageState extends State<StudentsPage> {
                                       dense: true,
                                       onTap: () {
                                         setState(() {
-                                          selectedSubject =
+                                          _subjectTextController.text =
                                               filteredSubjects[index];
-                                          _subjectTextEditingController.text =
-                                              selectedSubject;
                                           filteredSubjects = [];
+                                          _subjectFocusNode.requestFocus();
                                         });
                                       },
                                     );
