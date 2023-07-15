@@ -62,7 +62,6 @@ fn main() {
                     .into_values()
                     .collect();
                 v.shuffle(&mut rng);
-
                 new_students.insert(subject, v.into_iter().flatten().collect());
             }
             new_students
@@ -159,6 +158,7 @@ fn main() {
 
     let conn = sqlite::open(args.output_db_path).expect("[ Error connecting to report.db ]");
     db::write_report_table(&conn, &halls);
+    #[cfg(debug_assertions)]
     log_sparse_halls(&halls);
 }
 
@@ -216,6 +216,7 @@ pub fn log_sparse_halls(halls: &[Hall]) {
     let mut file = std::fs::OpenOptions::new()
         .create(true)
         .append(true)
+        //todo: make this more generic for better tesiting
         .open("logs\\logs.txt")
         .expect("[ err opening log file ]");
     let mut sparse_hall_count = 0;
@@ -237,6 +238,3 @@ pub fn log_sparse_halls(halls: &[Hall]) {
     file.write_all("\n".as_bytes())
         .expect("[ file write error ]")
 }
-
-#[cfg(not(debug_assertions))]
-pub fn log_sparse_halls(_: &[Hall]) {}
