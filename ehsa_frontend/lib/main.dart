@@ -261,27 +261,31 @@ class MyAppState extends State<MyApp> {
                                   const EdgeInsets.symmetric(horizontal: 15),
                               child: Column(
                                 children: [
+                                  // const SizedBox(height: 8),
+                                  // const Text(
+                                  //   "Founder",
+                                  //   style: TextStyle(
+                                  //     fontSize: 15,
+                                  //     fontWeight: FontWeight.bold,
+                                  //   ),
+                                  // ),
+                                  // const Divider(
+                                  //   color: Colors.black,
+                                  //   indent: 20,
+                                  //   endIndent: 20,
+                                  // ),
                                   const SizedBox(height: 8),
-                                  const Text(
-                                    "Founder",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const Divider(
-                                    color: Colors.black,
-                                    indent: 20,
-                                    endIndent: 20,
-                                  ),
                                   Padding(
-                                    padding: const EdgeInsets.only(bottom: 8),
+                                    padding: const EdgeInsets.only(top: 8),
                                     child: Container(
-                                      padding: const EdgeInsets.all(8),
+                                      padding: const EdgeInsets.only(
+                                          left: 8, right: 8, top: 8, bottom: 4),
                                       width: double.infinity,
                                       decoration: BoxDecoration(
                                         color: Colors.blue.shade100,
-                                        borderRadius: BorderRadius.circular(16),
+                                        borderRadius:
+                                            const BorderRadius.vertical(
+                                                top: Radius.circular(16)),
                                       ),
                                       child: TextButton(
                                         onPressed: () {
@@ -291,9 +295,27 @@ class MyAppState extends State<MyApp> {
                                           "Govind S B",
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
-                                            fontSize: 20,
+                                            fontSize: 22,
                                           ),
                                         ),
+                                      ),
+                                    ),
+                                  ),
+                                  Container(
+                                    //contibutions container
+                                    padding: const EdgeInsets.only(
+                                        left: 12, right: 12, bottom: 12),
+                                    width: double.infinity,
+                                    decoration: BoxDecoration(
+                                      color: Colors.blue.shade100,
+                                      borderRadius: const BorderRadius.vertical(
+                                          bottom: Radius.circular(16)),
+                                    ),
+                                    child: const Text(
+                                      "Founder",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 13,
                                       ),
                                     ),
                                   ),
