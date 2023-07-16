@@ -75,7 +75,7 @@ class MyAppState extends State<MyApp> {
     final Uri url6 = Uri.parse("https://github.com/aminafayaz");
     final Uri url7 = Uri.parse("https://github.com/tsuAquila");
     final Uri url8 = Uri.parse("https://github.com/Ameer-Al-Hisham");
-    final Uri url9 = Uri.parse("https://github.com/");
+    final Uri url9 = Uri.parse("https://github.com/AdithyaRajesh10");
     final Uri url10 = Uri.parse("https://github.com/");
 
     return MaterialApp(
