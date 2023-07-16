@@ -4,14 +4,13 @@ import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:window_manager/window_manager.dart'; 
+import 'package:window_manager/window_manager.dart';
 
-void main() async { 
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   if (Platform.isWindows) {
     WindowManager.instance.setMinimumSize(const Size(950, 700));
-    
   }
   runApp(const MyApp());
 }
@@ -216,84 +215,129 @@ class MyAppState extends State<MyApp> {
                 child: Container(
                   color: Colors.black.withOpacity(0.5),
                   child: Center(
-                    child: Container(
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 20,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.15,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                'EHSA',
+                                style: TextStyle(
+                                  fontSize: 50,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                "by protoRes",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 10),
+                            ],
+                          ),
                         ),
-                        child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              'EHSA',
-                              style: TextStyle(
-                                fontSize: 50,
-                                fontWeight: FontWeight.bold,
+                        const SizedBox(height: 10),
+                        Container(
+                          height: MediaQuery.of(context).size.height * 0.5,
+                          width: MediaQuery.of(context).size.width * 0.4,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          child: SingleChildScrollView(
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 15),
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 8),
+                                  const Text(
+                                    "Founder",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  const Divider(
+                                    color: Colors.black,
+                                    indent: 20,
+                                    endIndent: 20,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.blue.shade100,
+                                        borderRadius: BorderRadius.circular(16),
+                                      ),
+                                      child: TextButton(
+                                        onPressed: () {
+                                          launchUrl(url1);
+                                        },
+                                        child: const Text(
+                                          "Govind S B",
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            fontSize: 20,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                      onPressed: () {
+                                        launchUrl(url2);
+                                      },
+                                      child: const Text("Arjun Pratap")),
+                                  TextButton(
+                                      onPressed: () {
+                                        launchUrl(url3);
+                                      },
+                                      child: const Text("Siby C.R")),
+                                  TextButton(
+                                      onPressed: () {
+                                        launchUrl(url4);
+                                      },
+                                      child: const Text("Jayadev B.S")),
+                                  TextButton(
+                                      onPressed: () {
+                                        launchUrl(url5);
+                                      },
+                                      child: const Text("Karthik Kumar")),
+                                  TextButton(
+                                      onPressed: () {
+                                        launchUrl(url6);
+                                      },
+                                      child: const Text("Amina Fayaz")),
+                                  TextButton(
+                                      onPressed: () {
+                                        launchUrl(url8);
+                                      },
+                                      child: const Text("Ameer Al Hisham")),
+                                  TextButton(
+                                      onPressed: () {
+                                        launchUrl(url7);
+                                      },
+                                      child: const Text("Aasish R R")),
+                                ],
                               ),
                             ),
-                            const Text(
-                              "by protoRes",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 50),
-                            Wrap(
-                              children: [
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url1);
-                                    },
-                                    child: const Text("Govind S B")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url2);
-                                    },
-                                    child: const Text("Arjun Pratap")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url3);
-                                    },
-                                    child: const Text("Siby C.R")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url4);
-                                    },
-                                    child: const Text("Jayadev B.S")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url5);
-                                    },
-                                    child: const Text("Karthik Kumar")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url6);
-                                    },
-                                    child: const Text("Amina Fayaz")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url8);
-                                    },
-                                    child: const Text("Ameer Al Hisham")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url7);
-                                    },
-                                    child: const Text("Aasish R R")),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+                          ),
+                        )
+                      ],
                     ),
                   ),
                 ),
