@@ -321,7 +321,7 @@ class MyAppState extends State<MyApp> {
                                                           Radius.circular(20)),
                                             ),
                                             child: const Text(
-                                              "Founder, Frontend, Backend",
+                                              "Architect / Lead ",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontSize: 10,
@@ -372,7 +372,7 @@ class MyAppState extends State<MyApp> {
                                                           Radius.circular(20)),
                                             ),
                                             child: const Text(
-                                              "PDF Generator Algorithm",
+                                              "Backend",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontSize: 10,
@@ -528,7 +528,7 @@ class MyAppState extends State<MyApp> {
                                                           Radius.circular(20)),
                                             ),
                                             child: const Text(
-                                              "Contr. Here",
+                                              "Misc./Minor Early Contributions",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontSize: 10,
@@ -604,7 +604,7 @@ class MyAppState extends State<MyApp> {
                                                           Radius.circular(20)),
                                             ),
                                             child: const Text(
-                                              "Seat allocation algorithm and Backend",
+                                              "Backend",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontSize: 10,
@@ -812,7 +812,7 @@ class MyAppState extends State<MyApp> {
                                                           Radius.circular(20)),
                                             ),
                                             child: const Text(
-                                              "Contr. Here",
+                                              "Misc./Minor Early Contributions",
                                               textAlign: TextAlign.center,
                                               style: TextStyle(
                                                   fontSize: 10,

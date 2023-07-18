@@ -8,3 +8,13 @@ allocator/test/bin/*.db
 allocator/test/bin/*.exe
 allocator/test/reports/*.db
 allocator/test/logs/*.txt
+ehsa_frontend/build/windows/runner/Debug/ehsa_frontend.exe
+ehsa_frontend/build/windows/runner/Debug/flutter_windows.dll
+ehsa_frontend/build/windows/runner/Debug/url_launcher_windows_plugin.dll
+ehsa_frontend/linux/flutter/generated_plugin_registrant.cc
+ehsa_frontend/linux/flutter/generated_plugin_registrant.h
+ehsa_frontend/linux/flutter/generated_plugins.cmake
+ehsa_frontend/macos/Flutter/GeneratedPluginRegistrant.swift
+ehsa_frontend/windows/flutter/generated_plugin_registrant.cc
+ehsa_frontend/windows/flutter/generated_plugin_registrant.h
+ehsa_frontend/windows/flutter/generated_plugins.cmake
