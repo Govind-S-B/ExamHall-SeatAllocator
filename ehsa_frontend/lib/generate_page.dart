@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:ehsa_frontend/manual_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -226,49 +227,63 @@ class _GeneratePageState extends State<GeneratePage> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
-                      onPressed: () {
-                        // check if generated files exist
-
-                        List<String> files = [
-                          '${Directory.current.path}/../output/Halls $_sessionId.pdf',
-                          '${Directory.current.path}/../output/Seating $_sessionId.pdf',
-                          '${Directory.current.path}/../output/Packaging $_sessionId.pdf'
-                        ];
-
-                        bool allExist = true;
-
-                        for (String filePath in files) {
-                          if (!File(filePath).existsSync()) {
-                            allExist = false;
-                            break;
-                          }
-                        }
-
-                        if (allExist) {
-                          // open files using default handler
-                          for (String filePath in files) {
-                            launchUrl(Uri.parse("file:" '$filePath'));
-                          }
-                        } else {
-                          print("Error : Files not found , try regenerate");
-                        }
-                      },
-                      child: const Icon(Icons.remove_red_eye),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: ElevatedButton(
-                      onPressed: () {
-                        final Uri fileLocation = Uri.parse(
-                            "file:" '${Directory.current.path}/../output/');
-                        launchUrl(fileLocation);
-                      },
-                      child: const Icon(Icons.folder_open),
-                    ),
+                        onPressed: () {
+                          // new screen
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ManualEdit()));
+                        },
+                        child: const Text("Manual Edit")),
                   ),
                 ],
               ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // check if generated files exist
+
+                      List<String> files = [
+                        '${Directory.current.path}/../output/Halls $_sessionId.pdf',
+                        '${Directory.current.path}/../output/Seating $_sessionId.pdf',
+                        '${Directory.current.path}/../output/Packaging $_sessionId.pdf'
+                      ];
+
+                      bool allExist = true;
+
+                      for (String filePath in files) {
+                        if (!File(filePath).existsSync()) {
+                          allExist = false;
+                          break;
+                        }
+                      }
+
+                      if (allExist) {
+                        // open files using default handler
+                        for (String filePath in files) {
+                          launchUrl(Uri.parse("file:" '$filePath'));
+                        }
+                      } else {
+                        print("Error : Files not found , try regenerate");
+                      }
+                    },
+                    child: const Icon(Icons.remove_red_eye),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final Uri fileLocation = Uri.parse(
+                          "file:" '${Directory.current.path}/../output/');
+                      launchUrl(fileLocation);
+                    },
+                    child: const Icon(Icons.folder_open),
+                  ),
+                ),
+              ]),
             ],
           ),
         ),
