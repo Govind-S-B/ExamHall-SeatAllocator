@@ -227,6 +227,39 @@ class _GeneratePageState extends State<GeneratePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                       onPressed: () {
+                        // check if generated files exist
+
+                        List<String> files = [
+                          '${Directory.current.path}/../output/Halls $_sessionId.pdf',
+                          '${Directory.current.path}/../output/Seating $_sessionId.pdf',
+                          '${Directory.current.path}/../output/Packaging $_sessionId.pdf'
+                        ];
+
+                        bool allExist = true;
+
+                        for (String filePath in files) {
+                          if (!File(filePath).existsSync()) {
+                            allExist = false;
+                            break;
+                          }
+                        }
+
+                        if (allExist) {
+                          // open files using default handler
+                          for (String filePath in files) {
+                            launchUrl(Uri.parse("file:" '$filePath'));
+                          }
+                        } else {
+                          print("Error : Files not found , try regenerate");
+                        }
+                      },
+                      child: const Icon(Icons.remove_red_eye),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton(
+                      onPressed: () {
                         final Uri fileLocation = Uri.parse(
                             "file:" '${Directory.current.path}/../output/');
                         launchUrl(fileLocation);
