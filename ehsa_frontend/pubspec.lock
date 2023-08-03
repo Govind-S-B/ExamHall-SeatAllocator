@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  fluent_ui:
+    dependency: "direct main"
+    description:
+      name: fluent_ui
+      sha256: "9957c04c0b73f366f94dea1422c80c2c21511453e727d7b1b5836dc457add5bf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.7.1"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -149,6 +157,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  math_expressions:
+    dependency: transitive
+    description:
+      name: math_expressions
+      sha256: "3576593617c3870d75728a751f6ec6e606706d44e363f088ac394b5a28a98064"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.0"
   meta:
     dependency: transitive
     description:
@@ -189,6 +205,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  recase:
+    dependency: transitive
+    description:
+      name: recase
+      sha256: e4eb4ec2dcdee52dcf99cb4ceabaffc631d7424ee55e56f280bc039737f89213
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   screen_retriever:
     dependency: transitive
     description:
@@ -197,6 +221,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.1.6"
+  scroll_pos:
+    dependency: transitive
+    description:
+      name: scroll_pos
+      sha256: "4246bff3afc779d87cdf650a67d42d67ae71b23ff020d14592e6b89e28a7f9cc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -396,4 +428,4 @@ packages:
     version: "6.3.0"
 sdks:
   dart: ">=3.0.0 <4.0.0"
-  flutter: ">=3.7.0-0"
+  flutter: ">=3.10.0"
