@@ -1,5 +1,5 @@
 # ExamHall-SeatAllocator
-A GUI application built in Flutter, Rust, and Python that automates the assignment of student seats in examinations and generates appropriate PDFs
+A GUI application built in Flutter, Rust, and Python that automates the assignment of student seats in examinations and generates appropriate PDFs.
 
 # Requirements
 Windows 10 and above  
