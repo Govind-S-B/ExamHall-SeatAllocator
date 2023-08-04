@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 import 'package:ehsa_frontend/constants/contributordata.dart';
-import 'package:ehsa_frontend/widgets/contributer_tile.dart';
+import 'package:ehsa_frontend/widgets/stateless/contributer_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
