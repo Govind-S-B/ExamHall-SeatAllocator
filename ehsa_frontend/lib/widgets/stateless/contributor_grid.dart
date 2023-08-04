@@ -1,11 +1,9 @@
-import 'dart:ffi';
-
 import 'package:ehsa_frontend/constants/contributordata.dart';
-import 'package:ehsa_frontend/widgets/stateless/contributer_tile.dart';
+import 'package:ehsa_frontend/widgets/stateless/contributor_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-class ContributerGrid extends StatelessWidget {
+class ContributorGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int crossAxisCount = 1;
@@ -60,7 +58,7 @@ class ContributerGrid extends StatelessWidget {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  "Contributers",
+                  "Contributors",
                   style: TextStyle(
                     fontSize: 15,
                   ),
@@ -104,7 +102,7 @@ class GridItem extends StatelessWidget {
       onTap: () {
         launchUrl(Uri.parse(data.profile));
       },
-      child: ContributerTile(
+      child: ContributorTile(
         name: data.name,
         role: data.role,
         profile: data.profile,

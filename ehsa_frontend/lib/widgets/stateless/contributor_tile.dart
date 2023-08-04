@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class ContributerTile extends StatelessWidget {
+class ContributorTile extends StatelessWidget {
   final String name;
   final String role, profile, avatar;
 
-  ContributerTile(
+  ContributorTile(
       {Key? key,
       required this.name,
       required this.role,
