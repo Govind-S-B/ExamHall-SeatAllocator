@@ -146,12 +146,18 @@ class MyApp extends StatelessWidget {
         ),
         body: Stack(
           children: [
-            _buildOffstageNavigator(Pages.HALLS),
-            _buildOffstageNavigator(Pages.STUDENTS),
-            _buildOffstageNavigator(Pages.GENERATE),
+            //DrawerTabs
             BlocBuilder<MainScreenCubit, MainScreenInitial>(
-              // bloc:MainScreenCubit(),
-              builder: (context, state) {
+                builder: (context, state) {
+              return IndexedStack(
+                index: state.pagesection.index,
+                children: const [HallPage(), StudentsPage(), GeneratePage()],
+              );
+            }),
+
+            //contributors grid
+            BlocBuilder<MainScreenCubit, MainScreenInitial>(
+               builder: (context, state) {
                 if (state.isOverlayOpen) {
                   return GestureDetector(
                     onTap: () {
@@ -162,7 +168,7 @@ class MyApp extends StatelessWidget {
                       child: Center(
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [ContributerGrid()],
+                          children: [ContributorGrid()],
                         ),
                       ),
                     ),
@@ -204,29 +210,6 @@ class MyApp extends StatelessWidget {
               _scaffoldKey.currentState?.closeDrawer();
             },
           );
-        },
-      ),
-    );
-  }
-
-  Widget _buildOffstageNavigator(Pages page) {
-    return Offstage(
-      offstage: _selectedPage != page,
-      child: Navigator(
-        // key: _navigatorKeys[page],
-        onGenerateRoute: (routeSettings) {
-          return MaterialPageRoute(builder: (context) {
-            switch (page) {
-              case Pages.HALLS:
-                return const HallPage();
-              case Pages.STUDENTS:
-                return const StudentsPage();
-              case Pages.GENERATE:
-                return const GeneratePage();
-              default:
-                return Container();
-            }
-          });
         },
       ),
     );
