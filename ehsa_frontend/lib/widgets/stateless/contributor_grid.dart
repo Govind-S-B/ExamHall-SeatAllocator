@@ -100,7 +100,6 @@ class GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint(data.profile);
     return GestureDetector(
       onTap: () {
         launchUrl(Uri.parse(data.profile));
