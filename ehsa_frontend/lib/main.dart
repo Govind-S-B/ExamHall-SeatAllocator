@@ -1,10 +1,15 @@
 import 'dart:io';
+import 'package:ehsa_frontend/bloc/main_screen/main_screen_cubit.dart';
+import 'package:ehsa_frontend/widgets/stateless/contributor_grid.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
-import 'package:url_launcher/url_launcher.dart';
+
 import 'package:window_manager/window_manager.dart';
+import "./enums/page_type.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -12,72 +17,41 @@ void main() async {
   if (Platform.isWindows) {
     WindowManager.instance.setMinimumSize(const Size(950, 700));
   }
-  runApp(const MyApp());
+  runApp(BlocProvider<MainScreenCubit>.value(
+    value: MainScreenCubit(),
+    child: MyApp(),
+  ));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  MyApp({Key? key}) : super(key: key);
 
-  @override
-  MyAppState createState() => MyAppState();
-}
+  Pages _selectedPage = Pages.HALLS;
+  bool _showCreditsOverlay = true;
 
-enum Page {
-  halls,
-  students,
-  generate,
-}
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class MyAppState extends State<MyApp> {
-  String _getPageTitle(Page page) {
-    switch (page) {
-      case Page.halls:
-        return 'Halls Page';
-      case Page.students:
-        return 'Students Page';
-      case Page.generate:
-        return 'Generate Page';
+  // final Map<Pages, GlobalKey<NavigatorState>> _navigatorKeys = {
+  //   Pages.HALLS: GlobalKey<NavigatorState>(),
+  //   Pages.STUDENTS: GlobalKey<NavigatorState>(),
+  //   Pages.GENERATE: GlobalKey<NavigatorState>(),
+  // };
+
+  String getPageSectionTitle(Pages pagesection) {
+    switch (pagesection) {
+      case Pages.HALLS:
+        return 'Halls Pages';
+      case Pages.STUDENTS:
+        return 'Students Pages';
+      case Pages.GENERATE:
+        return 'Generate Pages';
       default:
         return '';
     }
   }
 
-  Page _selectedPage = Page.halls;
-  bool _showCreditsOverlay = true;
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final Map<Page, GlobalKey<NavigatorState>> _navigatorKeys = {
-    Page.halls: GlobalKey<NavigatorState>(),
-    Page.students: GlobalKey<NavigatorState>(),
-    Page.generate: GlobalKey<NavigatorState>(),
-  };
-
-  void _selectPage(Page page) {
-    setState(() {
-      _selectedPage = page;
-    });
-  }
-
-  void _closeCreditsOverlay() {
-    setState(() {
-      _showCreditsOverlay = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final Uri url1 = Uri.parse("https://github.com/Govind-S-B");
-    final Uri url2 = Uri.parse("https://github.com/officiallyaninja");
-    final Uri url3 = Uri.parse("https://github.com/sibycr18");
-    final Uri url4 = Uri.parse("https://github.com/jydv402");
-    final Uri url5 = Uri.parse("https://github.com/Karthi-R-K");
-    final Uri url6 = Uri.parse("https://github.com/aminafayaz");
-    final Uri url7 = Uri.parse("https://github.com/tsuAquila");
-    final Uri url8 = Uri.parse("https://github.com/Ameer-Al-Hisham");
-    final Uri url9 = Uri.parse("https://github.com/AdithyaRajesh10");
-    final Uri url10 = Uri.parse("https://github.com/Dheerajr2003");
-
     return MaterialApp(
       title: 'EHSA',
       theme: ThemeData(
@@ -89,12 +63,18 @@ class MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
+        onDrawerChanged: (isOpened) =>
+            context.read<MainScreenCubit>().openDrawer(isOpened),
+        onEndDrawerChanged: (isOpened) =>
+            context.read<MainScreenCubit>().openDrawer(false),
         key: _scaffoldKey,
         appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: Text(_getPageTitle(_selectedPage)),
-        ),
+            elevation: 0,
+            centerTitle: true,
+            title: BlocBuilder<MainScreenCubit, MainScreenInitial>(
+              builder: (context, state) =>
+                  Text(getPageSectionTitle(state.pagesection)),
+            )),
         drawer: Padding(
           padding: const EdgeInsets.only(
             bottom: 14,
@@ -129,8 +109,8 @@ class MyAppState extends State<MyApp> {
                               fixedSize: MaterialStateProperty.all(
                                   const Size(600, 300))),
                           onPressed: () {
-                            _showCreditsOverlay = true;
-                            setState(() {});
+                            context.read<MainScreenCubit>().showOverlay(true);
+
                             _scaffoldKey.currentState?.closeDrawer();
                           },
                           child: const Text(
@@ -145,713 +125,103 @@ class MyAppState extends State<MyApp> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                    top: 1,
-                    bottom: 4,
-                  ),
-                  child: ListTile(
-                    leading: _selectedPage == Page.halls
-                        ? const Icon(Icons.add_home_rounded)
-                        : const Icon(Icons.add_home_outlined),
-                    title: const Text('Halls'),
-                    selected: _selectedPage == Page.halls,
-                    onTap: () {
-                      _selectPage(Page.halls);
-                      _scaffoldKey.currentState?.closeDrawer();
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                    top: 4,
-                    bottom: 4,
-                  ),
-                  child: ListTile(
-                    leading: _selectedPage == Page.students
-                        ? const Icon(Icons.person_add_alt_1_rounded)
-                        : const Icon(Icons.person_add_alt_1_outlined),
-                    title: const Text('Students'),
-                    selected: _selectedPage == Page.students,
-                    onTap: () {
-                      _selectPage(Page.students);
-                      _scaffoldKey.currentState?.closeDrawer();
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                    top: 4,
-                    bottom: 4,
-                  ),
-                  child: ListTile(
-                    leading: _selectedPage == Page.generate
-                        ? const Icon(Icons.create_rounded)
-                        : const Icon(Icons.create_outlined),
-                    title: const Text('Generate'),
-                    selected: _selectedPage == Page.generate,
-                    onTap: () {
-                      _selectPage(Page.generate);
-                      _scaffoldKey.currentState?.closeDrawer();
-                    },
-                  ),
-                ),
+                drawerItem(
+                    text: "Halls",
+                    section: Pages.HALLS,
+                    icon: Icon(Icons.add_home_rounded),
+                    activeIcon: const Icon(Icons.add_home_outlined)),
+                drawerItem(
+                    text: "Students",
+                    section: Pages.STUDENTS,
+                    icon: Icon(Icons.person_add_alt_1_rounded),
+                    activeIcon: const Icon(Icons.person_add_alt_1_outlined)),
+                drawerItem(
+                    text: "Generate",
+                    section: Pages.GENERATE,
+                    icon: Icon(Icons.create_rounded),
+                    activeIcon: const Icon(Icons.create_outlined)),
               ],
             ),
           ),
         ),
         body: Stack(
           children: [
-            _buildOffstageNavigator(Page.halls),
-            _buildOffstageNavigator(Page.students),
-            _buildOffstageNavigator(Page.generate),
-            if (_showCreditsOverlay)
-              GestureDetector(
-                onTap: _closeCreditsOverlay,
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          height: MediaQuery.of(context).size.height * 0.143,
-                          width: MediaQuery.of(context).size.width * 0.5,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: const Wrap(
-                            alignment: WrapAlignment.center,
-                            children: [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    'EHSA',
-                                    style: TextStyle(
-                                      fontSize: 50,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  Text(
-                                    "by protoRes",
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(height: 10),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Row(
+            _buildOffstageNavigator(Pages.HALLS),
+            _buildOffstageNavigator(Pages.STUDENTS),
+            _buildOffstageNavigator(Pages.GENERATE),
+            BlocBuilder<MainScreenCubit, MainScreenInitial>(
+              // bloc:MainScreenCubit(),
+              builder: (context, state) {
+                if (state.isOverlayOpen) {
+                  return GestureDetector(
+                    onTap: () {
+                      context.read<MainScreenCubit>().showOverlay(false);
+                    },
+                    child: Container(
+                      color: Colors.black.withOpacity(0.5),
+                      child: Center(
+                        child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.horizontal(
-                                    left: Radius.circular(20)),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 16, bottom: 16, left: 8),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: SingleChildScrollView(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                top: 4,
-                                                right: 8,
-                                                left: 8,
-                                                bottom: 1),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      top: Radius.circular(20)),
-                                            ),
-                                            child: TextButton(
-                                              onPressed: () {
-                                                launchUrl(url1);
-                                              },
-                                              child: const Text(
-                                                "Govind S B",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            //contibutions container
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Architect / Lead ",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4,
-                                                  right: 8,
-                                                  left: 8,
-                                                  bottom: 1),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
-                                                    top: Radius.circular(20)),
-                                              ),
-                                              child: TextButton(
-                                                  onPressed: () {
-                                                    launchUrl(url3);
-                                                  },
-                                                  child: const Text(
-                                                    "Siby C R",
-                                                    textAlign: TextAlign.center,
-                                                    style: TextStyle(
-                                                      fontSize: 18,
-                                                    ),
-                                                  )),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Backend",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4,
-                                                  right: 8,
-                                                  left: 8,
-                                                  bottom: 1),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
-                                                    top: Radius.circular(20)),
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  launchUrl(url4);
-                                                },
-                                                child: const Text(
-                                                  "Jayadev B S",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Frontend",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4,
-                                                  right: 8,
-                                                  left: 8,
-                                                  bottom: 1),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
-                                                    top: Radius.circular(20)),
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  launchUrl(url5);
-                                                },
-                                                child: const Text(
-                                                  "Karthik Kumar",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Frontend",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4,
-                                                  right: 8,
-                                                  left: 8,
-                                                  bottom: 1),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
-                                                    top: Radius.circular(20)),
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  launchUrl(url8);
-                                                },
-                                                child: const Text(
-                                                  "Ameer Al Hisham",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Misc./Minor Early Contributions",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Container(
-                              height: MediaQuery.of(context).size.height * 0.5,
-                              width: MediaQuery.of(context).size.width * 0.25,
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.horizontal(
-                                    right: Radius.circular(20)),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.only(
-                                    top: 16, bottom: 16, right: 8),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: SingleChildScrollView(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 10),
-                                      child: Column(
-                                        children: [
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                top: 4,
-                                                right: 8,
-                                                left: 8,
-                                                bottom: 1),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      top: Radius.circular(20)),
-                                            ),
-                                            child: TextButton(
-                                              onPressed: () {
-                                                launchUrl(url2);
-                                              },
-                                              child: const Text(
-                                                "Arjun Pratap",
-                                                textAlign: TextAlign.center,
-                                                style: TextStyle(
-                                                  fontSize: 18,
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Backend",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4,
-                                                  right: 8,
-                                                  left: 8,
-                                                  bottom: 1),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
-                                                    top: Radius.circular(20)),
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  launchUrl(url10);
-                                                },
-                                                child: const Text(
-                                                  "Dheeraj R",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "UI Design",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4,
-                                                  right: 8,
-                                                  left: 8,
-                                                  bottom: 1),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
-                                                    top: Radius.circular(20)),
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  launchUrl(url6);
-                                                },
-                                                child: const Text(
-                                                  "Amina Fayaz",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Frontend",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4,
-                                                  right: 8,
-                                                  left: 8,
-                                                  bottom: 1),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
-                                                    top: Radius.circular(20)),
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  launchUrl(url9);
-                                                },
-                                                child: const Text(
-                                                  "Adithya A R",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Frontend",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                          Padding(
-                                            padding:
-                                                const EdgeInsets.only(top: 8),
-                                            child: Container(
-                                              padding: const EdgeInsets.only(
-                                                  top: 4,
-                                                  right: 8,
-                                                  left: 8,
-                                                  bottom: 1),
-                                              width: double.infinity,
-                                              decoration: BoxDecoration(
-                                                color: Colors.blue.shade100,
-                                                borderRadius: const BorderRadius
-                                                        .vertical(
-                                                    top: Radius.circular(20)),
-                                              ),
-                                              child: TextButton(
-                                                onPressed: () {
-                                                  launchUrl(url7);
-                                                },
-                                                child: const Text(
-                                                  "Aasish R R",
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    fontSize: 18,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.only(
-                                                left: 8,
-                                                right: 8,
-                                                bottom: 8,
-                                                top: 2),
-                                            width: double.infinity,
-                                            decoration: BoxDecoration(
-                                              color: Colors.blue.shade100,
-                                              borderRadius:
-                                                  const BorderRadius.vertical(
-                                                      bottom:
-                                                          Radius.circular(20)),
-                                            ),
-                                            child: const Text(
-                                              "Misc./Minor Early Contributions",
-                                              textAlign: TextAlign.center,
-                                              style: TextStyle(
-                                                  fontSize: 10,
-                                                  fontWeight: FontWeight.bold),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        )
-                      ],
+                          children: [ContributerGrid()],
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-              ),
+                  );
+                } else {
+                  return Text("");
+                }
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOffstageNavigator(Page page) {
+  Widget drawerItem(
+      {required String text,
+      required Pages section,
+      required Icon icon,
+      required Icon activeIcon}) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8,
+        right: 8,
+        top: 1,
+        bottom: 4,
+      ),
+      child: BlocBuilder<MainScreenCubit, MainScreenInitial>(
+        builder: (context, state) {
+          return ListTile(
+            leading: state.pagesection == section ? icon : activeIcon,
+            title: Text(text),
+            selected: state.pagesection == section,
+            onTap: () {
+              context.read<MainScreenCubit>().setPageSection(section);
+
+              context.read<MainScreenCubit>().openDrawer(false);
+              // _selectPage(Pages.HALLS);
+              _scaffoldKey.currentState?.closeDrawer();
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildOffstageNavigator(Pages page) {
     return Offstage(
       offstage: _selectedPage != page,
       child: Navigator(
-        key: _navigatorKeys[page],
+        // key: _navigatorKeys[page],
         onGenerateRoute: (routeSettings) {
           return MaterialPageRoute(builder: (context) {
             switch (page) {
-              case Page.halls:
+              case Pages.HALLS:
                 return const HallPage();
-              case Page.students:
+              case Pages.STUDENTS:
                 return const StudentsPage();
-              case Page.generate:
+              case Pages.GENERATE:
                 return const GeneratePage();
               default:
                 return Container();
