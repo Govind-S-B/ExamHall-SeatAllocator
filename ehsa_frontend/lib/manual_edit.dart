@@ -30,6 +30,76 @@ class _ManualEditState extends State<ManualEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: true,
+        title: const Text("Manual Edit"),
+      ),
+      body: Row(
+        children: [
+          Expanded(
+            flex: 13,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(16),
+                    bottom: Radius.circular(16),
+                  ),
+                  color: Colors.blue.shade300.withAlpha(50),
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 7,
+            child: Column(
+              children: [
+                Expanded(
+                    flex: 27,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 8, 8, 8),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.vertical(
+                            top: Radius.circular(16),
+                            bottom: Radius.circular(16),
+                          ),
+                          color: Colors.blue.shade300.withAlpha(50),
+                        ),
+                      ),
+                    )),
+                Expanded(
+                    flex: 3,
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 8, 8),
+                      child: GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                            width: double.infinity,
+                            decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(16),
+                                bottom: Radius.circular(16),
+                              ),
+                              color: Colors.blue,
+                            ),
+                            child: const Center(
+                              child: Text("Generate",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 20)),
+                            )),
+                      ),
+                    )),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
