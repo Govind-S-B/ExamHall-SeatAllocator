@@ -75,23 +75,22 @@ class _ManualEditState extends State<ManualEdit> {
                     flex: 3,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(0, 0, 8, 8),
-                      child: GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                            width: double.infinity,
-                            decoration: const BoxDecoration(
-                              borderRadius: BorderRadius.vertical(
-                                top: Radius.circular(16),
-                                bottom: Radius.circular(16),
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: double.infinity,
+                        child: FilledButton(
+                            style: FilledButton.styleFrom(
+                                shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            )),
+                            onPressed: () {},
+                            child: const Text(
+                              'Generate',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 18,
                               ),
-                              color: Colors.blue,
-                            ),
-                            child: const Center(
-                              child: Text("Generate",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 20)),
                             )),
                       ),
                     )),
