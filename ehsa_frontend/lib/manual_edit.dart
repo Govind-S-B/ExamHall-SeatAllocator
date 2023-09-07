@@ -9,6 +9,19 @@ class ManualEdit extends StatefulWidget {
   State<ManualEdit> createState() => _ManualEditState();
 }
 
+List<String> index = [
+  '1',
+  '2',
+  '3',
+  '4',
+  '5',
+  '6',
+  '7',
+  '8',
+  '9',
+  '10'
+]; //Sample list
+
 class _ManualEditState extends State<ManualEdit> {
   var databaseFactory = databaseFactoryFfi;
   var halls_info;
@@ -27,6 +40,8 @@ class _ManualEditState extends State<ManualEdit> {
     sqfliteFfiInit();
     getHallsInfo();
   }
+
+  String selectedIndex = index.first;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +64,38 @@ class _ManualEditState extends State<ManualEdit> {
                     bottom: Radius.circular(16),
                   ),
                   color: Colors.blue.shade300.withAlpha(50),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      //Dropdown for selecting the allocated halls
+                      DropdownButton<String>(
+                        focusColor: Colors.transparent,
+                        menuMaxHeight: MediaQuery.of(context).size.height * 0.6,
+                        elevation: 2,
+                        dropdownColor: Colors.blue.shade50,
+                        borderRadius: BorderRadius.circular(16),
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        value: selectedIndex,
+                        onChanged: (String? value) {
+                          setState(() {
+                            selectedIndex = value!;
+                          });
+                        },
+                        items:
+                            index.map<DropdownMenuItem<String>>((String value) {
+                          return DropdownMenuItem<String>(
+                            alignment: Alignment.center,
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
