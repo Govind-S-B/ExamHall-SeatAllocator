@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
@@ -22,16 +24,40 @@ List<String> index = [
   '10'
 ]; //Sample list
 
+List<String> myList = [];
+
 class _ManualEditState extends State<ManualEdit> {
+  String selectedIndex = '';
   var databaseFactory = databaseFactoryFfi;
   var halls_info;
 
   // return data of format [{name: SJ210, capacity: 60}, {name: SJ112, capacity: 323}]
+  // void getHallsInfo() async {
+  //   final path = ('${Directory.current.path}/input.db');
+  //   var _database = await databaseFactory.openDatabase(path);
+  //   halls_info = await _database.rawQuery('SELECT * FROM HALLS');
+  //   _database.close();
+  // }
+
   void getHallsInfo() async {
-    final path = ('${Directory.current.path}/input.db');
-    var _database = await databaseFactory.openDatabase(path);
-    halls_info = await _database.rawQuery('SELECT * FROM HALLS');
-    _database.close();
+    final path = ('${Directory.current.path}/report.db');
+    try {
+      var database = await databaseFactory.openDatabase(path);
+      halls_info = await database.rawQuery('SELECT hall FROM report');
+      database.close();
+      Set<String> uniqueValues = {};
+      // myList.clear();
+
+      for (var hallInfo in halls_info) {
+        uniqueValues.add(hallInfo['hall'].toString());
+      }
+      myList = uniqueValues.toList();
+      setState(() {});
+
+      print('Updated List: $myList');
+    } catch (e) {
+      print('Error fetching data from database: $e');
+    }
   }
 
   @override
@@ -41,10 +67,12 @@ class _ManualEditState extends State<ManualEdit> {
     getHallsInfo();
   }
 
-  String selectedIndex = index.first;
-
   @override
   Widget build(BuildContext context) {
+    if (myList.isNotEmpty && selectedIndex.isEmpty) {
+      selectedIndex = myList.first;
+    }
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -85,8 +113,8 @@ class _ManualEditState extends State<ManualEdit> {
                             selectedIndex = value!;
                           });
                         },
-                        items:
-                            index.map<DropdownMenuItem<String>>((String value) {
+                        items: myList
+                            .map<DropdownMenuItem<String>>((String value) {
                           return DropdownMenuItem<String>(
                             alignment: Alignment.center,
                             value: value,
