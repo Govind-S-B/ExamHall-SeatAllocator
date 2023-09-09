@@ -11,19 +11,6 @@ class ManualEdit extends StatefulWidget {
   State<ManualEdit> createState() => _ManualEditState();
 }
 
-List<String> index = [
-  '1',
-  '2',
-  '3',
-  '4',
-  '5',
-  '6',
-  '7',
-  '8',
-  '9',
-  '10'
-]; //Sample list
-
 List<String> myList = [];
 
 class _ManualEditState extends State<ManualEdit> {
