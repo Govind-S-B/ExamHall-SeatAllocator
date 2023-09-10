@@ -12,19 +12,12 @@ class ManualEdit extends StatefulWidget {
 }
 
 List<String> myList = [];
+List<Map<String, dynamic>> seatsList = [];
 
 class _ManualEditState extends State<ManualEdit> {
   String selectedIndex = '';
   var databaseFactory = databaseFactoryFfi;
   var halls_info;
-
-  // return data of format [{name: SJ210, capacity: 60}, {name: SJ112, capacity: 323}]
-  // void getHallsInfo() async {
-  //   final path = ('${Directory.current.path}/input.db');
-  //   var _database = await databaseFactory.openDatabase(path);
-  //   halls_info = await _database.rawQuery('SELECT * FROM HALLS');
-  //   _database.close();
-  // }
 
   void getHallsInfo() async {
     final path = ('${Directory.current.path}/report.db');
@@ -33,7 +26,6 @@ class _ManualEditState extends State<ManualEdit> {
       halls_info = await database.rawQuery('SELECT hall FROM report');
       database.close();
       Set<String> uniqueValues = {};
-      // myList.clear();
 
       for (var hallInfo in halls_info) {
         uniqueValues.add(hallInfo['hall'].toString());
@@ -44,6 +36,21 @@ class _ManualEditState extends State<ManualEdit> {
       print('Updated List: $myList');
     } catch (e) {
       print('Error fetching data from database: $e');
+    }
+  }
+
+  void getSeatsInfo(String hall) async {
+    final path = ('${Directory.current.path}/report.db');
+    try {
+      var database = await databaseFactory.openDatabase(path);
+
+      seatsList = await database
+          .rawQuery('SELECT * FROM report WHERE hall = ?', [hall]);
+      database.close();
+
+      setState(() {});
+    } catch (e) {
+      print('Error fetching seats data from database: $e');
     }
   }
 
@@ -58,6 +65,8 @@ class _ManualEditState extends State<ManualEdit> {
   Widget build(BuildContext context) {
     if (myList.isNotEmpty && selectedIndex.isEmpty) {
       selectedIndex = myList.first;
+      getSeatsInfo(
+          selectedIndex); 
     }
 
     return Scaffold(
@@ -86,7 +95,6 @@ class _ManualEditState extends State<ManualEdit> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      //Dropdown for selecting the allocated halls
                       DropdownButton<String>(
                         focusColor: Colors.transparent,
                         menuMaxHeight: MediaQuery.of(context).size.height * 0.6,
@@ -99,6 +107,8 @@ class _ManualEditState extends State<ManualEdit> {
                           setState(() {
                             selectedIndex = value!;
                           });
+                          getSeatsInfo(
+                              selectedIndex);
                         },
                         items: myList
                             .map<DropdownMenuItem<String>>((String value) {
@@ -108,6 +118,25 @@ class _ManualEditState extends State<ManualEdit> {
                             child: Text(value),
                           );
                         }).toList(),
+                      ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: seatsList.length,
+                          itemBuilder: (context, index) {
+                            final seat = seatsList[index];
+                            return Card(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              elevation: 4.0, 
+                              margin: const EdgeInsets.symmetric(
+                                  vertical: 4.0, horizontal: 4.0),
+                              child: ListTile (contentPadding:const EdgeInsets.all(8.0),
+                                title: Text(   
+                                    "       ${seat['seat_no']}           ${seat['id']}            ${seat['subject']}"),
+                              ),
+                            );
+                          },
+                        ),
                       ),
                     ],
                   ),
