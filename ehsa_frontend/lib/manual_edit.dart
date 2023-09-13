@@ -48,6 +48,33 @@ class _ManualEditState extends State<ManualEdit> {
           .rawQuery('SELECT * FROM report WHERE hall = ?', [hall]);
       database.close();
 
+      int maxSeatNumber = seatsList.isEmpty
+          ? 0
+          : seatsList
+              .map<int>(
+                  (entry) => int.tryParse(entry['seat_no'].toString()) ?? 0)
+              .reduce((value, element) => value > element ? value : element);
+
+      List<Map<String, dynamic>> fullSeatsList = [];
+
+      for (var i = 1; i <= maxSeatNumber; i++) {
+        var foundSeat = seatsList.firstWhere(
+            (seat) => int.tryParse(seat['seat_no'].toString()) == i,
+            orElse: () => {});
+
+        if (foundSeat.isEmpty) {
+          fullSeatsList.add({
+            'seat_no': i.toString(),
+            'id': 'Unallocated',
+            'subject': 'Unallocated'
+          });
+        } else {
+          fullSeatsList.add(foundSeat);
+        }
+      }
+
+      seatsList = fullSeatsList;
+
       setState(() {});
     } catch (e) {
       print('Error fetching seats data from database: $e');
@@ -65,8 +92,7 @@ class _ManualEditState extends State<ManualEdit> {
   Widget build(BuildContext context) {
     if (myList.isNotEmpty && selectedIndex.isEmpty) {
       selectedIndex = myList.first;
-      getSeatsInfo(
-          selectedIndex); 
+      getSeatsInfo(selectedIndex);
     }
 
     return Scaffold(
@@ -107,8 +133,7 @@ class _ManualEditState extends State<ManualEdit> {
                           setState(() {
                             selectedIndex = value!;
                           });
-                          getSeatsInfo(
-                              selectedIndex);
+                          getSeatsInfo(selectedIndex);
                         },
                         items: myList
                             .map<DropdownMenuItem<String>>((String value) {
@@ -124,15 +149,22 @@ class _ManualEditState extends State<ManualEdit> {
                           itemCount: seatsList.length,
                           itemBuilder: (context, index) {
                             final seat = seatsList[index];
+                            bool isUnallocated = seat['id'] == 'Unallocated' &&
+                                seat['subject'] == 'Unallocated';
                             return Card(
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(10.0)),
-                              elevation: 4.0, 
+                              elevation: 4.0,
                               margin: const EdgeInsets.symmetric(
                                   vertical: 4.0, horizontal: 4.0),
-                              child: ListTile (contentPadding:const EdgeInsets.all(8.0),
-                                title: Text(   
-                                    "       ${seat['seat_no']}           ${seat['id']}            ${seat['subject']}"),
+                              color: isUnallocated ? Colors.blue.shade100 : null,
+                              child: ListTile(
+                                contentPadding: const EdgeInsets.all(8.0),
+                                title: isUnallocated
+                                    ? Text(
+                                        "       ${seat['seat_no']}                                                           Unallocated")
+                                    : Text(
+                                        "       ${seat['seat_no']}       ${seat['id']}        ${seat['subject']}"),
                               ),
                             );
                           },
