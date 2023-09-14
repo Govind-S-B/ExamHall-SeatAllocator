@@ -15,10 +15,7 @@ List<String> myList = [];
 List<Map<String, dynamic>> seatsList = [];
 
 class _ManualEditState extends State<ManualEdit> {
-  double xAxis = 0.0;
-  double yAxis = 0.0;
-
-  List<Map<String, dynamic>> transferredList = [];
+  Set<Map<String, dynamic>> transferredSet = {};
 
   String selectedIndex = '';
   var databaseFactory = databaseFactoryFfi;
@@ -150,7 +147,7 @@ class _ManualEditState extends State<ManualEdit> {
                       DropdownButton<String>(
                         focusColor: Colors.transparent,
                         menuMaxHeight: MediaQuery.of(context).size.height * 0.6,
-                        elevation: 2,
+                        elevation: 4,
                         dropdownColor: Colors.blue.shade50,
                         borderRadius: BorderRadius.circular(16),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -166,9 +163,59 @@ class _ManualEditState extends State<ManualEdit> {
                           return DropdownMenuItem<String>(
                             alignment: Alignment.center,
                             value: value,
-                            child: Text(value),
+                            child: Text(
+                              value,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.w600, fontSize: 17),
+                            ),
                           );
                         }).toList(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(4),
+                        child: Container(
+                          height: 60,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(
+                                style: BorderStyle.solid,
+                                width: 1,
+                                color: Colors.blue),
+                            color: Colors.white,
+                          ),
+                          child: const Row(
+                            children: [
+                              Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "   Seat No.",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: Colors.black),
+                                  )),
+                              Expanded(
+                                  flex: 2,
+                                  child: Text(
+                                    "Roll No.",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: Colors.black),
+                                  )),
+                              Expanded(
+                                  flex: 4,
+                                  child: Text(
+                                    "  Subject",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 18,
+                                        color: Colors.black),
+                                  )),
+                            ],
+                          ),
+                        ),
                       ),
                       Expanded(
                         child: ListView.builder(
@@ -197,7 +244,7 @@ class _ManualEditState extends State<ManualEdit> {
                                                 transferredItem['subject']
                                           };
                                           seatsList[index] = newSeat;
-                                          transferredList
+                                          transferredSet
                                               .remove(transferredItem);
                                         });
                                       },
@@ -299,19 +346,19 @@ class _ManualEditState extends State<ManualEdit> {
                         child: DragTarget<Map<String, dynamic>>(
                           onAccept: (transferredItem) {
                             setState(() {
-                              transferredList.add(transferredItem);
+                              transferredSet.add(transferredItem);
                               updateSeatsList(transferredItem);
                             });
                           },
                           onLeave: (transferredItem) {
                             setState(() {
-                              if (!transferredList.contains(transferredItem)) {
-                                transferredList.add(transferredItem!);
+                              if (!transferredSet.contains(transferredItem)) {
+                                transferredSet.add(transferredItem!);
                               }
                             });
                           },
                           builder: (context, candidateData, rejectedData) {
-                            return transferredList.isEmpty
+                            return transferredSet.isEmpty
                                 ? const Center(
                                     child: Text(
                                       "Drag and Drop here",
@@ -321,10 +368,10 @@ class _ManualEditState extends State<ManualEdit> {
                                     ),
                                   )
                                 : ListView.builder(
-                                    itemCount: transferredList.length,
+                                    itemCount: transferredSet.length,
                                     itemBuilder: (context, index) {
                                       final transferredItem =
-                                          transferredList[index];
+                                          transferredSet.elementAt(index);
                                       return Card(
                                         shape: RoundedRectangleBorder(
                                           borderRadius:
