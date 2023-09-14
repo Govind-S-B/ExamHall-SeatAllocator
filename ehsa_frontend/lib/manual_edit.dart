@@ -15,11 +15,32 @@ List<String> myList = [];
 List<Map<String, dynamic>> seatsList = [];
 
 class _ManualEditState extends State<ManualEdit> {
+  double xAxis = 0.0;
+  double yAxis = 0.0;
+
   List<Map<String, dynamic>> transferredList = [];
 
   String selectedIndex = '';
   var databaseFactory = databaseFactoryFfi;
   var halls_info;
+
+  void updateSeatsList(Map<String, dynamic> transferredItem) {
+    final seatNo = transferredItem['seat_no'].toString();
+    final updatedSeatsList = List<Map<String, dynamic>>.from(seatsList);
+    final index = updatedSeatsList
+        .indexWhere((seat) => seat['seat_no'].toString() == seatNo);
+
+    if (index != -1) {
+      updatedSeatsList[index] = {
+        'seat_no': seatNo,
+        'id': 'Unallocated',
+        'subject': 'Unallocated',
+      };
+      setState(() {
+        seatsList = updatedSeatsList;
+      });
+    }
+  }
 
   void getHallsInfo() async {
     final path = ('${Directory.current.path}/report.db');
@@ -220,6 +241,7 @@ class _ManualEditState extends State<ManualEdit> {
                           onAccept: (transferredItem) {
                             setState(() {
                               transferredList.add(transferredItem);
+                              updateSeatsList(transferredItem);
                             });
                           },
                           builder: (context, candidateData, rejectedData) {
