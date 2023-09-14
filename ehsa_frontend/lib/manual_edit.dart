@@ -206,8 +206,19 @@ class _ManualEditState extends State<ManualEdit> {
                                         return ListTile(
                                           contentPadding:
                                               const EdgeInsets.all(8.0),
-                                          title: Text(
-                                            "       ${seat['seat_no']}                                                           Unallocated",
+                                          title: Row(
+                                            children: [
+                                              Text(
+                                                "        ${seat['seat_no']}",
+                                                textAlign: TextAlign.start,
+                                              ),
+                                              const Expanded(
+                                                child: Text(
+                                                  "Unallocated",
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         );
                                       },
@@ -215,7 +226,7 @@ class _ManualEditState extends State<ManualEdit> {
                                   : Draggable<Map<String, dynamic>>(
                                       dragAnchorStrategy:
                                           (draggable, context, position) {
-                                        return Offset(0, 0);
+                                        return const Offset(0, 0);
                                       },
                                       data: seat,
                                       feedback: Material(
@@ -239,8 +250,24 @@ class _ManualEditState extends State<ManualEdit> {
                                       child: ListTile(
                                         contentPadding:
                                             const EdgeInsets.all(8.0),
-                                        title: Text(
-                                            "       ${seat['seat_no']}       ${seat['id']}        ${seat['subject']}"),
+                                        title: Row(
+                                          children: [
+                                            Expanded(
+                                                flex: 2,
+                                                child: Text(
+                                                    "        ${seat['seat_no']}")),
+                                            Expanded(
+                                                flex: 2,
+                                                child: Text(
+                                                  "${seat['id']}",
+                                                )),
+                                            Expanded(
+                                                flex: 4,
+                                                child: Text(
+                                                  "${seat['subject']}",
+                                                )),
+                                          ],
+                                        ),
                                       ),
                                     ),
                             );
@@ -286,7 +313,12 @@ class _ManualEditState extends State<ManualEdit> {
                           builder: (context, candidateData, rejectedData) {
                             return transferredList.isEmpty
                                 ? const Center(
-                                    child: Text("Drag and Drop here"),
+                                    child: Text(
+                                      "Drag and Drop here",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16),
+                                    ),
                                   )
                                 : ListView.builder(
                                     itemCount: transferredList.length,
@@ -332,43 +364,15 @@ class _ManualEditState extends State<ManualEdit> {
                                           child: ListTile(
                                             contentPadding:
                                                 const EdgeInsets.all(8),
-                                            title: Text(
-                                              "${transferredItem['id']} - ${transferredItem['subject']}",
-                                              style: const TextStyle(
-                                                color: Colors.black,
-                                                fontSize: 16.0,
+                                            title: Center(
+                                              child: Text(
+                                                "${transferredItem['id']}  -  ${transferredItem['subject']}",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16.0,
+                                                ),
                                               ),
                                             ),
-                                            // trailing:
-                                            //     Draggable<Map<String, dynamic>>(
-                                            //   dragAnchorStrategy:
-                                            //       (draggable, context, position) {
-                                            //     return Offset(0, 0);
-                                            //   },
-                                            //   data: transferredItem,
-                                            //   child: Icon(Icons.drag_indicator),
-                                            //   feedback: Material(
-                                            //     borderRadius:
-                                            //         BorderRadius.circular(16),
-                                            //     elevation: 8,
-                                            //     child: Container(
-                                            //       padding:
-                                            //           const EdgeInsets.all(12),
-                                            //       decoration: BoxDecoration(
-                                            //         color: Colors.blue.shade100,
-                                            //         borderRadius:
-                                            //             BorderRadius.circular(16),
-                                            //       ),
-                                            //       child: Text(
-                                            //         "${transferredItem['id']} - ${transferredItem['subject']}",
-                                            //         style: const TextStyle(
-                                            //           color: Colors.black,
-                                            //           fontSize: 16.0,
-                                            //         ),
-                                            //       ),
-                                            //     ),
-                                            //   ),
-                                            // ),
                                           ),
                                         ),
                                       );
