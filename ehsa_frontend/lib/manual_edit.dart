@@ -216,37 +216,48 @@ class _ManualEditState extends State<ManualEdit> {
                           ),
                           color: Colors.blue.shade300.withAlpha(50),
                         ),
-                        child: transferredList.isEmpty
-                            ? const Center(
-                                child: Text("Drag and Drop here"),
-                              )
-                            : ListView.builder(
-                                itemCount: transferredList.length,
-                                itemBuilder: (context, index) {
-                                  final transferredItem =
-                                      transferredList[index];
-                                  return Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    elevation: 4.0,
-                                    margin: const EdgeInsets.symmetric(
-                                      vertical: 4.0,
-                                      horizontal: 4.0,
-                                    ),
-                                    child: ListTile(
-                                      contentPadding: const EdgeInsets.all(8),
-                                      title: Text(
-                                        "${transferredItem['id']} - ${transferredItem['subject']}",
-                                        style: const TextStyle(
-                                          color: Colors.black,
-                                          fontSize: 16.0,
+                        child: DragTarget<Map<String, dynamic>>(
+                          onAccept: (transferredItem) {
+                            setState(() {
+                              transferredList.add(transferredItem);
+                            });
+                          },
+                          builder: (context, candidateData, rejectedData) {
+                            return transferredList.isEmpty
+                                ? const Center(
+                                    child: Text("Drag and Drop here"),
+                                  )
+                                : ListView.builder(
+                                    itemCount: transferredList.length,
+                                    itemBuilder: (context, index) {
+                                      final transferredItem =
+                                          transferredList[index];
+                                      return Card(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(16),
                                         ),
-                                      ),
-                                    ),
+                                        elevation: 4.0,
+                                        margin: const EdgeInsets.symmetric(
+                                          vertical: 4.0,
+                                          horizontal: 4.0,
+                                        ),
+                                        child: ListTile(
+                                          contentPadding:
+                                              const EdgeInsets.all(8),
+                                          title: Text(
+                                            "${transferredItem['id']} - ${transferredItem['subject']}",
+                                            style: const TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16.0,
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    },
                                   );
-                                },
-                              ),
+                          },
+                        ),
                       ),
                     )),
                 Expanded(
