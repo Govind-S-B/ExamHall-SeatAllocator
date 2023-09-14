@@ -15,6 +15,8 @@ List<String> myList = [];
 List<Map<String, dynamic>> seatsList = [];
 
 class _ManualEditState extends State<ManualEdit> {
+  List<Map<String, dynamic>> transferredList = [];
+
   String selectedIndex = '';
   var databaseFactory = databaseFactoryFfi;
   var halls_info;
@@ -157,14 +159,36 @@ class _ManualEditState extends State<ManualEdit> {
                               elevation: 4.0,
                               margin: const EdgeInsets.symmetric(
                                   vertical: 4.0, horizontal: 4.0),
-                              color: isUnallocated ? Colors.blue.shade100 : null,
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.all(8.0),
-                                title: isUnallocated
-                                    ? Text(
-                                        "       ${seat['seat_no']}                                                           Unallocated")
-                                    : Text(
-                                        "       ${seat['seat_no']}       ${seat['id']}        ${seat['subject']}"),
+                              color:
+                                  isUnallocated ? Colors.blue.shade100 : null,
+                              child: Draggable<Map<String, dynamic>>(
+                                data: seat,
+                                feedback: Material(
+                                  borderRadius: BorderRadius.circular(16),
+                                  elevation: 8,
+                                  child: Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                        color: Colors.blue.shade100,
+                                        borderRadius:
+                                            BorderRadius.circular(16)),
+                                    child: Text(
+                                      "${seat['id']}   -   ${seat['subject']}",
+                                      style: const TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16.0,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                child: ListTile(
+                                  contentPadding: const EdgeInsets.all(8.0),
+                                  title: isUnallocated
+                                      ? Text(
+                                          "       ${seat['seat_no']}                                                           Unallocated")
+                                      : Text(
+                                          "       ${seat['seat_no']}       ${seat['id']}        ${seat['subject']}"),
+                                ),
                               ),
                             );
                           },
@@ -192,6 +216,37 @@ class _ManualEditState extends State<ManualEdit> {
                           ),
                           color: Colors.blue.shade300.withAlpha(50),
                         ),
+                        child: transferredList.isEmpty
+                            ? const Center(
+                                child: Text("Drag and Drop here"),
+                              )
+                            : ListView.builder(
+                                itemCount: transferredList.length,
+                                itemBuilder: (context, index) {
+                                  final transferredItem =
+                                      transferredList[index];
+                                  return Card(
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    elevation: 4.0,
+                                    margin: const EdgeInsets.symmetric(
+                                      vertical: 4.0,
+                                      horizontal: 4.0,
+                                    ),
+                                    child: ListTile(
+                                      contentPadding: const EdgeInsets.all(8),
+                                      title: Text(
+                                        "${transferredItem['id']} - ${transferredItem['subject']}",
+                                        style: const TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
                       ),
                     )),
                 Expanded(
