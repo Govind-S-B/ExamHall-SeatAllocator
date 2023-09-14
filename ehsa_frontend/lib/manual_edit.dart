@@ -183,6 +183,10 @@ class _ManualEditState extends State<ManualEdit> {
                               color:
                                   isUnallocated ? Colors.blue.shade100 : null,
                               child: Draggable<Map<String, dynamic>>(
+                                dragAnchorStrategy:
+                                    (draggable, context, position) {
+                                  return const Offset(0.0, 0.0);
+                                },
                                 data: seat,
                                 feedback: Material(
                                   borderRadius: BorderRadius.circular(16),
