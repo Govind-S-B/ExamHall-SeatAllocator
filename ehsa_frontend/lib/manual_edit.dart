@@ -350,13 +350,6 @@ class _ManualEditState extends State<ManualEdit> {
                               updateSeatsList(transferredItem);
                             });
                           },
-                          onLeave: (transferredItem) {
-                            setState(() {
-                              if (!transferredSet.contains(transferredItem)) {
-                                transferredSet.add(transferredItem!);
-                              }
-                            });
-                          },
                           builder: (context, candidateData, rejectedData) {
                             return transferredSet.isEmpty
                                 ? const Center(
