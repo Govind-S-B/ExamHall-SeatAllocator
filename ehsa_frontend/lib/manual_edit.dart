@@ -24,17 +24,21 @@ class _ManualEditState extends State<ManualEdit> {
   var databaseFactory = databaseFactoryFfi;
   var halls_info;
 
-  void updateSeatsList(Map<String, dynamic> transferredItem, {bool isReverting = false}) {
+  void updateSeatsList(Map<String, dynamic> transferredItem,
+      {bool isReverting = false}) {
     final seatNo = transferredItem['seat_no'].toString();
     final updatedSeatsList = List<Map<String, dynamic>>.from(seatsList);
-    final index = updatedSeatsList.indexWhere((seat) => seat['seat_no'].toString() == seatNo);
+    final index = updatedSeatsList
+        .indexWhere((seat) => seat['seat_no'].toString() == seatNo);
 
     if (index != -1) {
-      updatedSeatsList[index] = isReverting ? transferredItem : {
-        'seat_no': seatNo,
-        'id': 'Unallocated',
-        'subject': 'Unallocated',
-      };
+      updatedSeatsList[index] = isReverting
+          ? transferredItem
+          : {
+              'seat_no': seatNo,
+              'id': 'Unallocated',
+              'subject': 'Unallocated',
+            };
       setState(() {
         seatsList = updatedSeatsList;
       });
@@ -189,24 +193,30 @@ class _ManualEditState extends State<ManualEdit> {
                                           final newSeat = {
                                             'seat_no': seat['seat_no'],
                                             'id': transferredItem['id'],
-                                            'subject': transferredItem['subject']
+                                            'subject':
+                                                transferredItem['subject']
                                           };
                                           seatsList[index] = newSeat;
-                                          transferredList.remove(transferredItem);
+                                          transferredList
+                                              .remove(transferredItem);
                                         });
                                       },
-                                      builder: (context, candidateData, rejectedData) {
+                                      builder: (context, candidateData,
+                                          rejectedData) {
                                         return ListTile(
-                                          contentPadding: const EdgeInsets.all(8.0),
-                                          title: Center(
-                                            child: Text(
-                                              "       ${seat['seat_no']}                                                           Unallocated",
-                                            ),
+                                          contentPadding:
+                                              const EdgeInsets.all(8.0),
+                                          title: Text(
+                                            "       ${seat['seat_no']}                                                           Unallocated",
                                           ),
                                         );
                                       },
                                     )
                                   : Draggable<Map<String, dynamic>>(
+                                      dragAnchorStrategy:
+                                          (draggable, context, position) {
+                                        return Offset(0, 0);
+                                      },
                                       data: seat,
                                       feedback: Material(
                                         borderRadius: BorderRadius.circular(16),
@@ -215,7 +225,8 @@ class _ManualEditState extends State<ManualEdit> {
                                           padding: const EdgeInsets.all(12),
                                           decoration: BoxDecoration(
                                               color: Colors.blue.shade100,
-                                              borderRadius: BorderRadius.circular(16)),
+                                              borderRadius:
+                                                  BorderRadius.circular(16)),
                                           child: Text(
                                             "${seat['id']}   -   ${seat['subject']}",
                                             style: const TextStyle(
@@ -226,10 +237,11 @@ class _ManualEditState extends State<ManualEdit> {
                                         ),
                                       ),
                                       child: ListTile(
-                                        contentPadding: const EdgeInsets.all(8.0),
+                                        contentPadding:
+                                            const EdgeInsets.all(8.0),
                                         title: Text(
                                             "       ${seat['seat_no']}       ${seat['id']}        ${seat['subject']}"),
-                                                                                  ),
+                                      ),
                                     ),
                             );
                           },
@@ -279,46 +291,84 @@ class _ManualEditState extends State<ManualEdit> {
                                 : ListView.builder(
                                     itemCount: transferredList.length,
                                     itemBuilder: (context, index) {
-                                      final transferredItem = transferredList[index];
+                                      final transferredItem =
+                                          transferredList[index];
                                       return Card(
                                         shape: RoundedRectangleBorder(
-                                          borderRadius: BorderRadius.circular(16),
+                                          borderRadius:
+                                              BorderRadius.circular(16),
                                         ),
                                         elevation: 4.0,
                                         margin: const EdgeInsets.symmetric(
                                           vertical: 4.0,
                                           horizontal: 4.0,
                                         ),
-                                        child: ListTile(
-                                          contentPadding: const EdgeInsets.all(8),
-                                          title: Text(
-                                            "${transferredItem['id']} - ${transferredItem['subject']}",
-                                            style: const TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                          trailing: Draggable<Map<String, dynamic>>(
-                                            data: transferredItem,
-                                            child: Icon(Icons.drag_indicator),
-                                            feedback: Material(
-                                              borderRadius: BorderRadius.circular(16),
-                                              elevation: 8,
-                                              child: Container(
-                                                padding: const EdgeInsets.all(12),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.blue.shade100,
-                                                  borderRadius: BorderRadius.circular(16),
-                                                ),
-                                                child: Text(
-                                                  "${transferredItem['id']} - ${transferredItem['subject']}",
-                                                  style: const TextStyle(
-                                                    color: Colors.black,
-                                                    fontSize: 16.0,
-                                                  ),
+                                        child: Draggable<Map<String, dynamic>>(
+                                          dragAnchorStrategy:
+                                              (draggable, context, position) {
+                                            return const Offset(0, 0);
+                                          },
+                                          data: transferredItem,
+                                          feedback: Material(
+                                            borderRadius:
+                                                BorderRadius.circular(16),
+                                            elevation: 8,
+                                            child: Container(
+                                              padding: const EdgeInsets.all(12),
+                                              decoration: BoxDecoration(
+                                                color: Colors.blue.shade100,
+                                                borderRadius:
+                                                    BorderRadius.circular(16),
+                                              ),
+                                              child: Text(
+                                                "${transferredItem['id']} - ${transferredItem['subject']}",
+                                                style: const TextStyle(
+                                                  color: Colors.black,
+                                                  fontSize: 16.0,
                                                 ),
                                               ),
                                             ),
+                                          ),
+                                          child: ListTile(
+                                            contentPadding:
+                                                const EdgeInsets.all(8),
+                                            title: Text(
+                                              "${transferredItem['id']} - ${transferredItem['subject']}",
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 16.0,
+                                              ),
+                                            ),
+                                            // trailing:
+                                            //     Draggable<Map<String, dynamic>>(
+                                            //   dragAnchorStrategy:
+                                            //       (draggable, context, position) {
+                                            //     return Offset(0, 0);
+                                            //   },
+                                            //   data: transferredItem,
+                                            //   child: Icon(Icons.drag_indicator),
+                                            //   feedback: Material(
+                                            //     borderRadius:
+                                            //         BorderRadius.circular(16),
+                                            //     elevation: 8,
+                                            //     child: Container(
+                                            //       padding:
+                                            //           const EdgeInsets.all(12),
+                                            //       decoration: BoxDecoration(
+                                            //         color: Colors.blue.shade100,
+                                            //         borderRadius:
+                                            //             BorderRadius.circular(16),
+                                            //       ),
+                                            //       child: Text(
+                                            //         "${transferredItem['id']} - ${transferredItem['subject']}",
+                                            //         style: const TextStyle(
+                                            //           color: Colors.black,
+                                            //           fontSize: 16.0,
+                                            //         ),
+                                            //       ),
+                                            //     ),
+                                            //   ),
+                                            // ),
                                           ),
                                         ),
                                       );
@@ -338,8 +388,8 @@ class _ManualEditState extends State<ManualEdit> {
                         child: FilledButton(
                             style: FilledButton.styleFrom(
                                 shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(16),
-                                )),
+                              borderRadius: BorderRadius.circular(16),
+                            )),
                             onPressed: () {},
                             child: const Text(
                               'Generate',
@@ -359,4 +409,3 @@ class _ManualEditState extends State<ManualEdit> {
     );
   }
 }
-

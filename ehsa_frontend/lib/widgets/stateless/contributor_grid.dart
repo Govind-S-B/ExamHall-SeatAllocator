@@ -32,7 +32,7 @@ class ContributorGrid extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.143,
+            height: MediaQuery.of(context).size.height * 0.170,
             width: MediaQuery.of(context).size.width * 0.6,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -45,6 +45,7 @@ class ContributorGrid extends StatelessWidget {
                 Text(
                   'EHSA',
                   style: TextStyle(
+                    height: 1,
                     fontSize: 50,
                     fontWeight: FontWeight.bold,
                   ),
@@ -52,11 +53,12 @@ class ContributorGrid extends StatelessWidget {
                 Text(
                   "by protoRes",
                   style: TextStyle(
+                    height: 0.8,
                     fontSize: 15,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                SizedBox(height: 10),
+                SizedBox(height: 14),
                 Text(
                   "Contributors",
                   style: TextStyle(
