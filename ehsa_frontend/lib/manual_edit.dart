@@ -21,6 +21,59 @@ class _ManualEditState extends State<ManualEdit> {
   var databaseFactory = databaseFactoryFfi;
   var halls_info;
 
+  //To add to the database while drag n drop
+  Future<void> addToDatabase(Map<String, dynamic> seat) async {
+    final path = ('${Directory.current.path}/report.db');
+    try {
+      final database = await openDatabase(path, version: 1,
+          onCreate: (Database db, int version) async {
+        // Create the table if it doesn't exist
+        await db.execute(
+            'CREATE TABLE IF NOT EXISTS report (id TEXT, class TEXT, roll_no TEXT, hall TEXT, seat_no TEXT, subject TEXT)');
+      });
+
+      // Insert the seat data into the database
+      await database.insert('report', seat,
+          conflictAlgorithm: ConflictAlgorithm.replace);
+
+      await database.close();
+      print('Seat added to the database: $seat');
+    } catch (e) {
+      print('Error adding seat to the database: $e');
+    }
+  }
+
+  //To remove to the database while drag n drop
+  Future<void> removeFromDatabase(Map<String, dynamic> seat) async {
+    final path = ('${Directory.current.path}/report.db');
+    try {
+      final database = await openDatabase(path, version: 1,
+          onCreate: (Database db, int version) async {
+        // Create the table if it doesn't exist
+        await db.execute(
+            'CREATE TABLE IF NOT EXISTS report (id TEXT, class TEXT, roll_no TEXT, hall TEXT, seat_no TEXT, subject TEXT)');
+      });
+
+      // Delete the seat data from the database
+      await database.delete('report',
+          where:
+              'id = ? AND class = ? AND roll_no = ? AND hall = ? AND seat_no = ? AND subject = ?',
+          whereArgs: [
+            seat['id'],
+            seat['class'],
+            seat['roll_no'],
+            seat['hall'],
+            seat['seat_no'],
+            seat['subject'],
+          ]);
+
+      await database.close();
+      print('Seat removed from the database: $seat');
+    } catch (e) {
+      print('Error removing seat from the database: $e');
+    }
+  }
+
   void updateSeatsList(Map<String, dynamic> transferredItem,
       {bool isReverting = false}) {
     final seatNo = transferredItem['seat_no'].toString();
@@ -32,8 +85,11 @@ class _ManualEditState extends State<ManualEdit> {
       updatedSeatsList[index] = isReverting
           ? transferredItem
           : {
-              'seat_no': seatNo,
               'id': 'Unallocated',
+              'class': transferredItem['class'],
+              'roll_no': transferredItem['roll_no'],
+              'hall': transferredItem['hall'],
+              'seat_no': seatNo,
               'subject': 'Unallocated',
             };
       setState(() {
@@ -87,8 +143,11 @@ class _ManualEditState extends State<ManualEdit> {
 
         if (foundSeat.isEmpty) {
           fullSeatsList.add({
-            'seat_no': i.toString(),
             'id': 'Unallocated',
+            'class': 'Unallocated',
+            'roll_no': 'Unallocated',
+            'hall': hall,
+            'seat_no': i.toString(),
             'subject': 'Unallocated'
           });
         } else {
@@ -238,8 +297,12 @@ class _ManualEditState extends State<ManualEdit> {
                                       onAccept: (transferredItem) {
                                         setState(() {
                                           final newSeat = {
-                                            'seat_no': seat['seat_no'],
                                             'id': transferredItem['id'],
+                                            'class': transferredItem['class'],
+                                            'roll_no':
+                                                transferredItem['roll_no'],
+                                            'hall': transferredItem['hall'],
+                                            'seat_no': seat['seat_no'],
                                             'subject':
                                                 transferredItem['subject']
                                           };
@@ -348,6 +411,7 @@ class _ManualEditState extends State<ManualEdit> {
                             setState(() {
                               transferredSet.add(transferredItem);
                               updateSeatsList(transferredItem);
+                              removeFromDatabase(transferredItem);
                             });
                           },
                           builder: (context, candidateData, rejectedData) {
@@ -376,6 +440,13 @@ class _ManualEditState extends State<ManualEdit> {
                                           horizontal: 4.0,
                                         ),
                                         child: Draggable<Map<String, dynamic>>(
+                                          onDragCompleted: () {
+                                            setState(() {
+                                              transferredSet
+                                                  .remove(transferredItem);
+                                              addToDatabase(transferredItem);
+                                            });
+                                          },
                                           dragAnchorStrategy:
                                               (draggable, context, position) {
                                             return const Offset(0, 0);
@@ -434,7 +505,12 @@ class _ManualEditState extends State<ManualEdit> {
                                 shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             )),
-                            onPressed: () {},
+                            onPressed: () {
+                              print(seatsList);
+                            },
+                            onLongPress: () {
+                              print(transferredSet);
+                            },
                             child: const Text(
                               'Generate',
                               style: TextStyle(
