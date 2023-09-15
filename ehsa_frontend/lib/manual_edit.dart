@@ -301,7 +301,7 @@ class _ManualEditState extends State<ManualEdit> {
                                             'class': transferredItem['class'],
                                             'roll_no':
                                                 transferredItem['roll_no'],
-                                            'hall': transferredItem['hall'],
+                                            'hall': seat['hall'],
                                             'seat_no': seat['seat_no'],
                                             'subject':
                                                 transferredItem['subject']
@@ -309,6 +309,7 @@ class _ManualEditState extends State<ManualEdit> {
                                           seatsList[index] = newSeat;
                                           transferredSet
                                               .remove(transferredItem);
+                                          addToDatabase(newSeat);
                                         });
                                       },
                                       builder: (context, candidateData,
@@ -440,13 +441,13 @@ class _ManualEditState extends State<ManualEdit> {
                                           horizontal: 4.0,
                                         ),
                                         child: Draggable<Map<String, dynamic>>(
-                                          onDragCompleted: () {
-                                            setState(() {
-                                              transferredSet
-                                                  .remove(transferredItem);
-                                              addToDatabase(transferredItem);
-                                            });
-                                          },
+                                          // onDragCompleted: () {
+                                          //   setState(() {
+                                          //     transferredSet
+                                          //         .remove(transferredItem);
+                                          //     addToDatabase(transferredItem);
+                                          //   });
+                                          // },
                                           dragAnchorStrategy:
                                               (draggable, context, position) {
                                             return const Offset(0, 0);
