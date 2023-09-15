@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:io';
+import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
@@ -236,7 +237,7 @@ class _ManualEditState extends State<ManualEdit> {
                             border: Border.all(
                                 style: BorderStyle.solid,
                                 width: 1,
-                                color: Colors.black),
+                                color: Colors.blue),
                             color: Colors.white,
                           ),
                           child: const Row(
@@ -284,7 +285,7 @@ class _ManualEditState extends State<ManualEdit> {
                                   borderRadius: BorderRadius.circular(10.0)),
                               elevation: 4.0,
                               margin: const EdgeInsets.symmetric(
-                                  vertical: 4.0, horizontal: 4.0),
+                                  horizontal: 4.0, vertical: 4.0),
                               color:
                                   isUnallocated ? Colors.blue.shade100 : null,
                               child: isUnallocated
@@ -312,7 +313,7 @@ class _ManualEditState extends State<ManualEdit> {
                                           rejectedData) {
                                         return ListTile(
                                           contentPadding:
-                                              const EdgeInsets.all(8.0),
+                                              const EdgeInsets.all(4),
                                           title: Row(
                                             children: [
                                               Text(
@@ -355,8 +356,7 @@ class _ManualEditState extends State<ManualEdit> {
                                         ),
                                       ),
                                       child: ListTile(
-                                        contentPadding:
-                                            const EdgeInsets.all(8.0),
+                                        contentPadding: const EdgeInsets.all(4),
                                         title: Row(
                                           children: [
                                             Expanded(
@@ -471,7 +471,7 @@ class _ManualEditState extends State<ManualEdit> {
                                           ),
                                           child: ListTile(
                                             contentPadding:
-                                                const EdgeInsets.all(8),
+                                                const EdgeInsets.all(4),
                                             title: Center(
                                               child: Text(
                                                 "${transferredItem['id']}  -  ${transferredItem['subject']}",
@@ -502,7 +502,76 @@ class _ManualEditState extends State<ManualEdit> {
                                 shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             )),
-                            onPressed: () {},
+                            onPressed: () async {
+                              try {
+                                final result = await Process.run(
+                                  '${Directory.current.path}\\pdf_generator.exe',
+                                  ['report.db'],
+                                );
+
+                                if (result.exitCode == 0) {
+                                  // pdf generated successfully
+                                  var title = "PDF Generated";
+                                  var msg =
+                                      "PDF Generated, please check the output folder.";
+                                  var contentType = ContentType.success;
+
+                                  final snackBar = SnackBar(
+                                    elevation: 0,
+                                    behavior: SnackBarBehavior.floating,
+                                    backgroundColor: Colors.transparent,
+                                    content: AwesomeSnackbarContent(
+                                      title: title,
+                                      message: msg,
+                                      contentType: contentType,
+                                    ),
+                                  );
+
+                                  ScaffoldMessenger.of(context)
+                                    ..hideCurrentSnackBar()
+                                    ..showSnackBar(snackBar);
+                                } else {
+                                  // pdf generation failed
+                                  var title = "PDF Generation Failed";
+                                  var msg =
+                                      "PDF Generator Failed: ${result.exitCode} ${result.stderr}";
+                                  var contentType = ContentType.failure;
+
+                                  final snackBar = SnackBar(
+                                    elevation: 0,
+                                    behavior: SnackBarBehavior.floating,
+                                    backgroundColor: Colors.transparent,
+                                    content: AwesomeSnackbarContent(
+                                      title: title,
+                                      message: msg,
+                                      contentType: contentType,
+                                    ),
+                                  );
+
+                                  ScaffoldMessenger.of(context)
+                                    ..hideCurrentSnackBar()
+                                    ..showSnackBar(snackBar);
+                                }
+                              } catch (e) {
+                                // Handle any exceptions here
+                                var msg = "You shouldn't be seeing this: $e";
+
+                                final snackBar = SnackBar(
+                                  elevation: 0,
+                                  behavior: SnackBarBehavior.floating,
+                                  backgroundColor: Colors.transparent,
+                                  content: AwesomeSnackbarContent(
+                                    title: "Error",
+                                    message: msg,
+                                    contentType: ContentType.failure,
+                                  ),
+                                );
+
+                                ScaffoldMessenger.of(context)
+                                  ..hideCurrentSnackBar()
+                                  ..showSnackBar(snackBar);
+                              }
+                            },
                             child: const Text(
                               'Generate',
                               style: TextStyle(
