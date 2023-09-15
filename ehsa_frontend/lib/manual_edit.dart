@@ -27,12 +27,10 @@ class _ManualEditState extends State<ManualEdit> {
     try {
       final database = await openDatabase(path, version: 1,
           onCreate: (Database db, int version) async {
-        // Create the table if it doesn't exist
         await db.execute(
             'CREATE TABLE IF NOT EXISTS report (id TEXT, class TEXT, roll_no TEXT, hall TEXT, seat_no TEXT, subject TEXT)');
       });
 
-      // Insert the seat data into the database
       await database.insert('report', seat,
           conflictAlgorithm: ConflictAlgorithm.replace);
 
@@ -49,12 +47,10 @@ class _ManualEditState extends State<ManualEdit> {
     try {
       final database = await openDatabase(path, version: 1,
           onCreate: (Database db, int version) async {
-        // Create the table if it doesn't exist
         await db.execute(
             'CREATE TABLE IF NOT EXISTS report (id TEXT, class TEXT, roll_no TEXT, hall TEXT, seat_no TEXT, subject TEXT)');
       });
 
-      // Delete the seat data from the database
       await database.delete('report',
           where:
               'id = ? AND class = ? AND roll_no = ? AND hall = ? AND seat_no = ? AND subject = ?',
@@ -240,7 +236,7 @@ class _ManualEditState extends State<ManualEdit> {
                             border: Border.all(
                                 style: BorderStyle.solid,
                                 width: 1,
-                                color: Colors.blue),
+                                color: Colors.black),
                             color: Colors.white,
                           ),
                           child: const Row(
@@ -506,12 +502,7 @@ class _ManualEditState extends State<ManualEdit> {
                                 shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(16),
                             )),
-                            onPressed: () {
-                              print(seatsList);
-                            },
-                            onLongPress: () {
-                              print(transferredSet);
-                            },
+                            onPressed: () {},
                             child: const Text(
                               'Generate',
                               style: TextStyle(
