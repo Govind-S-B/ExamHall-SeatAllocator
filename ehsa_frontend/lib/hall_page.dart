@@ -3,8 +3,6 @@ import 'package:ehsa_frontend/models/Hall.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
-
-
 class HallPage extends StatefulWidget {
   const HallPage({super.key});
 
@@ -125,6 +123,34 @@ class _HallPageState extends State<HallPage> {
   void dispose() {
     _database.close();
     super.dispose();
+  }
+
+  void showClearConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: const Text("Are you sure you want to clear the table?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Clear"),
+              onPressed: () {
+                _dropTable();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -329,7 +355,7 @@ class _HallPageState extends State<HallPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ElevatedButton(
-                              onPressed: _dropTable,
+                              onPressed: showClearConfirmationDialog,
                               child: const Text('Clear Table')),
                         )),
                   ],

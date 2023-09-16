@@ -4,6 +4,7 @@ import 'package:ehsa_frontend/widgets/stateless/contributor_grid.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
@@ -13,6 +14,7 @@ import "./enums/page_type.dart";
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  databaseFactory = databaseFactoryFfi;
   await windowManager.ensureInitialized();
   if (Platform.isWindows) {
     WindowManager.instance.setMinimumSize(const Size(950, 700));
@@ -157,7 +159,7 @@ class MyApp extends StatelessWidget {
 
             //contributors grid
             BlocBuilder<MainScreenCubit, MainScreenInitial>(
-               builder: (context, state) {
+              builder: (context, state) {
                 if (state.isOverlayOpen) {
                   return GestureDetector(
                     onTap: () {
