@@ -16,6 +16,8 @@ List<String> myList = [];
 List<Map<String, dynamic>> seatsList = [];
 
 class _ManualEditState extends State<ManualEdit> {
+  String? sourceSide;
+
   Set<Map<String, dynamic>> transferredSet = {};
 
   String selectedIndex = '';
@@ -292,22 +294,24 @@ class _ManualEditState extends State<ManualEdit> {
                                   ? DragTarget<Map<String, dynamic>>(
                                       onWillAccept: (data) => isUnallocated,
                                       onAccept: (transferredItem) {
-                                        setState(() {
-                                          final newSeat = {
-                                            'id': transferredItem['id'],
-                                            'class': transferredItem['class'],
-                                            'roll_no':
-                                                transferredItem['roll_no'],
-                                            'hall': seat['hall'],
-                                            'seat_no': seat['seat_no'],
-                                            'subject':
-                                                transferredItem['subject']
-                                          };
-                                          seatsList[index] = newSeat;
-                                          transferredSet
-                                              .remove(transferredItem);
-                                          addToDatabase(newSeat);
-                                        });
+                                        if (sourceSide == 'right') {
+                                          setState(() {
+                                            final newSeat = {
+                                              'id': transferredItem['id'],
+                                              'class': transferredItem['class'],
+                                              'roll_no':
+                                                  transferredItem['roll_no'],
+                                              'hall': seat['hall'],
+                                              'seat_no': seat['seat_no'],
+                                              'subject':
+                                                  transferredItem['subject']
+                                            };
+                                            seatsList[index] = newSeat;
+                                            transferredSet
+                                                .remove(transferredItem);
+                                            addToDatabase(newSeat);
+                                          });
+                                        }
                                       },
                                       builder: (context, candidateData,
                                           rejectedData) {
@@ -332,6 +336,11 @@ class _ManualEditState extends State<ManualEdit> {
                                       },
                                     )
                                   : Draggable<Map<String, dynamic>>(
+                                      onDragStarted: () {
+                                        setState(() {
+                                          sourceSide = 'left';
+                                        });
+                                      },
                                       dragAnchorStrategy:
                                           (draggable, context, position) {
                                         return const Offset(0, 0);
@@ -405,11 +414,13 @@ class _ManualEditState extends State<ManualEdit> {
                         ),
                         child: DragTarget<Map<String, dynamic>>(
                           onAccept: (transferredItem) {
-                            setState(() {
-                              transferredSet.add(transferredItem);
-                              updateSeatsList(transferredItem);
-                              removeFromDatabase(transferredItem);
-                            });
+                            if (sourceSide == 'left') {
+                              setState(() {
+                                transferredSet.add(transferredItem);
+                                updateSeatsList(transferredItem);
+                                removeFromDatabase(transferredItem);
+                              });
+                            }
                           },
                           builder: (context, candidateData, rejectedData) {
                             return transferredSet.isEmpty
@@ -437,6 +448,11 @@ class _ManualEditState extends State<ManualEdit> {
                                           horizontal: 4.0,
                                         ),
                                         child: Draggable<Map<String, dynamic>>(
+                                          onDragStarted: () {
+                                            setState(() {
+                                              sourceSide = 'right';
+                                            });
+                                          },
                                           // onDragCompleted: () {
                                           //   setState(() {
                                           //     transferredSet
