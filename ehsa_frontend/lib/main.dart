@@ -1,74 +1,59 @@
+import 'dart:io';
+import 'package:ehsa_frontend/bloc/main_screen/main_screen_cubit.dart';
+import 'package:ehsa_frontend/widgets/stateless/contributor_grid.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'generate_page.dart';
 import 'hall_page.dart';
 import 'students_page.dart';
-import 'package:url_launcher/url_launcher.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'package:window_manager/window_manager.dart';
+import "./enums/page_type.dart";
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  databaseFactory = databaseFactoryFfi;
+  await windowManager.ensureInitialized();
+  if (Platform.isWindows) {
+    WindowManager.instance.setMinimumSize(const Size(950, 700));
+  }
+  runApp(BlocProvider<MainScreenCubit>.value(
+    value: MainScreenCubit(),
+    child: MyApp(),
+  ));
 }
 
-class MyApp extends StatefulWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  MyApp({Key? key}) : super(key: key);
 
-  @override
-  MyAppState createState() => MyAppState();
-}
+  Pages _selectedPage = Pages.HALLS;
+  bool _showCreditsOverlay = true;
 
-enum Page {
-  halls,
-  students,
-  generate,
-}
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-class MyAppState extends State<MyApp> {
-  String _getPageTitle(Page page) {
-    switch (page) {
-      case Page.halls:
-        return 'Halls Page';
-      case Page.students:
-        return 'Students Page';
-      case Page.generate:
-        return 'Generate Page';
+  // final Map<Pages, GlobalKey<NavigatorState>> _navigatorKeys = {
+  //   Pages.HALLS: GlobalKey<NavigatorState>(),
+  //   Pages.STUDENTS: GlobalKey<NavigatorState>(),
+  //   Pages.GENERATE: GlobalKey<NavigatorState>(),
+  // };
+
+  String getPageSectionTitle(Pages pagesection) {
+    switch (pagesection) {
+      case Pages.HALLS:
+        return 'Halls Pages';
+      case Pages.STUDENTS:
+        return 'Students Pages';
+      case Pages.GENERATE:
+        return 'Generate Pages';
       default:
         return '';
     }
   }
 
-  Page _selectedPage = Page.halls;
-  bool _showCreditsOverlay = true;
-
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-  final Map<Page, GlobalKey<NavigatorState>> _navigatorKeys = {
-    Page.halls: GlobalKey<NavigatorState>(),
-    Page.students: GlobalKey<NavigatorState>(),
-    Page.generate: GlobalKey<NavigatorState>(),
-  };
-
-  void _selectPage(Page page) {
-    setState(() {
-      _selectedPage = page;
-    });
-  }
-
-  void _closeCreditsOverlay() {
-    setState(() {
-      _showCreditsOverlay = false;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    final Uri url1 = Uri.parse("https://github.com/Govind-S-B");
-    final Uri url2 = Uri.parse("https://github.com/officiallyaninja");
-    final Uri url3 = Uri.parse("https://github.com/sibycr18");
-    final Uri url4 = Uri.parse("https://github.com/jydv402");
-    final Uri url5 = Uri.parse("https://github.com/Karthi-R-K");
-    final Uri url6 = Uri.parse("https://github.com/aminafayaz");
-    final Uri url7 = Uri.parse("https://github.com/tsuAquila");
-    final Uri url8 = Uri.parse("https://github.com/Ameer-Al-Hisham");
-
     return MaterialApp(
       title: 'EHSA',
       theme: ThemeData(
@@ -80,12 +65,18 @@ class MyAppState extends State<MyApp> {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
+        onDrawerChanged: (isOpened) =>
+            context.read<MainScreenCubit>().openDrawer(isOpened),
+        onEndDrawerChanged: (isOpened) =>
+            context.read<MainScreenCubit>().openDrawer(false),
         key: _scaffoldKey,
         appBar: AppBar(
-          elevation: 0,
-          centerTitle: true,
-          title: Text(_getPageTitle(_selectedPage)),
-        ),
+            elevation: 0,
+            centerTitle: true,
+            title: BlocBuilder<MainScreenCubit, MainScreenInitial>(
+              builder: (context, state) =>
+                  Text(getPageSectionTitle(state.pagesection)),
+            )),
         drawer: Padding(
           padding: const EdgeInsets.only(
             bottom: 14,
@@ -114,22 +105,21 @@ class MyAppState extends State<MyApp> {
                         borderRadius: BorderRadius.all(Radius.circular(16)),
                         color: Colors.blue,
                       ),
-                      child: GestureDetector(
-                        onTap: () {
-                          _scaffoldKey.currentState?.closeDrawer();
-                        },
-                        child: Center(
-                          child: TextButton(
-                            onPressed: (){
-                              _showCreditsOverlay = true;
-                              setState(() {});
-                            },
-                            child: Text(
-                              'EHSA',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 40,
-                              ),
+                      child: Center(
+                        child: TextButton(
+                          style: ButtonStyle(
+                              fixedSize: MaterialStateProperty.all(
+                                  const Size(600, 300))),
+                          onPressed: () {
+                            context.read<MainScreenCubit>().showOverlay(true);
+
+                            _scaffoldKey.currentState?.closeDrawer();
+                          },
+                          child: const Text(
+                            'EHSA',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 40,
                             ),
                           ),
                         ),
@@ -137,182 +127,91 @@ class MyAppState extends State<MyApp> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                    top: 1,
-                    bottom: 4,
-                  ),
-                  child: ListTile(
-                    leading: _selectedPage == Page.halls
-                        ? const Icon(Icons.add_home_rounded)
-                        : const Icon(Icons.add_home_outlined),
-                    title: const Text('Halls'),
-                    selected: _selectedPage == Page.halls,
-                    onTap: () {
-                      _selectPage(Page.halls);
-                      _scaffoldKey.currentState?.closeDrawer();
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                    top: 4,
-                    bottom: 4,
-                  ),
-                  child: ListTile(
-                    leading: _selectedPage == Page.students
-                        ? const Icon(Icons.person_add_alt_1_rounded)
-                        : const Icon(Icons.person_add_alt_1_outlined),
-                    title: const Text('Students'),
-                    selected: _selectedPage == Page.students,
-                    onTap: () {
-                      _selectPage(Page.students);
-                      _scaffoldKey.currentState?.closeDrawer();
-                    },
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: 8,
-                    right: 8,
-                    top: 4,
-                    bottom: 4,
-                  ),
-                  child: ListTile(
-                    leading: _selectedPage == Page.generate
-                        ? const Icon(Icons.create_rounded)
-                        : const Icon(Icons.create_outlined),
-                    title: const Text('Generate'),
-                    selected: _selectedPage == Page.generate,
-                    onTap: () {
-                      _selectPage(Page.generate);
-                      _scaffoldKey.currentState?.closeDrawer();
-                    },
-                  ),
-                ),
+                drawerItem(
+                    text: "Halls",
+                    section: Pages.HALLS,
+                    icon: Icon(Icons.add_home_rounded),
+                    activeIcon: const Icon(Icons.add_home_outlined)),
+                drawerItem(
+                    text: "Students",
+                    section: Pages.STUDENTS,
+                    icon: Icon(Icons.person_add_alt_1_rounded),
+                    activeIcon: const Icon(Icons.person_add_alt_1_outlined)),
+                drawerItem(
+                    text: "Generate",
+                    section: Pages.GENERATE,
+                    icon: Icon(Icons.create_rounded),
+                    activeIcon: const Icon(Icons.create_outlined)),
               ],
             ),
           ),
         ),
         body: Stack(
           children: [
-            _buildOffstageNavigator(Page.halls),
-            _buildOffstageNavigator(Page.students),
-            _buildOffstageNavigator(Page.generate),
-            if (_showCreditsOverlay)
-              GestureDetector(
-                onTap: _closeCreditsOverlay,
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                  child: Center(
+            //DrawerTabs
+            BlocBuilder<MainScreenCubit, MainScreenInitial>(
+                builder: (context, state) {
+              return IndexedStack(
+                index: state.pagesection.index,
+                children: const [HallPage(), StudentsPage(), GeneratePage()],
+              );
+            }),
+
+            //contributors grid
+            BlocBuilder<MainScreenCubit, MainScreenInitial>(
+              builder: (context, state) {
+                if (state.isOverlayOpen) {
+                  return GestureDetector(
+                    onTap: () {
+                      context.read<MainScreenCubit>().showOverlay(false);
+                    },
                     child: Container(
-                      height: MediaQuery.of(context).size.height * 0.4,
-                      width: MediaQuery.of(context).size.width * 0.4,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 20),
+                      color: Colors.black.withOpacity(0.5),
+                      child: Center(
                         child: Column(
-                          children: [
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Text(
-                              'EHSA',
-                              style: TextStyle(
-                                fontSize: 50,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const Text(
-                              "by protoRes",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const SizedBox(height: 50),
-                            Wrap(
-                              children: [
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url1);
-                                    },
-                                    child: const Text("Govind S B")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url2);
-                                    },
-                                    child: const Text("Arjun Pratap")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url3);
-                                    },
-                                    child: const Text("Siby C.R")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url4);
-                                    },
-                                    child: const Text("Jayadev B.S")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url5);
-                                    },
-                                    child: const Text("Karthik Kumar")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url6);
-                                    },
-                                    child: const Text("Amina Fayaz")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url8);
-                                    },
-                                    child: const Text("Ameer Al Hisham")),
-                                TextButton(
-                                    onPressed: () {
-                                      launchUrl(url7);
-                                    },
-                                    child: const Text("Aasish R R")),
-                              ],
-                            ),
-                          ],
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [ContributorGrid()],
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
+                  );
+                } else {
+                  return Text("");
+                }
+              },
+            ),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildOffstageNavigator(Page page) {
-    return Offstage(
-      offstage: _selectedPage != page,
-      child: Navigator(
-        key: _navigatorKeys[page],
-        onGenerateRoute: (routeSettings) {
-          return MaterialPageRoute(builder: (context) {
-            switch (page) {
-              case Page.halls:
-                return const HallPage();
-              case Page.students:
-                return const StudentsPage();
-              case Page.generate:
-                return const GeneratePage();
-              default:
-                return Container();
-            }
-          });
+  Widget drawerItem(
+      {required String text,
+      required Pages section,
+      required Icon icon,
+      required Icon activeIcon}) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: 8,
+        right: 8,
+        top: 1,
+        bottom: 4,
+      ),
+      child: BlocBuilder<MainScreenCubit, MainScreenInitial>(
+        builder: (context, state) {
+          return ListTile(
+            leading: state.pagesection == section ? icon : activeIcon,
+            title: Text(text),
+            selected: state.pagesection == section,
+            onTap: () {
+              context.read<MainScreenCubit>().setPageSection(section);
+
+              context.read<MainScreenCubit>().openDrawer(false);
+              // _selectPage(Pages.HALLS);
+              _scaffoldKey.currentState?.closeDrawer();
+            },
+          );
         },
       ),
     );

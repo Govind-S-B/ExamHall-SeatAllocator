@@ -1,5 +1,5 @@
 # ExamHall-SeatAllocator
-A GUI application built in Flutter, Rust, and Python that automates the assignment of student seats in examinations and generates appropriate PDFs
+A GUI application built in Flutter, Rust, and Python that automates the assignment of student seats in examinations and generates appropriate PDFs.
 
 # Requirements
 Windows 10 and above  
@@ -8,7 +8,7 @@ MSVC++ Redist. ( packaged with installer )
 # How to use
 - go to [releases](https://github.com/Govind-S-B/ExamHall-SeatAllocator/releases)
 - get the latest installer and run it
-- to learn more about usage refer the (wiki)[todo: write wikipage and add link]
+- to learn more about usage refer the [wiki](https://github.com/Govind-S-B/ExamHall-SeatAllocator/wiki)
 
 # Algorithm
 the seat assignment algorithm has 3 modes: `subject`, `class`, and `any`

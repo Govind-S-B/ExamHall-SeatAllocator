@@ -1,25 +1,7 @@
 import 'dart:io';
+import 'package:ehsa_frontend/models/Hall.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-
-class Hall {
-  final String hallName;
-  final int capacity;
-  String editedHallName; // Added variable to hold edited hallName
-  int editedCapacity; // Added variable to hold edited capacity
-
-  Hall(this.hallName, this.capacity)
-      : editedHallName = hallName,
-        editedCapacity =
-            capacity; // Initialize editedHallName and editedCapacity
-
-  Map<String, dynamic> toMap() {
-    return {
-      'name': editedHallName, // Use editedHallName in toMap method
-      'capacity': editedCapacity, // Use editedCapacity in toMap method
-    };
-  }
-}
 
 class HallPage extends StatefulWidget {
   const HallPage({super.key});
@@ -35,8 +17,10 @@ class _HallPageState extends State<HallPage> {
   List<Hall> halls = [];
   List<Hall> editedHalls = [];
 
-  final TextEditingController _formtextController1 = TextEditingController();
-  final TextEditingController _formtextController2 = TextEditingController();
+  final TextEditingController _hallNameTextController = TextEditingController();
+  final TextEditingController _capacityTextController = TextEditingController();
+  final FocusNode _hallNameFocusNode = FocusNode();
+  final FocusNode _capacityFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -117,10 +101,56 @@ class _HallPageState extends State<HallPage> {
     }
   }
 
+  // function called on submitting form
+  // either by pressing button or pressing enter when all values are filled
+  void trySubmitForm() {
+    int capacity;
+    try {
+      capacity = int.parse(_capacityTextController.text);
+    } on FormatException {
+      //TODO: create error snackbar
+      _capacityTextController.clear();
+      rethrow;
+    }
+    _database.insert(
+        'halls', {"name": _hallNameTextController.text, "capacity": capacity});
+    _hallNameTextController.clear();
+    _capacityTextController.clear();
+    _fetchHalls();
+  }
+
   @override
   void dispose() {
     _database.close();
     super.dispose();
+  }
+
+  void showClearConfirmationDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          content: const Text("Are you sure you want to clear the table?"),
+          actions: <Widget>[
+            TextButton(
+              child: const Text("Cancel"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: const Text("Clear"),
+              onPressed: () {
+                _dropTable();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -147,7 +177,25 @@ class _HallPageState extends State<HallPage> {
                     child: SizedBox(
                       width: 200,
                       child: TextField(
-                        controller: _formtextController1,
+                        onSubmitted: (value) {
+                          if (_capacityTextController.text.isNotEmpty) {
+                            try {
+                              trySubmitForm();
+                            } on FormatException {
+                              _capacityFocusNode.requestFocus();
+                              return;
+                            }
+                            _hallNameFocusNode.requestFocus();
+                          } else {
+                            FocusNode node =
+                                _hallNameTextController.text.isNotEmpty
+                                    ? _capacityFocusNode
+                                    : _hallNameFocusNode;
+                            node.requestFocus();
+                          }
+                        },
+                        focusNode: _hallNameFocusNode,
+                        controller: _hallNameTextController,
                         decoration: const InputDecoration(
                           labelText: 'Hall Name',
                         ),
@@ -160,7 +208,23 @@ class _HallPageState extends State<HallPage> {
                   SizedBox(
                     width: 150,
                     child: TextField(
-                      controller: _formtextController2,
+                      onSubmitted: (value) {
+                        if (_capacityTextController.text.isEmpty) {
+                          _hallNameFocusNode.requestFocus();
+                          return;
+                        }
+                        if (_hallNameTextController.text.isNotEmpty) {
+                          try {
+                            trySubmitForm();
+                          } on FormatException {
+                            _capacityFocusNode.requestFocus();
+                            return;
+                          }
+                        }
+                        _hallNameFocusNode.requestFocus();
+                      },
+                      focusNode: _capacityFocusNode,
+                      controller: _capacityTextController,
                       decoration: const InputDecoration(
                         labelText: 'Capacity',
                       ),
@@ -171,13 +235,7 @@ class _HallPageState extends State<HallPage> {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      _database.insert('halls', {
-                        "name": _formtextController1.text,
-                        "capacity": int.parse(_formtextController2.text)
-                      });
-                      _formtextController1.clear();
-                      _formtextController2.clear();
-                      _fetchHalls();
+                      trySubmitForm();
                     },
                     child: const Padding(
                       padding: EdgeInsets.all(4),
@@ -297,7 +355,7 @@ class _HallPageState extends State<HallPage> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ElevatedButton(
-                              onPressed: _dropTable,
+                              onPressed: showClearConfirmationDialog,
                               child: const Text('Clear Table')),
                         )),
                   ],

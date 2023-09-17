@@ -1,11 +1,12 @@
 import 'dart:io';
+import 'package:ehsa_frontend/manual_edit.dart';
 import 'package:flutter/material.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 
 class GeneratePage extends StatefulWidget {
-  const GeneratePage({super.key});
+  const GeneratePage({Key? key}) : super(key: key);
 
   @override
   State<GeneratePage> createState() => _GeneratePageState();
@@ -38,7 +39,6 @@ class _GeneratePageState extends State<GeneratePage> {
   }
 
   Future<void> _setSessionIdValue() async {
-    //function to check if the metadata table has a key containing SESSION_NAME
     var val = await _database.query("metadata", where: "key = 'session_name'");
     _sessionId = (val.isEmpty ? "Undefined" : val[0]["value"]).toString();
     setState(() {});
@@ -50,15 +50,46 @@ class _GeneratePageState extends State<GeneratePage> {
     });
   }
 
+  void onSubmitSessionId(String input) {
+    // var input = _sessionIdFieldController.text.trim();
+    if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N').hasMatch(input)) {
+      _sessionId = input;
+    } else {
+      final snackBar = SnackBar(
+        elevation: 0,
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: Colors.transparent,
+        content: AwesomeSnackbarContent(
+          title: 'Invalid Session ID',
+          message:
+              'Please Recheck the Session ID entered if of proper format and try again. format is DD-MM-YYYY [A/F]N ',
+          contentType: ContentType.failure,
+        ),
+      );
+
+      ScaffoldMessenger.of(context)
+        ..hideCurrentSnackBar()
+        ..showSnackBar(snackBar);
+    }
+
+    _database.execute(
+      "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
+    );
+    _sessionIdFieldController.clear();
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Container(
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16), bottom: Radius.circular(16)),
+              top: Radius.circular(16),
+              bottom: Radius.circular(16),
+            ),
             color: Colors.blue.shade300.withAlpha(50),
           ),
           child: Column(
@@ -84,48 +115,20 @@ class _GeneratePageState extends State<GeneratePage> {
                             border: InputBorder.none,
                             contentPadding: const EdgeInsets.all(10),
                           ),
+                          onSubmitted: onSubmitSessionId,
                         ),
                       ),
-                    ), // enter session name
+                    ),
                     Padding(
                       padding: const EdgeInsets.all(10),
                       child: ElevatedButton(
                         onPressed: () {
-                          var input = _sessionIdFieldController.text.trim();
-                          if (RegExp(r'\d\d-\d\d-\d\d\d\d [AF]N')
-                              .hasMatch(input)) {
-                            _sessionId = input;
-                          } else {
-                            final snackBar = SnackBar(
-                              /// need to set following properties for best effect of awesome_snackbar_content
-                              elevation: 0,
-                              behavior: SnackBarBehavior.floating,
-                              backgroundColor: Colors.transparent,
-                              content: AwesomeSnackbarContent(
-                                title: 'Invalid Session ID',
-                                message:
-                                    'Please Recheck the Session ID entered if of proper format and try again.',
-
-                                /// change contentType to ContentType.success, ContentType.warning or ContentType.help for variants
-                                contentType: ContentType.failure,
-                              ),
-                            );
-
-                            ScaffoldMessenger.of(context)
-                              ..hideCurrentSnackBar()
-                              ..showSnackBar(snackBar);
-                          }
-
-                          // write a function to update the metadata table with the new session name
-                          _database.execute(
-                            "INSERT OR REPLACE INTO metadata (key, value) VALUES ('session_name', '$_sessionId')",
-                          );
-                          _sessionIdFieldController.clear();
-                          setState(() {});
+                          onSubmitSessionId(
+                              _sessionIdFieldController.text.trim());
                         },
                         child: const Icon(Icons.settings),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ), // set session name
@@ -148,11 +151,6 @@ class _GeneratePageState extends State<GeneratePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                         onPressed: () async {
-                          // async function to launch rust allocator and wait for its response exit code
-                          // if exit code is 0 then show a success message
-                          // else show an error message
-
-                          // by default show failure message
                           var content_type = ContentType.failure;
                           var title = "PDF Generation Failed";
                           var msg = "PDF Generation Failed";
@@ -176,12 +174,10 @@ class _GeneratePageState extends State<GeneratePage> {
                                 allocator_args);
 
                             if (result.exitCode == 0) {
-                              // Executable executed successfully
-                              // launch pdf generator
-
                               final result2 = await Process.run(
-                                  '${Directory.current.path}\\pdf_generator.exe',
-                                  []);
+                                '${Directory.current.path}\\pdf_generator.exe',
+                                [],
+                              );
 
                               if (result2.exitCode == 0) {
                                 // pdf generated successfully
@@ -193,24 +189,22 @@ class _GeneratePageState extends State<GeneratePage> {
                               } else {
                                 // pdf generation failed
 
-                                msg = "PDF Generator Failed : ${result2.exitCode} ${result2.stderr}";
+                                msg =
+                                    "PDF Generator Failed : ${result2.exitCode} ${result2.stderr}";
                               }
-                            }
-                            else if(result.exitCode == 101){ // THIS IS NOT WORKING AS ARJUN SAID IT WOULD . FIX IT OR REMOVE IT
-
-                              msg = "Allocator Failed : " + result.stderr;
-
-                            }
-                            else {
+                            } else {
                               // Executable failed
-
-                              msg = "Allocator Failed : Unhandled exception ${result.exitCode} ${result.stderr}";
+                              String rawMessage = result.stderr;
+                              var relevantErrorMessage = RegExp(r"\[(.+)\]")
+                                  .firstMatch(rawMessage)
+                                  ?.group(0);
+                              var message = relevantErrorMessage ?? rawMessage;
+                              msg = "Allocator Failed : $message";
                             }
                           } catch (e) {
                             // Handle any exceptions here
 
                             msg = "You shouldnt be seeing this : $e";
-
                           }
 
                           final snackBar = SnackBar(
@@ -234,16 +228,66 @@ class _GeneratePageState extends State<GeneratePage> {
                     padding: const EdgeInsets.all(8.0),
                     child: ElevatedButton(
                         onPressed: () {
-                          final Uri fileLocation = Uri.parse(
-                              "file:" '${Directory.current.path}/../output/');
-                          launchUrl(fileLocation);
+                          // new screen
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ManualEdit()));
                         },
-                        child: const Icon(Icons.folder_open)),
-                  )
+                        child: const Text("Manual Edit")),
+                  ),
                 ],
-              ) // generate button
+              ),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // check if generated files exist
+
+                      List<String> files = [
+                        '${Directory.current.path}/../output/Halls $_sessionId.pdf',
+                        '${Directory.current.path}/../output/Seating $_sessionId.pdf',
+                        '${Directory.current.path}/../output/Packaging $_sessionId.pdf'
+                      ];
+
+                      bool allExist = true;
+
+                      for (String filePath in files) {
+                        if (!File(filePath).existsSync()) {
+                          allExist = false;
+                          break;
+                        }
+                      }
+
+                      if (allExist) {
+                        // open files using default handler
+                        for (String filePath in files) {
+                          launchUrl(Uri.parse("file:" '$filePath'));
+                        }
+                      } else {
+                        print("Error : Files not found , try regenerate");
+                      }
+                    },
+                    child: const Icon(Icons.remove_red_eye),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton(
+                    onPressed: () {
+                      final Uri fileLocation = Uri.parse(
+                          "file:" '${Directory.current.path}/../output/');
+                      launchUrl(fileLocation);
+                    },
+                    child: const Icon(Icons.folder_open),
+                  ),
+                ),
+              ]),
             ],
-          )),
-    ));
+          ),
+        ),
+      ),
+    );
   }
 }
