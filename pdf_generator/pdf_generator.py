@@ -6,28 +6,27 @@ from math import ceil
 # import random
 import configparser
 
+
 def generate_report():
 
     # Config
     config = configparser.ConfigParser()
     config.read("config.txt")
-    name = config.get("exam info","name")
-    title = config.get("exam info","title")
+    name = config.get("exam info", "name")
+    title = config.get("exam info", "title")
 
     conn = sq.connect("report.db")
-    
-
 
     session_info = sq.connect("input.db").execute(
-            """SELECT VALUE 
+        """SELECT VALUE 
             FROM metadata 
             WHERE KEY = "session_name" 
             """).fetchall()[0][0]
 
     date, session = session_info.split()
 
-
     # Functions
+
     def ranges(i):
         for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
             b = list(b)
@@ -728,7 +727,6 @@ def generate_report():
                               new_x="LMARGIN", new_y="NEXT")
     file_name = "Seating "+date+" "+session+".pdf"
     pdf3.output("../output/"+file_name)
-
 
 
 generate_report()
