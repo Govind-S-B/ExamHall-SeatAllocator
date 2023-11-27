@@ -11,21 +11,28 @@ import sys
 def generate_report():
 
     # Config
-    config = configparser.ConfigParser()
-    config.read("config.txt")
-    name = config.get("exam info", "name")
-    title = config.get("exam info", "title")
+    try:
+        config = configparser.ConfigParser()
+        config.read("config.txt")
+        name = config.get("exam info", "name")
+        title = config.get("exam info", "title")
+    except configparser.NoSectionError:
+        name = "name not defined"
+        title = "title not defined"
 
     db_name = sys.argv[1] if 1 < len(sys.argv) else "report.db"
     conn = sq.connect(db_name)
 
-    session_info = sq.connect("input.db").execute(
-        """SELECT VALUE 
-            FROM metadata 
-            WHERE KEY = "session_name" 
-            """).fetchall()[0][0]
+    try:
+        session_info = sq.connect("input.db").execute(
+            """SELECT VALUE 
+                FROM metadata 
+                WHERE KEY = "session_name" 
+                """).fetchall()[0][0]
 
-    date, session = session_info.split()
+        date, session = session_info.split()
+    except sq.OperationalError:
+        date, session = "date not defined", "session not defined"
 
     # Functions
 
