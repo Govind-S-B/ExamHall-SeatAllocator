@@ -19,3 +19,16 @@ ehsa_frontend/windows/flutter/generated_plugin_registrant.cc
 ehsa_frontend/windows/flutter/generated_plugin_registrant.h
 ehsa_frontend/windows/flutter/generated_plugins.cmake
 allocator/test/output/reports/
+build/pdf_generator/base_library.zip
+pdf_generator.spec
+build/pdf_generator/Analysis-00.toc
+build/pdf_generator/localpycs/pyimod01_archive.pyc
+build/pdf_generator/localpycs/pyimod02_importers.pyc
+build/pdf_generator/localpycs/pyimod03_ctypes.pyc
+build/pdf_generator/localpycs/pyimod04_pywin32.pyc
+build/pdf_generator/localpycs/struct.pyc
+build/pdf_generator/pdf_generator.pkg
+build/pdf_generator/PYZ-00.pyz
+build/pdf_generator/PYZ-00.toc
+build/pdf_generator/warn-pdf_generator.txt
+build/pdf_generator/xref-pdf_generator.html

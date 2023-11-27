@@ -5,6 +5,7 @@ import itertools
 from math import ceil
 # import random
 import configparser
+import sys
 
 
 def generate_report():
@@ -15,7 +16,8 @@ def generate_report():
     name = config.get("exam info", "name")
     title = config.get("exam info", "title")
 
-    conn = sq.connect("report.db")
+    db_name = sys.argv[1] if 1 < len(sys.argv) else "report.db"
+    conn = sq.connect(db_name)
 
     session_info = sq.connect("input.db").execute(
         """SELECT VALUE 
