@@ -18,3 +18,4 @@ ehsa_frontend/macos/Flutter/GeneratedPluginRegistrant.swift
 ehsa_frontend/windows/flutter/generated_plugin_registrant.cc
 ehsa_frontend/windows/flutter/generated_plugin_registrant.h
 ehsa_frontend/windows/flutter/generated_plugins.cmake
+allocator/test/output/reports/
