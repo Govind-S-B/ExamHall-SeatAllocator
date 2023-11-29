@@ -32,3 +32,4 @@ build/pdf_generator/PYZ-00.pyz
 build/pdf_generator/PYZ-00.toc
 build/pdf_generator/warn-pdf_generator.txt
 build/pdf_generator/xref-pdf_generator.html
+allocator/test/output/
