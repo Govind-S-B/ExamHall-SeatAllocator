@@ -1,4 +1,7 @@
+set ORIGINAL_DIR=%CD%
+
 cd ..
 cargo build
 move target\debug\allocator.exe test\bin
-del test\logs\logs.txt
+
+chdir /d %ORIGINAL_DIR%

@@ -5,29 +5,37 @@ import itertools
 from math import ceil
 # import random
 import configparser
+import sys
+
 
 def generate_report():
 
     # Config
-    config = configparser.ConfigParser()
-    config.read("config.txt")
-    name = config.get("exam info","name")
-    title = config.get("exam info","title")
+    try:
+        config = configparser.ConfigParser()
+        config.read("config.txt")
+        name = config.get("exam info", "name")
+        title = config.get("exam info", "title")
+    except configparser.NoSectionError:
+        name = "name not defined"
+        title = "title not defined"
 
-    conn = sq.connect("report.db")
-    
+    db_name = sys.argv[1] if 1 < len(sys.argv) else "report.db"
+    conn = sq.connect(db_name)
 
-
-    session_info = sq.connect("input.db").execute(
+    try:
+        session_info = sq.connect("input.db").execute(
             """SELECT VALUE 
-            FROM metadata 
-            WHERE KEY = "session_name" 
-            """).fetchall()[0][0]
+                FROM metadata 
+                WHERE KEY = "session_name" 
+                """).fetchall()[0][0]
 
-    date, session = session_info.split()
-
+        date, session = session_info.split()
+    except sq.OperationalError:
+        date, session = "date not defined", "session not defined"
 
     # Functions
+
     def ranges(i):
         for a, b in itertools.groupby(enumerate(i), lambda pair: pair[1] - pair[0]):
             b = list(b)
@@ -728,7 +736,6 @@ def generate_report():
                               new_x="LMARGIN", new_y="NEXT")
     file_name = "Seating "+date+" "+session+".pdf"
     pdf3.output("../output/"+file_name)
-
 
 
 generate_report()

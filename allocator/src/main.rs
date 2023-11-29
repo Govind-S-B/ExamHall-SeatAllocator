@@ -147,10 +147,7 @@ fn main() {
     // so they are just filled in roll no order in the remaining halls
     let mut students: Vec<Student> = students.into_values().flatten().collect();
     for hall in &mut halls {
-        let Some(student) = students.pop()
-        else {
-            break
-        };
+        let Some(student) = students.pop() else { break };
         if let Err(student) = hall.push(student) {
             students.push(student);
             continue;
@@ -159,7 +156,6 @@ fn main() {
 
     let conn = sqlite::open(args.output_db_path).expect("[ Error connecting to report.db ]");
     db::write_report_table(&conn, &halls);
-    log_sparse_halls(&halls);
 }
 
 /// also clears entries as they get empty
