@@ -734,7 +734,13 @@ class _StudentsPageState extends State<StudentsPage> {
                             )
                           : Row(
                               children: [
-                                Text(row.editedClassName),
+                                Expanded(
+                                  child: Text(
+                                    row.editedClassName,
+                                    overflow: TextOverflow.visible,
+                                    maxLines: null,
+                                  ),
+                                ),
                                 const SizedBox(width: 30),
                                 editedClassViewRows.contains(row) &&
                                         selectedDataCell != 0
@@ -810,7 +816,13 @@ class _StudentsPageState extends State<StudentsPage> {
                             )
                           : Row(
                               children: [
-                                Text(row.editedSubject),
+                                Expanded(
+                                  child: Text(
+                                    row.editedSubject,
+                                    overflow: TextOverflow.visible,
+                                    maxLines: null, // Allow unlimited lines
+                                  ),
+                                ),
                                 const SizedBox(width: 30),
                                 editedClassViewRows.contains(row) &&
                                         selectedDataCell != 0
